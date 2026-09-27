@@ -317,6 +317,97 @@ p {
   border-top: 1px solid #253029;
   padding-top: 20px;
 }
+.attribution {
+  margin-top: 22px;
+  border: 1px solid #334138;
+  background: linear-gradient(90deg, rgba(116, 240, 173, 0.08), transparent);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.attribution p {
+  margin-bottom: 7px;
+}
+.attribution strong {
+  font-size: 13px;
+}
+.attribution > b {
+  color: #74f0ad;
+  font: 500 18px DM Mono;
+}
+.trace-timeline {
+  margin-top: 30px;
+  border-top: 1px solid #253029;
+  padding-top: 20px;
+}
+.timeline-heading {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 24px;
+  align-items: center;
+  color: #6f7c74;
+  font: 9px DM Mono;
+}
+.timeline-heading p {
+  margin: 0;
+}
+.lane {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  gap: 12px;
+  min-height: 32px;
+  align-items: center;
+}
+.lane label {
+  color: #77837c;
+  font: 9px DM Mono;
+  text-transform: uppercase;
+}
+.lane-track {
+  height: 22px;
+  position: relative;
+  border-left: 1px solid #354038;
+  border-right: 1px solid #354038;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent calc(25% - 1px),
+    #1f2822 25%
+  );
+}
+.lane-item {
+  position: absolute;
+  inset-block: 3px;
+  min-width: 3px;
+  overflow: hidden;
+  border-left: 2px solid;
+}
+.lane-item span {
+  display: block;
+  overflow: hidden;
+  padding: 2px 5px;
+  color: #dfe7e1;
+  font: 8px DM Mono;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lane-frame {
+  background: #5b4624;
+  border-color: #f3be68;
+}
+.lane-span {
+  background: #224434;
+  border-color: #74f0ad;
+}
+.lane-network {
+  background: #263955;
+  border-color: #76a9fa;
+}
+.lane-shift {
+  background: #4b2838;
+  border-color: #ed75a8;
+}
 .frame-row {
   display: grid;
   grid-template-columns: 1fr auto auto;

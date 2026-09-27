@@ -2,8 +2,11 @@ import { StrictMode, useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import type {
   AnyTraceLensEvent,
+  CustomSpanPayload,
   InteractionPayload,
+  LayoutShiftPayload,
   LongFramePayload,
+  NetworkPayload,
 } from '@tracelens/protocol';
 import './styles.css';
 
@@ -32,6 +35,15 @@ function App() {
     interactions.find((event) => event.id === selected) ?? interactions.at(-1);
   const frames = events.filter((event) => event.type === 'long-frame') as Array<
     AnyTraceLensEvent & { payload: LongFramePayload }
+  >;
+  const networks = events.filter((event) => event.type === 'network') as Array<
+    AnyTraceLensEvent & { payload: NetworkPayload }
+  >;
+  const shifts = events.filter(
+    (event) => event.type === 'layout-shift',
+  ) as Array<AnyTraceLensEvent & { payload: LayoutShiftPayload }>;
+  const spans = events.filter((event) => event.type === 'custom-span') as Array<
+    AnyTraceLensEvent & { payload: CustomSpanPayload }
   >;
   const inp = Math.max(
     0,
@@ -123,6 +135,9 @@ function App() {
                 <Detail
                   interaction={active.payload}
                   frames={frames.map((event) => event.payload)}
+                  networks={networks.map((event) => event.payload)}
+                  shifts={shifts.map((event) => event.payload)}
+                  spans={spans.map((event) => event.payload)}
                 />
               )}
             </div>
@@ -136,9 +151,15 @@ function App() {
 function Detail({
   interaction,
   frames,
+  networks,
+  shifts,
+  spans,
 }: {
   interaction: InteractionPayload;
   frames: LongFramePayload[];
+  networks: NetworkPayload[];
+  shifts: LayoutShiftPayload[];
+  spans: CustomSpanPayload[];
 }) {
   const timing = interaction.timing;
   const segments = [
@@ -146,11 +167,41 @@ function Detail({
     ['Processing', timing.processingDuration, 'script'],
     ['Presentation', timing.presentationDelay, 'paint'],
   ] as const;
+  const overlaps = (startTime: number, duration: number) =>
+    startTime <= interaction.startTime + interaction.duration &&
+    startTime + duration >= interaction.startTime;
   const relevantFrames = frames.filter(
     (frame) =>
-      frame.startTime <= interaction.startTime + interaction.duration &&
-      frame.startTime + frame.duration >= interaction.startTime,
+      frame.interactionId === interaction.interactionId ||
+      overlaps(frame.startTime, frame.duration),
   );
+  const relevantNetworks = networks.filter(
+    (network) =>
+      network.interactionId === interaction.interactionId ||
+      overlaps(network.startTime, network.duration),
+  );
+  const relevantShifts = shifts.filter(
+    (shift) =>
+      shift.interactionId === interaction.interactionId ||
+      overlaps(shift.startTime, shift.duration),
+  );
+  const relevantSpans = spans.filter((span) =>
+    overlaps(span.startTime, span.duration),
+  );
+  const primary = [
+    ...relevantFrames.map((frame) => ({
+      label: 'Long animation frame',
+      value: frame.duration,
+    })),
+    ...relevantNetworks.map((network) => ({
+      label: `${network.method} ${compactUrl(network.url)}`,
+      value: network.duration,
+    })),
+    ...relevantSpans.map((span) => ({
+      label: span.name,
+      value: span.duration,
+    })),
+  ].sort((a, b) => b.value - a.value)[0];
   return (
     <div className="detail">
       <div className="detail-head">
@@ -185,6 +236,20 @@ function Detail({
           </div>
         ))}
       </div>
+      <div className="attribution">
+        <div>
+          <p className="eyebrow">Primary contributor</p>
+          <strong>{primary?.label ?? 'Browser presentation'}</strong>
+        </div>
+        <b>{Math.round(primary?.value ?? timing.presentationDelay)} ms</b>
+      </div>
+      <TraceTimeline
+        interaction={interaction}
+        frames={relevantFrames}
+        networks={relevantNetworks}
+        shifts={relevantShifts}
+        spans={relevantSpans}
+      />
       <div className="frame">
         <p className="eyebrow">Long animation frames</p>
         {relevantFrames.length ? (
@@ -192,7 +257,7 @@ function Detail({
             <div className="frame-row" key={index}>
               <span>Frame #{index + 1}</span>
               <strong>{Math.round(frame.duration)} ms</strong>
-              <em>{frame.scripts.length} scripts</em>
+              <em>{Math.round(frame.blockingDuration ?? 0)} ms blocking</em>
             </div>
           ))
         ) : (
@@ -203,6 +268,110 @@ function Detail({
       </div>
     </div>
   );
+}
+
+function TraceTimeline({
+  interaction,
+  frames,
+  networks,
+  shifts,
+  spans,
+}: {
+  interaction: InteractionPayload;
+  frames: LongFramePayload[];
+  networks: NetworkPayload[];
+  shifts: LayoutShiftPayload[];
+  spans: CustomSpanPayload[];
+}) {
+  const itemStyle = (startTime: number, duration: number) => {
+    const left = Math.max(
+      0,
+      ((startTime - interaction.startTime) / interaction.duration) * 100,
+    );
+    const width = Math.max(1.5, (duration / interaction.duration) * 100);
+    const clampedLeft = Math.min(98.5, left);
+    return {
+      left: `${clampedLeft}%`,
+      width: `${Math.max(1.5, Math.min(100 - clampedLeft, width))}%`,
+    };
+  };
+  const lanes = [
+    {
+      name: 'Browser',
+      items: frames.map((frame, index) => ({
+        key: `frame-${index}`,
+        label: `${Math.round(frame.duration)} ms frame`,
+        className: 'lane-frame',
+        startTime: frame.startTime,
+        duration: frame.duration,
+      })),
+    },
+    {
+      name: 'Custom',
+      items: spans.map((span, index) => ({
+        key: `span-${index}`,
+        label: span.name,
+        className: 'lane-span',
+        startTime: span.startTime,
+        duration: span.duration,
+      })),
+    },
+    {
+      name: 'Network',
+      items: networks.map((network, index) => ({
+        key: `network-${index}`,
+        label: `${network.method} ${compactUrl(network.url)}`,
+        className: 'lane-network',
+        startTime: network.startTime,
+        duration: network.duration,
+      })),
+    },
+    {
+      name: 'Layout',
+      items: shifts.map((shift, index) => ({
+        key: `shift-${index}`,
+        label: `CLS +${shift.value.toFixed(3)}`,
+        className: 'lane-shift',
+        startTime: shift.startTime,
+        duration: Math.max(4, shift.duration),
+      })),
+    },
+  ];
+  return (
+    <section className="trace-timeline">
+      <div className="timeline-heading">
+        <p className="eyebrow">Correlated timeline</p>
+        <span>0 ms</span>
+        <span>{Math.round(interaction.duration)} ms</span>
+      </div>
+      {lanes.map((lane) => (
+        <div className="lane" key={lane.name}>
+          <label>{lane.name}</label>
+          <div className="lane-track">
+            {lane.items.map((item) => (
+              <div
+                title={item.label}
+                key={item.key}
+                className={`lane-item ${item.className}`}
+                style={itemStyle(item.startTime, item.duration)}
+              >
+                <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function compactUrl(value: string): string {
+  try {
+    const url = new URL(value);
+    return url.pathname;
+  } catch {
+    return value;
+  }
 }
 
 createRoot(document.getElementById('root')!).render(

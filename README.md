@@ -4,7 +4,7 @@
 
 Find the interaction. Find the frame. Find the component. Find the release.
 
-TraceLens is a local-first toolkit for understanding why browser interactions are slow. The current `0.1` foundation captures Event Timing, Web Vitals, and Long Animation Frames, then correlates them in a focused local Studio.
+TraceLens is a local-first toolkit for understanding why browser interactions are slow. The current foundation captures Event Timing, Web Vitals, Long Animation Frames, fetch/XHR requests, layout shifts, and custom spans, then correlates them in a focused local Studio.
 
 ## Try the milestone
 
@@ -20,7 +20,7 @@ Then:
 1. Open the playground at <http://localhost:4174>.
 2. Open Studio at <http://localhost:4173>.
 3. Click **Save settings** in the playground.
-4. Inspect the interaction timing in Studio.
+4. Inspect its timing, primary contributor, long frames, and network request in Studio.
 
 The playground is intentionally slow. Its settings action produces blocking validation and rendering work so the browser has something useful to report.
 
@@ -48,7 +48,17 @@ init({
 });
 ```
 
-Privacy-sensitive values are not collected: element text and input values are ignored, script query strings are stripped, and the SDK sends no request bodies or headers from the instrumented application.
+Privacy-sensitive values are not collected: element text and input values are ignored, URL query strings are stripped, and the SDK sends no request bodies or application headers as telemetry.
+
+### Custom spans
+
+```ts
+import { trace } from '@tracelens/browser';
+
+await trace('validate-settings', () => validateSettings());
+```
+
+Custom spans that overlap an interaction appear beside browser and network work in the Studio timeline.
 
 ## Development
 
@@ -61,7 +71,7 @@ pnpm format:check
 
 ## Status
 
-Milestone 0.1 is the active foundation. Browser support depends on the relevant Performance APIs; unsupported entry types degrade without breaking the application.
+Milestone 0.2 adds interaction attribution: INP subparts, stable correlation IDs, fetch/XHR spans, layout shifts, overlapping long frames, slow-interaction ranking, and a multi-lane timeline. Browser support depends on the relevant Performance APIs; unsupported entry types degrade without breaking the application.
 
 ## License
 
