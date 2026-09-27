@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap');
+:root {
+  font-family: Manrope, sans-serif;
+  color: #e9eee9;
+  background: #0b0e0c;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 25% 0, #173224 0, transparent 35%), #0b0e0c;
+  min-height: 100vh;
+}
+main {
+  max-width: 900px;
+  margin: auto;
+  padding: 0 28px 70px;
+}
+header {
+  height: 70px;
+  border-bottom: 1px solid #273129;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+header div {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+header span {
+  color: #76efad;
+  border: 1px solid #76efad;
+  font: 11px DM Mono;
+  padding: 5px;
+}
+header a {
+  color: #76efad;
+  text-decoration: none;
+  font: 12px DM Mono;
+}
+.intro {
+  padding: 70px 0 34px;
+}
+.intro p {
+  font: 10px DM Mono;
+  letter-spacing: 0.15em;
+  color: #76efad;
+}
+.intro h1 {
+  font-size: 48px;
+  letter-spacing: -0.05em;
+  margin: 10px 0;
+}
+.intro span,
+.card p,
+.hint {
+  color: #87928c;
+}
+.card {
+  border: 1px solid #2b372f;
+  background: rgba(16, 21, 18, 0.88);
+  padding: 30px;
+}
+.card h2 {
+  margin: 0 0 8px;
+}
+.card > div {
+  border-bottom: 1px solid #263029;
+  margin-bottom: 26px;
+}
+.card p {
+  font-size: 13px;
+  max-width: 570px;
+  line-height: 1.6;
+}
+label {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+  margin: 18px 0;
+  max-width: 520px;
+}
+input,
+select {
+  background: #0a0e0b;
+  border: 1px solid #344239;
+  color: #e9eee9;
+  padding: 12px;
+  font: 13px DM Mono;
+}
+.check {
+  display: flex;
+  align-items: center;
+}
+.check input {
+  accent-color: #76efad;
+}
+footer {
+  border-top: 1px solid #263029;
+  margin-top: 28px;
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+footer div {
+  display: grid;
+  gap: 4px;
+}
+footer strong {
+  font-size: 12px;
+}
+footer small {
+  color: #77837c;
+  font: 10px DM Mono;
+}
+button {
+  border: 0;
+  background: #76efad;
+  color: #07100a;
+  padding: 12px 20px;
+  font: 600 13px Manrope;
+  cursor: pointer;
+}
+button:hover {
+  background: #9af8c2;
+}
+.hint {
+  text-align: center;
+  font: 11px DM Mono;
+  margin-top: 24px;
+  line-height: 1.7;
+}
