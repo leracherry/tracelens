@@ -22,7 +22,7 @@ Then:
 3. Click **Save settings** in the playground.
 4. Inspect its timing, primary contributor, long frames, and network request in Studio.
 
-The playground is intentionally slow. Its settings action produces blocking validation and rendering work so the browser has something useful to report.
+The playground is intentionally slow. It includes controlled search, settings, checkout, layout, and third-party script scenarios so the browser has useful work to report. See the [performance debugging walkthrough](docs/guides/performance-debugging-walkthrough.md).
 
 ## Packages
 
