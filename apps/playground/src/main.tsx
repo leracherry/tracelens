@@ -27,7 +27,11 @@ function App() {
     setStatus('Validating…');
     await trace('validate-settings', () => blockMainThread(270));
     setStatus('Saving…');
-    await new Promise((resolve) => setTimeout(resolve, 120));
+    await fetch('/api/settings?workspace=acme-engineering', {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ region: 'ca' }),
+    });
     blockMainThread(95);
     setSavedAt(new Date().toLocaleTimeString());
     setStatus('Saved');
@@ -86,8 +90,9 @@ function App() {
         </footer>
       </section>
       <p className="hint">
-        The save action blocks the main thread for ~365 ms. TraceLens will
-        capture its Event Timing and Long Animation Frame entries.
+        The save action combines ~365 ms of main-thread work with a simulated
+        API request. TraceLens correlates the browser, custom, network, and
+        layout lanes.
       </p>
     </main>
   );

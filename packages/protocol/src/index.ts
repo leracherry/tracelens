@@ -25,7 +25,8 @@ export interface InteractionTiming {
 }
 
 export interface InteractionPayload {
-  interactionId?: number;
+  interactionId: string;
+  browserInteractionId?: number;
   interactionType: 'click' | 'keydown' | 'pointerdown' | 'custom';
   name: string;
   route: string;
@@ -53,8 +54,31 @@ export interface LongFramePayload {
   startTime: number;
   duration: number;
   blockingDuration?: number;
-  interactionId?: number;
+  interactionId?: string;
   scripts: ScriptContribution[];
+}
+
+export interface NetworkPayload {
+  method: string;
+  url: string;
+  status?: number;
+  startTime: number;
+  duration: number;
+  interactionId?: string;
+  transport: 'fetch' | 'xhr';
+}
+
+export interface LayoutShiftPayload {
+  startTime: number;
+  duration: number;
+  value: number;
+  hadRecentInput: boolean;
+  interactionId?: string;
+}
+
+export interface NavigationPayload {
+  route: string;
+  startTime: number;
 }
 
 export interface CustomSpanPayload {
@@ -75,9 +99,9 @@ export interface PayloadMap {
   'long-frame': LongFramePayload;
   'custom-span': CustomSpanPayload;
   mark: MarkPayload;
-  network: Record<string, unknown>;
-  navigation: Record<string, unknown>;
-  'layout-shift': Record<string, unknown>;
+  network: NetworkPayload;
+  navigation: NavigationPayload;
+  'layout-shift': LayoutShiftPayload;
 }
 
 export interface TraceLensEvent<T extends EventType = EventType> {

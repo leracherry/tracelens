@@ -7,6 +7,9 @@ import {
   type TraceLensEvent,
   type WebVitalPayload,
 } from '@tracelens/protocol';
+import { InteractionCorrelator, sanitizeNetworkUrl } from './correlation';
+
+export { InteractionCorrelator, sanitizeNetworkUrl } from './correlation';
 
 export interface Transport {
   send(events: readonly AnyTraceLensEvent[]): Promise<void>;
@@ -39,13 +42,28 @@ interface LongAnimationFrameEntry extends PerformanceEntry {
   }>;
 }
 
+interface LayoutShiftEntry extends PerformanceEntry {
+  value?: number;
+  hadRecentInput?: boolean;
+}
+
+interface XhrMeta {
+  method: string;
+  url: string;
+  startTime?: number;
+  interactionId?: string;
+}
+
 let runtime: Runtime | undefined;
 
 class HttpTransport implements Transport {
-  constructor(private readonly endpoint: string) {}
+  constructor(
+    private readonly endpoint: string,
+    private readonly request: typeof fetch,
+  ) {}
 
   async send(events: readonly AnyTraceLensEvent[]): Promise<void> {
-    await fetch(this.endpoint, {
+    await this.request(this.endpoint, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(events),
@@ -69,6 +87,8 @@ class Runtime {
   private timer: number | undefined;
   private cls = 0;
   private inp = 0;
+  private readonly correlator = new InteractionCorrelator();
+  private readonly cleanup: Array<() => void> = [];
 
   constructor(
     private readonly options: Required<
@@ -78,9 +98,16 @@ class Runtime {
   ) {}
 
   start(): void {
+    this.captureInputLifecycle();
     this.observeInteractions();
     this.observeLongFrames();
     this.observeVitals();
+    this.instrumentFetch();
+    this.instrumentXhr();
+    this.emit('navigation', {
+      route: `${location.pathname}${location.hash}`,
+      startTime: 0,
+    });
     this.timer = window.setInterval(
       () => void this.flush(),
       this.options.flushInterval,
@@ -115,6 +142,7 @@ class Runtime {
 
   async stop(): Promise<void> {
     this.observers.forEach((observer) => observer.disconnect());
+    this.cleanup.splice(0).forEach((cleanup) => cleanup());
     if (this.timer !== undefined) window.clearInterval(this.timer);
     await this.flush();
   }
@@ -156,10 +184,12 @@ class Runtime {
           entry.target instanceof Element
             ? describeElement(entry.target)
             : undefined;
+        const candidate = this.correlator.match(entry.name, entry.startTime);
         this.emit('interaction', {
-          interactionId: entry.interactionId,
+          interactionId: candidate?.id ?? crypto.randomUUID(),
+          browserInteractionId: entry.interactionId,
           interactionType: entry.name as 'click' | 'keydown' | 'pointerdown',
-          name: target?.name ?? entry.name,
+          name: candidate?.name ?? target?.name ?? entry.name,
           route: `${location.pathname}${location.hash}`,
           startTime: entry.startTime,
           duration: entry.duration,
@@ -194,6 +224,10 @@ class Runtime {
           startTime: entry.startTime,
           duration: entry.duration,
           blockingDuration: entry.blockingDuration,
+          interactionId: this.correlator.overlapping(
+            entry.startTime,
+            entry.duration,
+          )?.id,
           scripts: (entry.scripts ?? []).map((script) => ({
             source: sanitizeUrl(script.sourceURL),
             functionName: script.sourceFunctionName,
@@ -223,10 +257,17 @@ class Runtime {
         );
     });
     this.observe('layout-shift', (entries) => {
-      for (const entry of entries as Array<
-        PerformanceEntry & { value?: number; hadRecentInput?: boolean }
-      >) {
-        if (!entry.hadRecentInput) this.cls += entry.value ?? 0;
+      for (const entry of entries as LayoutShiftEntry[]) {
+        const value = entry.value ?? 0;
+        const hadRecentInput = entry.hadRecentInput ?? false;
+        if (!hadRecentInput) this.cls += value;
+        this.emit('layout-shift', {
+          startTime: entry.startTime,
+          duration: entry.duration,
+          value,
+          hadRecentInput,
+          interactionId: this.correlator.active(entry.startTime)?.id,
+        });
       }
       this.emitVital(
         'CLS',
@@ -247,18 +288,137 @@ class Runtime {
   ): void {
     this.emit('web-vital', { name, value, rating, route: location.pathname });
   }
+
+  private captureInputLifecycle(): void {
+    const capture = (event: Event) => {
+      if (!['click', 'keydown', 'pointerdown'].includes(event.type)) return;
+      const target =
+        event.target instanceof Element
+          ? describeElement(event.target)
+          : undefined;
+      this.correlator.add({
+        id: crypto.randomUUID(),
+        type: event.type as 'click' | 'keydown' | 'pointerdown',
+        name: target?.name ?? event.type,
+        startTime: performance.now(),
+      });
+    };
+    document.addEventListener('click', capture, true);
+    document.addEventListener('keydown', capture, true);
+    document.addEventListener('pointerdown', capture, true);
+    this.cleanup.push(() => {
+      document.removeEventListener('click', capture, true);
+      document.removeEventListener('keydown', capture, true);
+      document.removeEventListener('pointerdown', capture, true);
+    });
+  }
+
+  private instrumentFetch(): void {
+    const original = window.fetch.bind(window);
+    const endpoint = sanitizeNetworkUrl(
+      this.options.endpoint ?? '/__tracelens',
+    );
+    const runtime = this;
+    window.fetch = async function tracedFetch(
+      input: RequestInfo | URL,
+      init?: RequestInit,
+    ) {
+      const rawUrl = input instanceof Request ? input.url : String(input);
+      if (sanitizeNetworkUrl(rawUrl) === endpoint) return original(input, init);
+      const startTime = performance.now();
+      const method = (
+        init?.method ?? (input instanceof Request ? input.method : 'GET')
+      ).toUpperCase();
+      const interactionId = runtime.correlator.active(startTime)?.id;
+      try {
+        const response = await original(input, init);
+        runtime.emit('network', {
+          method,
+          url: sanitizeNetworkUrl(rawUrl),
+          status: response.status,
+          startTime,
+          duration: performance.now() - startTime,
+          interactionId,
+          transport: 'fetch',
+        });
+        return response;
+      } catch (error) {
+        runtime.emit('network', {
+          method,
+          url: sanitizeNetworkUrl(rawUrl),
+          startTime,
+          duration: performance.now() - startTime,
+          interactionId,
+          transport: 'fetch',
+        });
+        throw error;
+      }
+    };
+    this.cleanup.push(() => {
+      window.fetch = original;
+    });
+  }
+
+  private instrumentXhr(): void {
+    const originalOpen = XMLHttpRequest.prototype.open;
+    const originalSend = XMLHttpRequest.prototype.send;
+    const metadata = new WeakMap<XMLHttpRequest, XhrMeta>();
+    const runtime = this;
+    XMLHttpRequest.prototype.open = function tracedOpen(
+      this: XMLHttpRequest,
+      method: string,
+      url: string | URL,
+      ...rest: unknown[]
+    ) {
+      metadata.set(this, { method: method.toUpperCase(), url: String(url) });
+      return originalOpen.apply(this, [method, url, ...rest] as Parameters<
+        XMLHttpRequest['open']
+      >);
+    } as typeof XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.send = function tracedSend(
+      this: XMLHttpRequest,
+      body?: Document | XMLHttpRequestBodyInit | null,
+    ) {
+      const meta = metadata.get(this);
+      if (meta) {
+        meta.startTime = performance.now();
+        meta.interactionId = runtime.correlator.active(meta.startTime)?.id;
+        this.addEventListener(
+          'loadend',
+          () => {
+            runtime.emit('network', {
+              method: meta.method,
+              url: sanitizeNetworkUrl(meta.url),
+              status: this.status || undefined,
+              startTime: meta.startTime!,
+              duration: performance.now() - meta.startTime!,
+              interactionId: meta.interactionId,
+              transport: 'xhr',
+            });
+          },
+          { once: true },
+        );
+      }
+      return originalSend.call(this, body);
+    };
+    this.cleanup.push(() => {
+      XMLHttpRequest.prototype.open = originalOpen;
+      XMLHttpRequest.prototype.send = originalSend;
+    });
+  }
 }
 
 export function init(options: InitOptions): () => Promise<void> {
   if (runtime) throw new Error('TraceLens has already been initialized.');
   if (Math.random() > (options.sampleRate ?? 1)) return async () => undefined;
+  const originalFetch = globalThis.fetch.bind(globalThis);
   runtime = new Runtime({
     ...options,
     batchSize: options.batchSize ?? 20,
     flushInterval: options.flushInterval ?? 1_000,
     transport:
       options.transport ??
-      new HttpTransport(options.endpoint ?? '/__tracelens'),
+      new HttpTransport(options.endpoint ?? '/__tracelens', originalFetch),
   });
   runtime.start();
   return shutdown;
@@ -320,8 +480,7 @@ export function describeElement(element: Element): ElementDescriptor {
 function sanitizeUrl(value?: string): string | undefined {
   if (!value) return undefined;
   try {
-    const url = new URL(value, location.href);
-    return `${url.origin}${url.pathname}`;
+    return sanitizeNetworkUrl(value);
   } catch {
     return undefined;
   }
