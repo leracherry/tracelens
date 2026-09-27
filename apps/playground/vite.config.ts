@@ -5,12 +5,20 @@ function slowApi(): Plugin {
   return {
     name: 'tracelens-playground-api',
     configureServer(server) {
-      server.middlewares.use('/api/settings', (request, response, next) => {
-        if (request.method !== 'PATCH') return next();
+      server.middlewares.use('/api', (request, response, next) => {
+        const route = request.url?.split('?')[0];
+        const delay =
+          route === '/checkout' ? 420 : route === '/settings' ? 180 : undefined;
+        if (!delay) return next();
         setTimeout(() => {
-          response.statusCode = 204;
-          response.end();
-        }, 180);
+          response.statusCode = route === '/checkout' ? 201 : 204;
+          response.setHeader('content-type', 'application/json');
+          response.end(
+            route === '/checkout'
+              ? JSON.stringify({ orderId: 'demo-order' })
+              : undefined,
+          );
+        }, delay);
       });
     },
   };
