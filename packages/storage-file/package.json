@@ -1,0 +1,19 @@
+{
+  "name": "@tracelens/storage-file",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@tracelens/core": "workspace:*",
+    "@tracelens/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}
