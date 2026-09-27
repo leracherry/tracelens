@@ -14,6 +14,34 @@ describe('InteractionCorrelator', () => {
     correlator.add({ id: 'old', type: 'click', name: 'Save', startTime: 100 });
     expect(correlator.active(5_101)).toBeUndefined();
   });
+
+  it('keeps the latest candidate active for async work', () => {
+    const correlator = new InteractionCorrelator();
+    correlator.add({
+      id: 'pointer',
+      type: 'pointerdown',
+      name: 'Save',
+      startTime: 100,
+    });
+    correlator.add({
+      id: 'click',
+      type: 'click',
+      name: 'Save',
+      startTime: 120,
+    });
+    expect(correlator.active(1_000)?.id).toBe('click');
+  });
+
+  it('finds a pointer candidate that can be shared with its click', () => {
+    const correlator = new InteractionCorrelator();
+    correlator.add({
+      id: 'shared',
+      type: 'pointerdown',
+      name: 'Place order',
+      startTime: 100,
+    });
+    expect(correlator.match('pointerdown', 140)?.id).toBe('shared');
+  });
 });
 
 describe('sanitizeNetworkUrl', () => {

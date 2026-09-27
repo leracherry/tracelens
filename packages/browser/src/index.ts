@@ -87,6 +87,7 @@ class Runtime {
   private timer: number | undefined;
   private cls = 0;
   private inp = 0;
+  private readonly seenBrowserInteractions = new Set<number>();
   private readonly correlator = new InteractionCorrelator();
   private readonly cleanup: Array<() => void> = [];
 
@@ -156,7 +157,11 @@ class Runtime {
       const observer = new PerformanceObserver((list) =>
         callback(list.getEntries()),
       );
-      observer.observe({ type, buffered: true });
+      observer.observe({
+        type,
+        buffered: true,
+        ...(type === 'event' ? { durationThreshold: 16 } : {}),
+      });
       this.observers.push(observer);
     } catch {
       // Unsupported browser entry types are intentionally ignored.
@@ -171,6 +176,13 @@ class Runtime {
           entry.duration < 16
         )
           continue;
+        if (
+          entry.interactionId &&
+          this.seenBrowserInteractions.has(entry.interactionId)
+        )
+          continue;
+        if (entry.interactionId)
+          this.seenBrowserInteractions.add(entry.interactionId);
         const inputDelay = Math.max(0, entry.processingStart - entry.startTime);
         const processingDuration = Math.max(
           0,
@@ -296,11 +308,16 @@ class Runtime {
         event.target instanceof Element
           ? describeElement(event.target)
           : undefined;
+      const startTime = performance.now();
+      const pointerCandidate =
+        event.type === 'click'
+          ? this.correlator.match('pointerdown', startTime)
+          : undefined;
       this.correlator.add({
-        id: crypto.randomUUID(),
+        id: pointerCandidate?.id ?? crypto.randomUUID(),
         type: event.type as 'click' | 'keydown' | 'pointerdown',
         name: target?.name ?? event.type,
-        startTime: performance.now(),
+        startTime,
       });
     };
     document.addEventListener('click', capture, true);
