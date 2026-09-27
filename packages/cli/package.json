@@ -1,0 +1,28 @@
+{
+  "name": "@tracelens/cli",
+  "version": "0.1.0",
+  "description": "Local CLI for inspecting TraceLens interaction telemetry",
+  "type": "module",
+  "bin": {
+    "tracelens": "./dist/index.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@tracelens/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}
