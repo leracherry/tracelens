@@ -33,6 +33,7 @@ The playground is intentionally slow. Its settings action produces blocking vali
 | `@tracelens/core`           | Storage interfaces and trace queries   |
 | `@tracelens/storage-memory` | In-memory trace storage                |
 | `@tracelens/storage-file`   | JSON file trace storage                |
+| `@tracelens/cli`            | Studio, inspection, and diagnostics    |
 | `@tracelens/studio`         | Local interaction explorer             |
 | `@tracelens/playground`     | Intentionally slow example app         |
 
@@ -59,6 +60,26 @@ await trace('validate-settings', () => validateSettings());
 ```
 
 Custom spans that overlap an interaction appear beside browser and network work in the Studio timeline.
+
+## CLI
+
+Start the local interface:
+
+```bash
+pnpm exec tracelens studio
+```
+
+Inspect a captured trace from the terminal:
+
+```bash
+pnpm exec tracelens inspect examples/traces/slow-settings.json
+```
+
+Check whether a project is ready for TraceLens instrumentation:
+
+```bash
+pnpm exec tracelens doctor
+```
 
 ## Development
 

@@ -1,0 +1,75 @@
+[
+  {
+    "version": 1,
+    "id": "interaction-save-settings",
+    "timestamp": 1790533539832,
+    "sessionId": "example-session",
+    "app": "playground",
+    "release": "0.1.0-dev",
+    "environment": "local",
+    "type": "interaction",
+    "payload": {
+      "interactionId": "save-settings",
+      "browserInteractionId": 5033,
+      "interactionType": "click",
+      "name": "Save settings",
+      "route": "/settings",
+      "startTime": 4518.2,
+      "duration": 487,
+      "timing": {
+        "total": 487,
+        "inputDelay": 11,
+        "processingDuration": 287,
+        "presentationDelay": 189
+      },
+      "target": {
+        "tagName": "button",
+        "name": "Save settings",
+        "selector": "button"
+      }
+    }
+  },
+  {
+    "version": 1,
+    "id": "frame-save-settings",
+    "timestamp": 1790533539836,
+    "sessionId": "example-session",
+    "app": "playground",
+    "release": "0.1.0-dev",
+    "environment": "local",
+    "type": "long-frame",
+    "payload": {
+      "startTime": 4517.6,
+      "duration": 381,
+      "blockingDuration": 331,
+      "interactionId": "save-settings",
+      "scripts": [
+        {
+          "source": "https://app.example/assets/settings.js",
+          "functionName": "validateSettings",
+          "duration": 287,
+          "thirdParty": false
+        }
+      ]
+    }
+  },
+  {
+    "version": 1,
+    "id": "network-save-settings",
+    "timestamp": 1790533540006,
+    "sessionId": "example-session",
+    "app": "playground",
+    "release": "0.1.0-dev",
+    "environment": "local",
+    "type": "network",
+    "payload": {
+      "method": "PATCH",
+      "url": "https://app.example/api/settings",
+      "status": 204,
+      "startTime": 4790.9,
+      "duration": 214,
+      "interactionId": "save-settings",
+      "transport": "fetch"
+    }
+  }
+]
