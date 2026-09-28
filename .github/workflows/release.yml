@@ -1,0 +1,75 @@
+name: Release
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  packages: write
+concurrency:
+  group: publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.17.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check && pnpm typecheck && pnpm test && pnpm build
+      - run: node scripts/release.mjs npm
+      - run: node scripts/smoke-release.mjs
+      - name: Publish npm packages
+        id: npm
+        continue-on-error: true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm whoami
+          for name in protocol browser core storage-memory storage-file react vite cli; do
+            package="@tracelens/$name"
+            version=$(node -p "require('./package.json').version")
+            if npm view "$package@$version" version > /dev/null 2>&1; then
+              echo "$package@$version already published"
+            else
+              npm publish "dist/release/npm/tracelens-$name-$version.tgz" --access public
+            fi
+          done
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://npm.pkg.github.com
+          scope: '@leracherry'
+      - run: node scripts/release.mjs github
+      - name: Publish GitHub packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for name in protocol browser core storage-memory storage-file react vite cli; do
+            package="@leracherry/tracelens-$name"
+            version=$(node -p "require('./package.json').version")
+            if npm view "$package@$version" version --registry https://npm.pkg.github.com > /dev/null 2>&1; then
+              echo "$package@$version already published"
+            else
+              npm publish "dist/release/github/leracherry-tracelens-$name-$version.tgz" --registry https://npm.pkg.github.com
+            fi
+          done
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if ! gh release view "v$version" > /dev/null 2>&1; then
+            gh release create "v$version" --target "$GITHUB_SHA" --title "TraceLens v$version" --notes-file docs/releases/v0.1.0.md
+          fi
+          gh release upload "v$version" dist/release/npm/*.tgz --clobber
+      - name: Check npm publication
+        if: steps.npm.outcome == 'failure'
+        run: |
+          echo 'GitHub publication completed, but npm publication failed. See the Publish npm packages step.'
+          exit 1

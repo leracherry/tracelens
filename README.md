@@ -4,118 +4,96 @@
 
 Find the interaction. Find the frame. Find the component. Find the release.
 
-TraceLens is a local-first toolkit for understanding why browser interactions are slow. The current foundation captures Event Timing, Web Vitals, Long Animation Frames, fetch/XHR requests, layout shifts, and custom spans, then correlates them in a focused local Studio.
+TraceLens captures browser performance events and correlates slow interactions with long frames, network requests, custom spans, and React profiler commits. Run Studio locally to inspect traces and compare releases.
 
-## Try the milestone
+## Quick start
 
-Requires Node.js 22+ and pnpm.
+Requires Node.js 22+ for the CLI. Packages ship compiled ESM and TypeScript declarations.
 
 ```bash
-pnpm install
-pnpm dev
+npm install @tracelens/browser
+npx @tracelens/cli@0.1.0 studio
 ```
 
-Then:
-
-1. Open the playground at <http://localhost:4174>.
-2. Open Studio at <http://localhost:4173>.
-3. Click **Save settings** in the playground.
-4. Inspect its timing, primary contributor, long frames, and network request in Studio.
-
-The playground is intentionally slow. It includes controlled search, settings, checkout, layout, and third-party script scenarios so the browser has useful work to report. See the [performance debugging walkthrough](docs/guides/performance-debugging-walkthrough.md).
-
-## Packages
-
-| Package                     | Purpose                                |
-| --------------------------- | -------------------------------------- |
-| `@tracelens/protocol`       | Versioned telemetry event types        |
-| `@tracelens/browser`        | Browser instrumentation and transports |
-| `@tracelens/react`          | React profiler and explicit boundaries |
-| `@tracelens/vite`           | Release and commit metadata injection  |
-| `@tracelens/core`           | Storage interfaces and trace queries   |
-| `@tracelens/storage-memory` | In-memory trace storage                |
-| `@tracelens/storage-file`   | JSON file trace storage                |
-| `@tracelens/cli`            | Studio, inspection, and diagnostics    |
-| `@tracelens/studio`         | Local interaction explorer             |
-| `@tracelens/playground`     | Intentionally slow example app         |
-
-## Browser setup
+Open http://127.0.0.1:4173 and initialize the SDK in your application's browser entry point:
 
 ```ts
 import { init } from '@tracelens/browser';
 
 init({
-  app: 'checkout',
-  release: '2.14.0',
-  endpoint: 'http://localhost:4173/__tracelens',
+  app: 'dashboard',
+  release: '1.0.0',
+  environment: 'development',
+  endpoint: 'http://127.0.0.1:4173/__tracelens',
 });
 ```
 
-Privacy-sensitive values are not collected: element text and input values are ignored, URL query strings are stripped, and the SDK sends no request bodies or application headers as telemetry.
+Click an instrumented control, then inspect its timing and correlated work in Studio. The CLI includes the built Studio; a repository checkout is not required.
 
-### Vite build metadata
+## What is included
 
-```ts
-import { tracelens } from '@tracelens/vite';
+- Browser interaction timing with input, processing, and presentation breakdowns.
+- Web Vitals, long animation frames, fetch/XHR timing, layout shifts, and custom spans.
+- React profiler boundaries, component timings, and render counts.
+- Vite injection of release, commit, environment, and build timestamp.
+- ReleaseScope comparisons with route, interaction, and component deltas.
+- CLI commands for Studio, trace inspection, release comparison, and diagnostics.
 
-export default defineConfig({
-  plugins: [tracelens()],
-});
-```
+## Documentation
 
-The plugin reads the nearest package version, current Git commit, build time, and Vite mode. Explicit SDK options still take precedence over injected values.
+- [Getting started and data handling](docs/guides/getting-started.md)
+- [React attribution](docs/guides/react-attribution.md)
+- [Comparing releases](docs/guides/releases.md)
+- [Playground walkthrough](docs/guides/performance-debugging-walkthrough.md)
+- [Interaction correlation](docs/architecture/interaction-correlation.md)
+- [Publishing and registry setup](docs/guides/publishing.md)
+- [v0.1.0 release notes](docs/releases/v0.1.0.md)
 
-### Custom spans
+## Packages
 
-```ts
-import { trace } from '@tracelens/browser';
+| npm package                 | Purpose                                  |
+| --------------------------- | ---------------------------------------- |
+| `@tracelens/browser`        | Browser instrumentation and transports   |
+| `@tracelens/react`          | React profiler and explicit boundaries   |
+| `@tracelens/vite`           | Build metadata injection                 |
+| `@tracelens/cli`            | Bundled Studio, inspect, compare, doctor |
+| `@tracelens/protocol`       | Versioned telemetry types                |
+| `@tracelens/core`           | Queries and release comparisons          |
+| `@tracelens/storage-memory` | In-memory storage adapter                |
+| `@tracelens/storage-file`   | JSON file storage adapter                |
 
-await trace('validate-settings', () => validateSettings());
-```
-
-Custom spans that overlap an interaction appear beside browser and network work in the Studio timeline.
-
-## React attribution
-
-```tsx
-import { TraceLensProfiler, TraceBoundary } from '@tracelens/react';
-
-<TraceLensProfiler>
-  <TraceBoundary name="Checkout">
-    <Checkout />
-  </TraceBoundary>
-</TraceLensProfiler>;
-```
-
-Profiler commits inherit the active browser interaction and appear in Studio with component duration, phase, and render counts.
+See [GitHub Releases](https://github.com/leracherry/tracelens/releases) for release notes and tarballs. The [GitHub Packages mirror](https://github.com/leracherry/tracelens/packages) uses `@leracherry/tracelens-*` names; see the registry guide above for authentication and installation.
 
 ## CLI
 
-Start the local interface:
-
 ```bash
-pnpm exec tracelens studio
+npx @tracelens/cli studio
+npx @tracelens/cli inspect trace.json
+npx @tracelens/cli compare 1.0.0 1.1.0 --file trace.json
+npx @tracelens/cli doctor
 ```
 
-Inspect a captured trace from the terminal:
+Omit `--file` to compare events from a running Studio collector.
+
+## Try the playground
 
 ```bash
-pnpm exec tracelens inspect examples/traces/slow-settings.json
+git clone https://github.com/leracherry/tracelens.git
+cd tracelens
+pnpm install
+pnpm build
+pnpm dev
 ```
 
-Check whether a project is ready for TraceLens instrumentation:
+Open http://127.0.0.1:4174 for controlled search, settings, checkout, layout, and third-party script scenarios. Open Studio at http://127.0.0.1:4173 to inspect them.
 
-```bash
-pnpm exec tracelens doctor
-```
+## Current limits
 
-Compare two releases from a running Studio collector:
+v0.1.0 covers the plan through Phase 15 (ReleaseScope). Configurable privacy controls, source maps, OpenTelemetry, and CI budgets are future work.
 
-```bash
-pnpm exec tracelens compare 2.13.0 2.14.0
-```
+Studio is a local development tool with in-memory storage and no authentication. Browser API support varies. React production profiling requires a profiling-enabled build. Release deltas describe captured samples and do not establish statistical significance; see the comparison guide for calculation details.
 
-Use `--file trace.json` to compare releases from an exported trace instead.
+The SDK omits input values, request bodies, and headers, and strips network query strings. App-supplied names, labels, IDs, routes, and metadata can still contain sensitive values. Review them before collecting production data.
 
 ## Development
 
@@ -125,10 +103,6 @@ pnpm test
 pnpm build
 pnpm format:check
 ```
-
-## Status
-
-Milestone 0.2 adds interaction attribution: INP subparts, stable correlation IDs, fetch/XHR spans, layout shifts, overlapping long frames, slow-interaction ranking, and a multi-lane timeline. Browser support depends on the relevant Performance APIs; unsupported entry types degrade without breaking the application.
 
 ## License
 

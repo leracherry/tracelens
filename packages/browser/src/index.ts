@@ -8,9 +8,9 @@ import {
   type TraceLensEvent,
   type WebVitalPayload,
 } from '@tracelens/protocol';
-import { InteractionCorrelator, sanitizeNetworkUrl } from './correlation';
+import { InteractionCorrelator, sanitizeNetworkUrl } from './correlation.js';
 
-export { InteractionCorrelator, sanitizeNetworkUrl } from './correlation';
+export { InteractionCorrelator, sanitizeNetworkUrl } from './correlation.js';
 
 export interface Transport {
   send(events: readonly AnyTraceLensEvent[]): Promise<void>;
