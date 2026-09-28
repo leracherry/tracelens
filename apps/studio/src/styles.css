@@ -49,6 +49,26 @@ header {
   gap: 10px;
   align-items: center;
 }
+.release-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.release-filter > span {
+  color: #657169;
+  text-transform: uppercase;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+.release-filter select {
+  min-width: 150px;
+  border: 1px solid #344139;
+  border-radius: 3px;
+  background: #101512;
+  color: #dce5df;
+  padding: 7px 28px 7px 9px;
+  font: 10px DM Mono;
+}
 .live {
   width: 7px;
   height: 7px;

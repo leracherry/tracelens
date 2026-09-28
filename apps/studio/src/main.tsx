@@ -11,10 +11,12 @@ import type {
 } from '@tracelens/protocol';
 import './styles.css';
 import { aggregateReactRenders } from './react-work';
+import { filterByRelease, listReleases } from './release-selection';
 
 function App() {
   const [events, setEvents] = useState<AnyTraceLensEvent[]>([]);
   const [selected, setSelected] = useState<string>();
+  const [selectedRelease, setSelectedRelease] = useState('all');
 
   useEffect(() => {
     const load = async () => {
@@ -26,28 +28,33 @@ function App() {
     return () => window.clearInterval(timer);
   }, []);
 
+  const releases = useMemo(() => listReleases(events), [events]);
+  const visibleEvents = useMemo(
+    () => filterByRelease(events, selectedRelease),
+    [events, selectedRelease],
+  );
   const interactions = useMemo(
     () =>
-      events.filter((event) => event.type === 'interaction') as Array<
+      visibleEvents.filter((event) => event.type === 'interaction') as Array<
         AnyTraceLensEvent & { payload: InteractionPayload }
       >,
-    [events],
+    [visibleEvents],
   );
   const active =
     interactions.find((event) => event.id === selected) ?? interactions.at(-1);
-  const frames = events.filter((event) => event.type === 'long-frame') as Array<
-    AnyTraceLensEvent & { payload: LongFramePayload }
-  >;
-  const networks = events.filter((event) => event.type === 'network') as Array<
-    AnyTraceLensEvent & { payload: NetworkPayload }
-  >;
-  const shifts = events.filter(
+  const frames = visibleEvents.filter(
+    (event) => event.type === 'long-frame',
+  ) as Array<AnyTraceLensEvent & { payload: LongFramePayload }>;
+  const networks = visibleEvents.filter(
+    (event) => event.type === 'network',
+  ) as Array<AnyTraceLensEvent & { payload: NetworkPayload }>;
+  const shifts = visibleEvents.filter(
     (event) => event.type === 'layout-shift',
   ) as Array<AnyTraceLensEvent & { payload: LayoutShiftPayload }>;
-  const spans = events.filter((event) => event.type === 'custom-span') as Array<
-    AnyTraceLensEvent & { payload: CustomSpanPayload }
-  >;
-  const reactRenders = events.filter(
+  const spans = visibleEvents.filter(
+    (event) => event.type === 'custom-span',
+  ) as Array<AnyTraceLensEvent & { payload: CustomSpanPayload }>;
+  const reactRenders = visibleEvents.filter(
     (event) => event.type === 'react-render',
   ) as Array<AnyTraceLensEvent & { payload: ReactRenderPayload }>;
   const inp = Math.max(
@@ -62,7 +69,26 @@ function App() {
           <span className="mark">TL</span> TraceLens
         </div>
         <div className="context">
-          <span className="live" /> local <span>/</span> playground
+          <span className="live" /> local <span>/</span>
+          <label className="release-filter">
+            <span>Release</span>
+            <select
+              aria-label="Filter by release"
+              value={selectedRelease}
+              onChange={(event) => {
+                setSelectedRelease(event.target.value);
+                setSelected(undefined);
+              }}
+            >
+              <option value="all">All releases</option>
+              {releases.map((release) => (
+                <option value={release.release} key={release.release}>
+                  {release.release}
+                  {release.commit ? ` · ${release.commit}` : ''}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       </header>
       <aside>
@@ -75,7 +101,11 @@ function App() {
         <div className="capture">
           <span className="pulse" /> Capturing locally
           <br />
-          <small>{events.length} telemetry events</small>
+          <small>
+            {visibleEvents.length}
+            {selectedRelease === 'all' ? '' : ` of ${events.length}`} telemetry
+            events
+          </small>
         </div>
       </aside>
       <main>
@@ -130,7 +160,10 @@ function App() {
                     >
                       <div>
                         <strong>{event.payload.name}</strong>
-                        <span>{event.payload.route}</span>
+                        <span>
+                          {event.payload.route}
+                          {event.release ? ` · ${event.release}` : ''}
+                        </span>
                       </div>
                       <b>{Math.round(event.payload.duration)} ms</b>
                     </button>
