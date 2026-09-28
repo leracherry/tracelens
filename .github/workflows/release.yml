@@ -65,7 +65,7 @@ jobs:
         run: |
           version=$(node -p "require('./package.json').version")
           if ! gh release view "v$version" > /dev/null 2>&1; then
-            gh release create "v$version" --target "$GITHUB_SHA" --title "TraceLens v$version" --notes-file docs/releases/v0.1.0.md
+            gh release create "v$version" --target "$GITHUB_SHA" --title "TraceLens v$version" --notes-file "docs/releases/v$version.md"
           fi
           gh release upload "v$version" dist/release/npm/*.tgz --clobber
       - name: Check npm publication

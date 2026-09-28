@@ -19,6 +19,15 @@ const names = [
   'otel',
 ];
 const version = JSON.parse(await readFile(join(root, 'package.json'))).version;
+// Fail before packing or publication if release metadata is incomplete.
+await readFile(join(root, 'docs', 'releases', `v${version}.md`));
+for (const name of names) {
+  const manifest = JSON.parse(
+    await readFile(join(root, 'packages', name, 'package.json')),
+  );
+  if (manifest.version !== version)
+    throw new Error(`Version mismatch for ${name}: expected ${version}`);
+}
 const rename = (name) =>
   target === 'github'
     ? name.replace('@tracelens/', '@leracherry/tracelens-')
@@ -93,7 +102,10 @@ for (const name of names) {
   await cp(join(root, 'LICENSE'), join(stage, 'LICENSE'));
   await writeFile(
     join(stage, 'README.md'),
-    `# ${manifest.name}\n\n${manifest.description}\n\nSee the [documentation](https://github.com/leracherry/tracelens#readme) for setup and examples.\n`,
+    (await readFile(join(source, 'README.md'), 'utf8')).replaceAll(
+      '@tracelens/',
+      target === 'github' ? '@leracherry/tracelens-' : '@tracelens/',
+    ),
   );
   await writeFile(
     join(stage, 'package.json'),

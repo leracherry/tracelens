@@ -1,6 +1,6 @@
 {
   "name": "@tracelens/cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Local CLI for inspecting TraceLens interaction telemetry",
   "type": "module",
   "bin": {

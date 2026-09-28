@@ -1,6 +1,6 @@
-# OpenTelemetry (Phase 17, source development)
+# OpenTelemetry
 
-`@tracelens/otel` maps TraceLens events to OTLP spans and sends OTLP/HTTP JSON to a collector. This integration is on `main`, not in the published v0.1.0 artifacts. Build from the workspace for now.
+`@tracelens/otel`, introduced in v0.2.0 (Phase 17), maps TraceLens events to OTLP spans and sends OTLP/HTTP JSON to a collector. Install it alongside the matching version of `@tracelens/browser`; see [registry setup and availability](publishing.md).
 
 ```ts
 import { init } from '@tracelens/browser';

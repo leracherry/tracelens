@@ -185,7 +185,7 @@ export function toOtlpTraceRequest(
           }),
         },
         scopeSpans: [
-          { scope: { name: '@tracelens/otel', version: '0.1.0' }, spans: [] },
+          { scope: { name: '@tracelens/otel', version: '0.2.0' }, spans: [] },
         ],
       };
       groups.set(key, group);

@@ -1,6 +1,6 @@
-# Privacy controls (Phase 16, source development)
+# Privacy controls
 
-These controls are on `main`; they are not included in the published v0.1.0 artifacts.
+Introduced in v0.2.0 (Phase 16). See the [migration notes](../releases/v0.2.0.md) for changes to default labels and URL handling.
 
 ```ts
 init({

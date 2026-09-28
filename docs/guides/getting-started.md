@@ -4,7 +4,7 @@ Use Node.js 22 or newer for the CLI and build integration. Packages are ESM with
 
 ```bash
 npm install @tracelens/browser
-npx @tracelens/cli@0.1.0 studio
+npx @tracelens/cli@0.2.0 studio
 ```
 
 Open http://127.0.0.1:4173. Add this to your application's browser entry point:
@@ -53,4 +53,4 @@ npx @tracelens/cli inspect trace.json
 
 Use Studio on loopback for local debugging. It has no authentication and permits browser applications to post telemetry across origins. An HTTPS application may block an HTTP collector as mixed content; use a suitable local proxy in that case.
 
-The SDK does not capture input values, request bodies, or headers. Network query strings and fragments are removed, but routes, hash routes, accessible labels, element IDs, explicit names, and build metadata can still contain sensitive information. Review those values and your consent requirements before production use. Configurable privacy controls are planned for the next phase.
+The SDK does not capture input values, request bodies, or headers. URL credentials, queries, fragments (including hash routes), and email-shaped path segments are removed by default. Element IDs and aria-labels require explicit opt-in. Other routes, explicit names, and build metadata can still contain sensitive information. Review those values and your consent requirements before production use. See [privacy controls and auditing](privacy.md), and check [registry availability](publishing.md) before using the npm commands above.

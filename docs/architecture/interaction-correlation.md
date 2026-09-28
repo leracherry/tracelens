@@ -17,7 +17,7 @@ TraceLens associates browser work with the input that initiated it without retai
 
 Network telemetry contains the method, sanitized URL, status, timing, and transport. Query strings, fragments, request bodies, response bodies, and application headers are excluded.
 
-Element descriptors prefer `data-tracelens-name`, `aria-label`, role, and input type. DOM text and input values are not inspected.
+Element descriptors use `data-tracelens-name`, role, and input type by default. `aria-label` and `id` require explicit privacy allowlist entries in v0.2.0. DOM text and input values are not inspected. See [privacy controls](../guides/privacy.md).
 
 ## Limitations
 

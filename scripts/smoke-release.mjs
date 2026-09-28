@@ -1,13 +1,14 @@
-import { mkdtemp, readdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { resolve, join } from 'node:path';
 import { execFileSync, spawn } from 'node:child_process';
 import assert from 'node:assert/strict';
 const root = resolve(import.meta.dirname, '..');
+const version = JSON.parse(await readFile(join(root, 'package.json'))).version;
 const directory = await mkdtemp(join(tmpdir(), 'tracelens-release-'));
 const artifacts = resolve(root, 'dist/release/npm');
 const tarballs = (await readdir(artifacts))
-  .filter((file) => file.endsWith('.tgz'))
+  .filter((file) => file.endsWith(`-${version}.tgz`))
   .map((file) => join(artifacts, file));
 assert.equal(tarballs.length, 9);
 await writeFile(
@@ -31,9 +32,11 @@ execFileSync(
   { cwd: directory, stdio: 'inherit' },
 );
 const cli = join(directory, 'node_modules/@tracelens/cli/dist/index.js');
-assert.match(
-  execFileSync(process.execPath, [cli, '--version'], { encoding: 'utf8' }),
-  /0.1.0/,
+assert.equal(
+  execFileSync(process.execPath, [cli, '--version'], {
+    encoding: 'utf8',
+  }).trim(),
+  `tracelens ${version}`,
 );
 assert.match(
   execFileSync(
