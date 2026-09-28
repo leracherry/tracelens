@@ -7,8 +7,10 @@ import type {
   LayoutShiftPayload,
   LongFramePayload,
   NetworkPayload,
+  ReactRenderPayload,
 } from '@tracelens/protocol';
 import './styles.css';
+import { aggregateReactRenders } from './react-work';
 
 function App() {
   const [events, setEvents] = useState<AnyTraceLensEvent[]>([]);
@@ -45,6 +47,9 @@ function App() {
   const spans = events.filter((event) => event.type === 'custom-span') as Array<
     AnyTraceLensEvent & { payload: CustomSpanPayload }
   >;
+  const reactRenders = events.filter(
+    (event) => event.type === 'react-render',
+  ) as Array<AnyTraceLensEvent & { payload: ReactRenderPayload }>;
   const inp = Math.max(
     0,
     ...interactions.map((event) => event.payload.duration),
@@ -138,6 +143,7 @@ function App() {
                   networks={networks.map((event) => event.payload)}
                   shifts={shifts.map((event) => event.payload)}
                   spans={spans.map((event) => event.payload)}
+                  reactRenders={reactRenders.map((event) => event.payload)}
                 />
               )}
             </div>
@@ -154,12 +160,14 @@ function Detail({
   networks,
   shifts,
   spans,
+  reactRenders,
 }: {
   interaction: InteractionPayload;
   frames: LongFramePayload[];
   networks: NetworkPayload[];
   shifts: LayoutShiftPayload[];
   spans: CustomSpanPayload[];
+  reactRenders: ReactRenderPayload[];
 }) {
   const timing = interaction.timing;
   const segments = [
@@ -188,6 +196,11 @@ function Detail({
   const relevantSpans = spans.filter((span) =>
     overlaps(span.startTime, span.duration),
   );
+  const relevantReactRenders = reactRenders.filter(
+    (render) =>
+      render.interactionId === interaction.interactionId ||
+      overlaps(render.startTime, render.duration),
+  );
   const primary = [
     ...relevantFrames.map((frame) => ({
       label: 'Long animation frame',
@@ -200,6 +213,10 @@ function Detail({
     ...relevantSpans.map((span) => ({
       label: span.name,
       value: span.duration,
+    })),
+    ...relevantReactRenders.map((render) => ({
+      label: render.component,
+      value: render.duration,
     })),
   ].sort((a, b) => b.value - a.value)[0];
   return (
@@ -249,7 +266,9 @@ function Detail({
         networks={relevantNetworks}
         shifts={relevantShifts}
         spans={relevantSpans}
+        reactRenders={relevantReactRenders}
       />
+      <ReactWork renders={relevantReactRenders} />
       <div className="frame">
         <p className="eyebrow">Long animation frames</p>
         {relevantFrames.length ? (
@@ -276,12 +295,14 @@ function TraceTimeline({
   networks,
   shifts,
   spans,
+  reactRenders,
 }: {
   interaction: InteractionPayload;
   frames: LongFramePayload[];
   networks: NetworkPayload[];
   shifts: LayoutShiftPayload[];
   spans: CustomSpanPayload[];
+  reactRenders: ReactRenderPayload[];
 }) {
   const itemStyle = (startTime: number, duration: number) => {
     const left = Math.max(
@@ -304,6 +325,16 @@ function TraceTimeline({
         className: 'lane-frame',
         startTime: frame.startTime,
         duration: frame.duration,
+      })),
+    },
+    {
+      name: 'React',
+      items: reactRenders.map((render, index) => ({
+        key: `react-${index}`,
+        label: `${render.component} ${render.duration.toFixed(1)} ms`,
+        className: 'lane-react',
+        startTime: render.startTime,
+        duration: render.duration,
       })),
     },
     {
@@ -361,6 +392,41 @@ function TraceTimeline({
           </div>
         </div>
       ))}
+    </section>
+  );
+}
+
+function ReactWork({ renders }: { renders: ReactRenderPayload[] }) {
+  const components = aggregateReactRenders(renders);
+
+  return (
+    <section className="react-work">
+      <div className="section-heading">
+        <p className="eyebrow">React work</p>
+        <span>{components.length} components</span>
+      </div>
+      {components.length ? (
+        <div className="component-table">
+          <div className="component-row component-header">
+            <span>Component</span>
+            <span>Phase</span>
+            <span>Renders</span>
+            <span>Time</span>
+          </div>
+          {components.map((component) => (
+            <div className="component-row" key={component.component}>
+              <strong>{component.component}</strong>
+              <span>{component.phase}</span>
+              <span>{component.count}</span>
+              <b>{component.duration.toFixed(1)} ms</b>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="muted">
+          No React profiler samples are correlated with this interaction.
+        </p>
+      )}
     </section>
   );
 }
