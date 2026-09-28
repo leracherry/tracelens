@@ -30,6 +30,7 @@ The playground is intentionally slow. It includes controlled search, settings, c
 | --------------------------- | -------------------------------------- |
 | `@tracelens/protocol`       | Versioned telemetry event types        |
 | `@tracelens/browser`        | Browser instrumentation and transports |
+| `@tracelens/react`          | React profiler and explicit boundaries |
 | `@tracelens/core`           | Storage interfaces and trace queries   |
 | `@tracelens/storage-memory` | In-memory trace storage                |
 | `@tracelens/storage-file`   | JSON file trace storage                |
@@ -60,6 +61,20 @@ await trace('validate-settings', () => validateSettings());
 ```
 
 Custom spans that overlap an interaction appear beside browser and network work in the Studio timeline.
+
+## React attribution
+
+```tsx
+import { TraceLensProfiler, TraceBoundary } from '@tracelens/react';
+
+<TraceLensProfiler>
+  <TraceBoundary name="Checkout">
+    <Checkout />
+  </TraceBoundary>
+</TraceLensProfiler>;
+```
+
+Profiler commits inherit the active browser interaction and appear in Studio with component duration, phase, and render counts.
 
 ## CLI
 
