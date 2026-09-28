@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { createRoot } from 'react-dom/client';
 import { init, mark, trace } from '@tracelens/browser';
+import { TraceBoundary, TraceLensProfiler } from '@tracelens/react';
 import {
   createSearchDataset,
   scenarioById,
@@ -106,18 +107,25 @@ function App() {
 }
 
 function Scenario({ id, intensity }: { id: ScenarioId; intensity: number }) {
+  let content: ReactNode;
   switch (id) {
     case 'search':
-      return <SearchScenario intensity={intensity} />;
+      content = <SearchScenario intensity={intensity} />;
+      break;
     case 'settings':
-      return <SettingsScenario intensity={intensity} />;
+      content = <SettingsScenario intensity={intensity} />;
+      break;
     case 'checkout':
-      return <CheckoutScenario intensity={intensity} />;
+      content = <CheckoutScenario intensity={intensity} />;
+      break;
     case 'layout':
-      return <LayoutScenario intensity={intensity} />;
+      content = <LayoutScenario intensity={intensity} />;
+      break;
     case 'third-party':
-      return <ThirdPartyScenario intensity={intensity} />;
+      content = <ThirdPartyScenario intensity={intensity} />;
+      break;
   }
+  return <TraceBoundary name={`Scenario:${id}`}>{content}</TraceBoundary>;
 }
 
 function SearchScenario({ intensity }: { intensity: number }) {
@@ -271,11 +279,13 @@ function CheckoutScenario({ intensity }: { intensity: number }) {
           <b>$41.00</b>
         </div>
       </div>
-      <div className="render-fanout" aria-live="polite">
-        {items.map((item) => (
-          <i key={item} style={{ opacity: 0.35 + (item % 5) / 8 }} />
-        ))}
-      </div>
+      <TraceBoundary name="CheckoutReceipt">
+        <div className="render-fanout" aria-live="polite">
+          {items.map((item) => (
+            <i key={item} style={{ opacity: 0.35 + (item % 5) / 8 }} />
+          ))}
+        </div>
+      </TraceBoundary>
     </ScenarioCard>
   );
 }
@@ -397,6 +407,8 @@ function ScenarioCard({
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <TraceLensProfiler name="PlaygroundApp">
+      <App />
+    </TraceLensProfiler>
   </StrictMode>,
 );

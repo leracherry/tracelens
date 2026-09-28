@@ -7,6 +7,7 @@ export type EventType =
   | 'network'
   | 'navigation'
   | 'layout-shift'
+  | 'react-render'
   | 'custom-span'
   | 'mark';
 
@@ -81,6 +82,17 @@ export interface NavigationPayload {
   startTime: number;
 }
 
+export interface ReactRenderPayload {
+  component: string;
+  phase: 'mount' | 'update';
+  duration: number;
+  baseDuration: number;
+  startTime: number;
+  commitTime: number;
+  renderCount: number;
+  interactionId?: string;
+}
+
 export interface CustomSpanPayload {
   name: string;
   startTime: number;
@@ -102,6 +114,7 @@ export interface PayloadMap {
   network: NetworkPayload;
   navigation: NavigationPayload;
   'layout-shift': LayoutShiftPayload;
+  'react-render': ReactRenderPayload;
 }
 
 export interface TraceLensEvent<T extends EventType = EventType> {

@@ -4,6 +4,7 @@ import {
   type ElementDescriptor,
   type EventType,
   type PayloadMap,
+  type ReactRenderPayload,
   type TraceLensEvent,
   type WebVitalPayload,
 } from '@tracelens/protocol';
@@ -146,6 +147,10 @@ class Runtime {
     this.cleanup.splice(0).forEach((cleanup) => cleanup());
     if (this.timer !== undefined) window.clearInterval(this.timer);
     await this.flush();
+  }
+
+  activeInteractionId(at = performance.now()): string | undefined {
+    return this.correlator.active(at)?.id;
   }
 
   private observe(
@@ -450,6 +455,24 @@ export async function shutdown(): Promise<void> {
 export function mark(name: string): void {
   performance.mark(`tracelens:${name}`);
   runtime?.emit('mark', { name, startTime: performance.now() });
+}
+
+export function recordReactRender(
+  sample: Omit<ReactRenderPayload, 'interactionId'> & {
+    interactionId?: string;
+  },
+): void {
+  runtime?.emit('react-render', {
+    ...sample,
+    interactionId:
+      sample.interactionId ?? runtime.activeInteractionId(sample.commitTime),
+  });
+}
+
+export function getActiveInteractionId(
+  at = performance.now(),
+): string | undefined {
+  return runtime?.activeInteractionId(at);
 }
 
 export async function trace<T>(

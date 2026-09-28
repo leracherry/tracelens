@@ -41,4 +41,27 @@ describe('isTraceLensEvent', () => {
 
     expect(isTraceLensEvent(JSON.parse(JSON.stringify(event)))).toBe(true);
   });
+
+  it('accepts React render samples', () => {
+    expect(
+      isTraceLensEvent({
+        version: 1,
+        id: 'render-1',
+        timestamp: 1,
+        sessionId: 'session-1',
+        app: 'demo',
+        type: 'react-render',
+        payload: {
+          component: 'Checkout',
+          phase: 'update',
+          duration: 12,
+          baseDuration: 18,
+          startTime: 100,
+          commitTime: 112,
+          renderCount: 2,
+          interactionId: 'interaction-1',
+        },
+      }),
+    ).toBe(true);
+  });
 });

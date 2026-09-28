@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tracelens/browser": "workspace:*",
+    "@tracelens/react": "workspace:*",
     "@vitejs/plugin-react": "^4.5.2",
     "vite": "^6.3.5",
     "react": "^19.1.0",
