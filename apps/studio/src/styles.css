@@ -189,6 +189,48 @@ nav .active {
   color: #aeb9b2;
   font: 500 11px DM Mono;
 }
+.comparison-metric.regression,
+.comparison-metric.new {
+  border-color: #624333;
+  background: linear-gradient(135deg, rgba(243, 190, 104, 0.08), #101512 65%);
+}
+.comparison-metric.regression > b,
+.comparison-metric.new > b {
+  color: #f3be68;
+}
+.comparison-metric.improvement > b,
+.comparison-metric.removed > b {
+  color: #74f0ad;
+}
+.regression-summary {
+  border: 1px solid #29352e;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #101512;
+}
+.regression-summary p {
+  margin-bottom: 6px;
+}
+.regression-summary strong {
+  font-size: 14px;
+}
+.regression-summary > span {
+  font: 10px DM Mono;
+}
+.regression-summary.has-regressions {
+  border-left: 3px solid #f3be68;
+}
+.regression-summary.has-regressions > span {
+  color: #f3be68;
+}
+.regression-summary.is-clear {
+  border-left: 3px solid #74f0ad;
+}
+.regression-summary.is-clear > span {
+  color: #74f0ad;
+}
 .delta-panel {
   min-width: 0;
 }
@@ -218,6 +260,30 @@ nav .active {
 }
 .delta-row > b {
   font: 500 11px DM Mono;
+}
+.delta-row > b small {
+  display: block;
+  margin-top: 4px;
+  color: #657169;
+  font: 8px DM Mono;
+  text-transform: uppercase;
+}
+.delta-row.regression,
+.delta-row.new {
+  background: linear-gradient(90deg, rgba(243, 190, 104, 0.055), transparent);
+  box-shadow: inset 2px 0 #f3be68;
+}
+.delta-row.regression > b,
+.delta-row.new > b {
+  color: #f3be68;
+}
+.delta-row.improvement,
+.delta-row.removed {
+  box-shadow: inset 2px 0 #74f0ad;
+}
+.delta-row.improvement > b,
+.delta-row.removed > b {
+  color: #74f0ad;
 }
 .delta-header {
   min-height: 36px;

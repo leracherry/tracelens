@@ -7,6 +7,7 @@ import {
 } from '@tracelens/core';
 import type { AnyTraceLensEvent } from '@tracelens/protocol';
 import type { ReleaseOption } from './release-selection';
+import { classifyDelta } from './release-delta';
 
 export function ReleaseComparisonView({
   events,
@@ -110,6 +111,9 @@ function ReleasePicker({
 }
 
 function Comparison({ comparison }: { comparison: ReleaseComparison }) {
+  const regressions = comparison.interactions.filter((delta) =>
+    ['regression', 'new'].includes(classifyDelta(delta)),
+  );
   return (
     <>
       <section className="comparison-metrics">
@@ -129,6 +133,23 @@ function Comparison({ comparison }: { comparison: ReleaseComparison }) {
           digits={1}
         />
       </section>
+      <section
+        className={`regression-summary ${regressions.length ? 'has-regressions' : 'is-clear'}`}
+      >
+        <div>
+          <p className="eyebrow">Regression signal</p>
+          <strong>
+            {regressions.length
+              ? `${regressions.length} interaction ${regressions.length === 1 ? 'regression' : 'regressions'} detected`
+              : 'No significant interaction regressions'}
+          </strong>
+        </div>
+        <span>
+          {comparison.newLongFrames
+            ? `+${comparison.newLongFrames} new long frame${comparison.newLongFrames === 1 ? '' : 's'}`
+            : 'No new long frames'}
+        </span>
+      </section>
       <DeltaTable title="Interaction deltas" rows={comparison.interactions} />
       <DeltaTable title="Route deltas" rows={comparison.routes} />
     </>
@@ -147,7 +168,7 @@ function MetricDelta({
   digits?: number;
 }) {
   return (
-    <article className="comparison-metric">
+    <article className={`comparison-metric ${classifyDelta(delta)}`}>
       <p className="eyebrow">{label}</p>
       <div>
         <strong>{formatValue(delta.before, unit, digits)}</strong>
@@ -184,14 +205,17 @@ function DeltaTable({
             <span>Delta</span>
           </div>
           {rows.slice(0, 12).map((row) => (
-            <div className="delta-row" key={row.key}>
+            <div className={`delta-row ${classifyDelta(row)}`} key={row.key}>
               <div>
                 <strong>{row.name}</strong>
                 {row.route && <small>{row.route}</small>}
               </div>
               <span>{formatValue(row.before, 'ms')}</span>
               <span>{formatValue(row.after, 'ms')}</span>
-              <b>{formatPercent(row.percent)}</b>
+              <b>
+                {formatPercent(row.percent)}
+                <small>{classifyDelta(row)}</small>
+              </b>
             </div>
           ))}
         </div>
