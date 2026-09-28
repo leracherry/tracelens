@@ -19,6 +19,8 @@ export interface Transport {
 export interface InitOptions {
   app: string;
   release?: string;
+  commit?: string;
+  buildTimestamp?: string;
   environment?: string;
   sampleRate?: number;
   transport?: Transport;
@@ -26,6 +28,15 @@ export interface InitOptions {
   flushInterval?: number;
   batchSize?: number;
 }
+
+export interface BuildMetadata {
+  release?: string;
+  commit?: string;
+  buildTimestamp?: string;
+  environment?: string;
+}
+
+declare const __TRACELENS_BUILD_METADATA__: BuildMetadata | undefined;
 
 interface EventTimingEntry extends PerformanceEntry {
   processingStart: number;
@@ -124,6 +135,8 @@ class Runtime {
       sessionId: this.sessionId,
       app: this.options.app,
       release: this.options.release,
+      commit: this.options.commit,
+      buildTimestamp: this.options.buildTimestamp,
       environment: this.options.environment,
       type,
       payload,
@@ -434,8 +447,10 @@ export function init(options: InitOptions): () => Promise<void> {
   if (runtime) throw new Error('TraceLens has already been initialized.');
   if (Math.random() > (options.sampleRate ?? 1)) return async () => undefined;
   const originalFetch = globalThis.fetch.bind(globalThis);
+  const metadata = resolveBuildMetadata(options, readInjectedBuildMetadata());
   runtime = new Runtime({
     ...options,
+    ...metadata,
     batchSize: options.batchSize ?? 20,
     flushInterval: options.flushInterval ?? 1_000,
     transport:
@@ -444,6 +459,24 @@ export function init(options: InitOptions): () => Promise<void> {
   });
   runtime.start();
   return shutdown;
+}
+
+export function resolveBuildMetadata(
+  configured: BuildMetadata,
+  injected: BuildMetadata = {},
+): BuildMetadata {
+  return {
+    release: configured.release ?? injected.release,
+    commit: configured.commit ?? injected.commit,
+    buildTimestamp: configured.buildTimestamp ?? injected.buildTimestamp,
+    environment: configured.environment ?? injected.environment,
+  };
+}
+
+function readInjectedBuildMetadata(): BuildMetadata {
+  return typeof __TRACELENS_BUILD_METADATA__ === 'undefined'
+    ? {}
+    : __TRACELENS_BUILD_METADATA__;
 }
 
 export async function shutdown(): Promise<void> {

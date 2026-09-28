@@ -124,6 +124,8 @@ export interface TraceLensEvent<T extends EventType = EventType> {
   sessionId: string;
   app: string;
   release?: string;
+  commit?: string;
+  buildTimestamp?: string;
   environment?: string;
   type: T;
   payload: PayloadMap[T];

@@ -64,4 +64,22 @@ describe('isTraceLensEvent', () => {
       }),
     ).toBe(true);
   });
+
+  it('accepts release build metadata on the event envelope', () => {
+    expect(
+      isTraceLensEvent({
+        version: 1,
+        id: 'mark-1',
+        timestamp: 1,
+        sessionId: 'session-1',
+        app: 'demo',
+        release: '2.14.0',
+        commit: '7ac841f',
+        buildTimestamp: '2026-09-27T18:00:00.000Z',
+        environment: 'production',
+        type: 'mark',
+        payload: { name: 'ready', startTime: 0 },
+      }),
+    ).toBe(true);
+  });
 });
