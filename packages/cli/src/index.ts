@@ -5,6 +5,7 @@ import { formatReleaseComparison } from './compare.js';
 import { formatDoctor, runDoctor } from './doctor.js';
 import { formatInteractionReport } from './format.js';
 import { startStudio } from './studio.js';
+import { uploadSourceMaps } from './source-maps.js';
 import { auditPrivacy, formatPrivacyAudit } from './privacy.js';
 import { readTraceFile, readTraceUrl } from './trace-file.js';
 
@@ -12,6 +13,29 @@ const [command, ...args] = process.argv.slice(2);
 
 async function main(): Promise<number> {
   switch (command) {
+    case 'sourcemaps': {
+      if (args[0] !== 'upload' || !args[1] || args[1].startsWith('-'))
+        throw new Error(
+          'Usage: tracelens sourcemaps upload <dist> --app NAME --release VERSION --url-prefix URL',
+        );
+      const required = (name: string) => {
+        const value = optionalStringOption(args, name);
+        if (!value) throw new Error(`${name} is required`);
+        return value;
+      };
+      const count = await uploadSourceMaps(args[1], {
+        app: required('--app'),
+        release: required('--release'),
+        urlPrefix: required('--url-prefix'),
+        store: stringOption(args, '--store', '.tracelens/sourcemaps'),
+        repository: optionalStringOption(args, '--repository'),
+        commit: optionalStringOption(args, '--commit'),
+      });
+      console.log(
+        `Imported ${count} source maps locally. Restart Studio to load them.`,
+      );
+      return 0;
+    }
     case 'privacy': {
       if (args[0] !== 'audit')
         throw new Error('Usage: tracelens privacy audit [--file trace.json]');
@@ -73,7 +97,11 @@ async function main(): Promise<number> {
     case 'studio': {
       const port = numberOption(args, '--port', 4173);
       const host = stringOption(args, '--host', '127.0.0.1');
-      return startStudio({ host, port });
+      return startStudio({
+        host,
+        port,
+        sourceMaps: stringOption(args, '--store', '.tracelens/sourcemaps'),
+      });
     }
     case '--version':
     case '-v':
@@ -122,6 +150,8 @@ Usage
   tracelens compare <before> <after> [--file trace.json]
   tracelens doctor
   tracelens privacy audit [--file trace.json] [--endpoint URL]
+  tracelens sourcemaps upload <dist> --app NAME --release VERSION --url-prefix URL
+    [--store .tracelens/sourcemaps] [--repository https://github.com/OWNER/REPO --commit SHA]
 
 Options
   -h, --help       Show command help

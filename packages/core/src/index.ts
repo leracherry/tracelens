@@ -2,6 +2,7 @@ import type {
   AnyTraceLensEvent,
   EventType,
 } from '@leracherry/tracelens-protocol';
+export * from './source-maps.js';
 
 export interface TraceQuery {
   app?: string;

@@ -50,6 +50,7 @@ Click an instrumented control, then inspect its timing and correlated work in St
 - [Comparing releases](docs/guides/releases.md)
 - [Privacy controls and audit](docs/guides/privacy.md)
 - [OpenTelemetry and collector setup](docs/guides/opentelemetry.md)
+- [Source maps and GitHub file links (main)](docs/guides/source-maps.md)
 - [Playground walkthrough](docs/guides/performance-debugging-walkthrough.md)
 - [Interaction correlation](docs/architecture/interaction-correlation.md)
 - [Publishing and registry setup](docs/guides/publishing.md)
@@ -97,7 +98,7 @@ Open http://127.0.0.1:4174 for controlled search, settings, checkout, layout, an
 
 ## Current limits
 
-v0.2.1 covers the plan through Phase 17: ReleaseScope, privacy controls, and OpenTelemetry export. Source maps and CI budgets are future work. The OTLP transport exports traces, not metrics, and is not an OpenTelemetry SDK SpanExporter.
+v0.2.1 covers the plan through Phase 17: ReleaseScope, privacy controls, and OpenTelemetry export. `main` additionally implements Phase 18: local source-map imports, long-frame source resolution, and GitHub file links. Performance budgets are next. The OTLP transport exports traces, not metrics, and is not an OpenTelemetry SDK SpanExporter.
 
 Studio is a local development tool with in-memory storage and no authentication. Browser API support varies. React production profiling requires a profiling-enabled build. Release deltas describe captured samples and do not establish statistical significance; see the comparison guide for calculation details.
 

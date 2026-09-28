@@ -3,15 +3,22 @@ import { readFile } from 'node:fs/promises';
 import { dirname, extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { AnyTraceLensEvent } from '@leracherry/tracelens-protocol';
+import { loadSourceMaps } from './source-maps.js';
 
 export interface StudioOptions {
   host: string;
   port: number;
+  sourceMaps?: string;
 }
 
-export function createStudioServer(directory: string) {
+export function createStudioServer(
+  directory: string,
+  resolveEvent: (event: AnyTraceLensEvent) => AnyTraceLensEvent = (event) =>
+    event,
+) {
   const root = resolve(directory);
   const events: AnyTraceLensEvent[] = [];
+  const resolvedEvents = new WeakMap<AnyTraceLensEvent, AnyTraceLensEvent>();
   return createServer(async (request, response) => {
     try {
       const pathname = decodeURIComponent(
@@ -30,7 +37,18 @@ export function createStudioServer(directory: string) {
         }
         if (request.method === 'GET') {
           response.setHeader('content-type', 'application/json');
-          response.end(JSON.stringify(events));
+          response.end(
+            JSON.stringify(
+              events.map((event) => {
+                let resolved = resolvedEvents.get(event);
+                if (!resolved) {
+                  resolved = resolveEvent(event);
+                  resolvedEvents.set(event, resolved);
+                }
+                return resolved;
+              }),
+            ),
+          );
           return;
         }
         if (request.method !== 'POST') {
@@ -116,7 +134,10 @@ export async function startStudio(options: StudioOptions): Promise<number> {
     assets = resolve(directory, '../../../apps/studio/dist');
     await readFile(resolve(assets, 'index.html'));
   }
-  const server = createStudioServer(assets);
+  const server = createStudioServer(
+    assets,
+    await loadSourceMaps(options.sourceMaps ?? '.tracelens/sourcemaps'),
+  );
   await new Promise<void>((resolveReady, reject) => {
     server.once('error', reject);
     server.listen(options.port, options.host, resolveReady);

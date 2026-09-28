@@ -743,6 +743,21 @@ p {
   color: #77837c;
   font-style: normal;
 }
+.frame-row ul {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding-left: 18px;
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.frame-row li {
+  padding: 5px 0;
+}
+.frame-row a {
+  color: inherit;
+  text-decoration: underline;
+}
 @media (max-width: 800px) {
   .shell {
     display: block;

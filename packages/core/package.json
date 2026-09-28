@@ -10,6 +10,7 @@
     }
   },
   "dependencies": {
+    "@jridgewell/trace-mapping": "^0.3.31",
     "@leracherry/tracelens-protocol": "workspace:*"
   },
   "scripts": {

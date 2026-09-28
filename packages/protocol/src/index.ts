@@ -46,6 +46,15 @@ export interface WebVitalPayload {
 
 export interface ScriptContribution {
   source?: string;
+  /** Zero-based UTF-16 offset reported by Long Animation Frames. */
+  sourceCharPosition?: number;
+  originalLocation?: {
+    source: string;
+    line: number;
+    column: number;
+    name?: string;
+    githubUrl?: string;
+  };
   functionName?: string;
   duration: number;
   thirdParty: boolean;

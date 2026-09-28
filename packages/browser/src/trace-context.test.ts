@@ -62,7 +62,26 @@ it('exports the propagated client span as a child of a later interaction event',
       },
     ],
   });
+  callbacks.get('long-animation-frame')!({
+    getEntries: () => [
+      {
+        startTime,
+        duration: 80,
+        scripts: [
+          {
+            sourceURL: 'https://app.test/app.js?secret=hidden',
+            sourceFunctionName: 'run',
+            sourceCharPosition: 12,
+            duration: 60,
+          },
+        ],
+      },
+    ],
+  });
   await shutdown();
+  const frame = transport.events.find((event) => event.type === 'long-frame')!;
+  expect(frame.payload.scripts[0]?.sourceCharPosition).toBe(12);
+  expect(frame.payload.scripts[0]?.source).toBe('https://app.test/app.js');
   const request = transport.events.find((event) => event.type === 'network')!;
   const interaction = transport.events.find(
     (event) => event.type === 'interaction',

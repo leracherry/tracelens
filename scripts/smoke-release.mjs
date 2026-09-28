@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { resolve, join } from 'node:path';
 import { execFileSync, spawn } from 'node:child_process';
@@ -49,10 +49,45 @@ assert.match(
   ),
   /Save settings/,
 );
-const server = spawn(process.execPath, [cli, 'studio', '--port', '19473'], {
-  cwd: directory,
-  stdio: ['ignore', 'pipe', 'inherit'],
-});
+const maps = join(directory, 'maps');
+const store = join(directory, 'store');
+await mkdir(maps);
+await writeFile(join(maps, 'app.js'), 'run();');
+await writeFile(
+  join(maps, 'app.js.map'),
+  JSON.stringify({
+    version: 3,
+    sources: ['src/app.ts'],
+    names: [],
+    mappings: 'AAAA',
+  }),
+);
+execFileSync(
+  process.execPath,
+  [
+    cli,
+    'sourcemaps',
+    'upload',
+    maps,
+    '--app',
+    'smoke',
+    '--release',
+    'smoke',
+    '--url-prefix',
+    'https://example.com/',
+    '--store',
+    store,
+  ],
+  { stdio: 'inherit' },
+);
+const server = spawn(
+  process.execPath,
+  [cli, 'studio', '--port', '19473', '--store', store],
+  {
+    cwd: directory,
+    stdio: ['ignore', 'pipe', 'inherit'],
+  },
+);
 try {
   await new Promise((ready, reject) => {
     const timeout = setTimeout(
@@ -99,6 +134,37 @@ try {
   assert.deepEqual(await (await fetch(origin + '/__tracelens')).json(), [
     event,
   ]);
+  const frame = {
+    ...event,
+    release: 'smoke',
+    type: 'long-frame',
+    payload: {
+      startTime: 0,
+      duration: 50,
+      scripts: [
+        {
+          source: 'https://example.com/app.js',
+          sourceCharPosition: 0,
+          duration: 40,
+          thirdParty: false,
+        },
+      ],
+    },
+  };
+  assert.equal(
+    (
+      await fetch(origin + '/__tracelens', {
+        method: 'POST',
+        body: JSON.stringify([frame]),
+      })
+    ).status,
+    202,
+  );
+  const collected = await (await fetch(origin + '/__tracelens')).json();
+  assert.equal(
+    collected[1].payload.scripts[0].originalLocation.source,
+    'src/app.ts',
+  );
   console.log(
     'Release smoke test passed: nine tarballs, runtime imports, CLI, bundled Studio, collector.',
   );

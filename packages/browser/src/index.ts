@@ -61,6 +61,7 @@ interface LongAnimationFrameEntry extends PerformanceEntry {
   scripts?: Array<{
     sourceURL?: string;
     sourceFunctionName?: string;
+    sourceCharPosition?: number;
     duration: number;
   }>;
 }
@@ -298,6 +299,7 @@ class Runtime {
           scripts: (entry.scripts ?? []).map((script) => ({
             source: script.sourceURL,
             functionName: script.sourceFunctionName,
+            sourceCharPosition: script.sourceCharPosition,
             duration: script.duration,
             thirdParty: script.sourceURL
               ? new URL(script.sourceURL, location.href).origin !==

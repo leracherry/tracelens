@@ -326,6 +326,40 @@ function Detail({
               <span>Frame #{index + 1}</span>
               <strong>{Math.round(frame.duration)} ms</strong>
               <em>{Math.round(frame.blockingDuration ?? 0)} ms blocking</em>
+              <ul>
+                {frame.scripts.map((script, scriptIndex) => {
+                  const location = script.originalLocation;
+                  const label = location
+                    ? `${location.source}:${location.line}:${location.column}`
+                    : (script.source ??
+                      script.functionName ??
+                      'Unknown script');
+                  const link = location?.githubUrl;
+                  const safeLink =
+                    link &&
+                    /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/blob\/[a-f0-9]{7,40}\//i.test(
+                      link,
+                    );
+                  return (
+                    <li key={scriptIndex}>
+                      {safeLink ? (
+                        <a
+                          href={link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {label}
+                        </a>
+                      ) : (
+                        <span>{label}</span>
+                      )}
+                      {' — '}
+                      {Math.round(script.duration)} ms
+                      {!location && <small> (source unresolved)</small>}
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           ))
         ) : (
