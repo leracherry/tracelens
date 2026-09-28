@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import { tracelens } from '@tracelens/vite';
 import { defineConfig, type Plugin } from 'vite';
 
 function slowApi(): Plugin {
@@ -24,4 +25,10 @@ function slowApi(): Plugin {
   };
 }
 
-export default defineConfig({ plugins: [react(), slowApi()] });
+export default defineConfig({
+  plugins: [
+    react(),
+    tracelens({ release: '0.1.0-dev', environment: 'local' }),
+    slowApi(),
+  ],
+});

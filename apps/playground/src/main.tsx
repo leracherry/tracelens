@@ -19,8 +19,6 @@ import './styles.css';
 
 init({
   app: 'playground',
-  environment: 'local',
-  release: '0.1.0-dev',
   endpoint: 'http://localhost:4173/__tracelens',
 });
 mark('playground-ready');

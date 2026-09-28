@@ -31,6 +31,7 @@ The playground is intentionally slow. It includes controlled search, settings, c
 | `@tracelens/protocol`       | Versioned telemetry event types        |
 | `@tracelens/browser`        | Browser instrumentation and transports |
 | `@tracelens/react`          | React profiler and explicit boundaries |
+| `@tracelens/vite`           | Release and commit metadata injection  |
 | `@tracelens/core`           | Storage interfaces and trace queries   |
 | `@tracelens/storage-memory` | In-memory trace storage                |
 | `@tracelens/storage-file`   | JSON file trace storage                |
@@ -51,6 +52,18 @@ init({
 ```
 
 Privacy-sensitive values are not collected: element text and input values are ignored, URL query strings are stripped, and the SDK sends no request bodies or application headers as telemetry.
+
+### Vite build metadata
+
+```ts
+import { tracelens } from '@tracelens/vite';
+
+export default defineConfig({
+  plugins: [tracelens()],
+});
+```
+
+The plugin reads the nearest package version, current Git commit, build time, and Vite mode. Explicit SDK options still take precedence over injected values.
 
 ### Custom spans
 
