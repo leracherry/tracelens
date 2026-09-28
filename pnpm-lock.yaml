@@ -91,6 +91,9 @@ importers:
 
   packages/cli:
     dependencies:
+      '@tracelens/core':
+        specifier: workspace:*
+        version: link:../core
       '@tracelens/protocol':
         specifier: workspace:*
         version: link:../protocol

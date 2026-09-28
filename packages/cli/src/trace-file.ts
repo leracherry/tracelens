@@ -13,6 +13,23 @@ export async function readTraceFile(
     }
     throw error;
   }
+  return validateEvents(value);
+}
+
+export async function readTraceUrl(url: string): Promise<AnyTraceLensEvent[]> {
+  let response: Response;
+  try {
+    response = await fetch(url);
+  } catch {
+    throw new Error(`Could not connect to TraceLens collector: ${url}`);
+  }
+  if (!response.ok) {
+    throw new Error(`TraceLens collector returned HTTP ${response.status}.`);
+  }
+  return validateEvents(await response.json());
+}
+
+function validateEvents(value: unknown): AnyTraceLensEvent[] {
   if (!Array.isArray(value)) {
     throw new Error('Trace file must contain a JSON array of events.');
   }

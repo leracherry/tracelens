@@ -109,6 +109,14 @@ Check whether a project is ready for TraceLens instrumentation:
 pnpm exec tracelens doctor
 ```
 
+Compare two releases from a running Studio collector:
+
+```bash
+pnpm exec tracelens compare 2.13.0 2.14.0
+```
+
+Use `--file trace.json` to compare releases from an exported trace instead.
+
 ## Development
 
 ```bash

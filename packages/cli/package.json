@@ -16,6 +16,7 @@
     "node": ">=22"
   },
   "dependencies": {
+    "@tracelens/core": "workspace:*",
     "@tracelens/protocol": "workspace:*"
   },
   "devDependencies": {

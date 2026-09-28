@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import { resolve } from 'node:path';
+import { compareReleases } from '@tracelens/core';
+import { formatReleaseComparison } from './compare.js';
 import { formatDoctor, runDoctor } from './doctor.js';
 import { formatInteractionReport } from './format.js';
 import { startStudio } from './studio.js';
-import { readTraceFile } from './trace-file.js';
+import { readTraceFile, readTraceUrl } from './trace-file.js';
 
 const [command, ...args] = process.argv.slice(2);
 
@@ -22,6 +24,29 @@ async function main(): Promise<number> {
       const checks = await runDoctor(process.cwd());
       console.log(formatDoctor(checks, process.stdout.isTTY));
       return checks.some((check) => check.status === 'fail') ? 1 : 0;
+    }
+    case 'compare': {
+      const [before, after] = args;
+      if (!before || !after || before.startsWith('-') || after.startsWith('-')) {
+        throw new Error(
+          'Usage: tracelens compare <before> <after> [--file trace.json]',
+        );
+      }
+      const file = optionalStringOption(args, '--file');
+      const endpoint = stringOption(
+        args,
+        '--endpoint',
+        'http://127.0.0.1:4173/__tracelens',
+      );
+      const events = file
+        ? await readTraceFile(resolve(file))
+        : await readTraceUrl(endpoint);
+      console.log(
+        formatReleaseComparison(compareReleases(events, before, after), {
+          color: process.stdout.isTTY,
+        }),
+      );
+      return 0;
     }
     case 'studio': {
       const port = numberOption(args, '--port', 4173);
@@ -47,6 +72,14 @@ function stringOption(args: string[], name: string, fallback: string): string {
   return index === -1 ? fallback : (args[index + 1] ?? fallback);
 }
 
+function optionalStringOption(
+  args: string[],
+  name: string,
+): string | undefined {
+  const index = args.indexOf(name);
+  return index === -1 ? undefined : args[index + 1];
+}
+
 function numberOption(args: string[], name: string, fallback: number): number {
   const value = Number(stringOption(args, name, String(fallback)));
   if (!Number.isInteger(value) || value < 1 || value > 65_535) {
@@ -61,11 +94,14 @@ function help(): string {
 Usage
   tracelens studio [--host 127.0.0.1] [--port 4173]
   tracelens inspect <trace.json>
+  tracelens compare <before> <after> [--file trace.json]
   tracelens doctor
 
 Options
   -h, --help       Show command help
-  -v, --version    Show the CLI version`;
+  -v, --version    Show the CLI version
+  --file           Read comparison events from a trace file
+  --endpoint       Read events from a running Studio collector`;
 }
 
 main()
