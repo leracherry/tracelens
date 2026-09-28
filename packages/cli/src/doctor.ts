@@ -27,14 +27,16 @@ export async function runDoctor(directory: string): Promise<DoctorCheck[]> {
       detail: process.versions.node,
     },
     {
-      status: dependencies['@tracelens/browser'] ? 'pass' : 'warn',
+      status: dependencies['@leracherry/tracelens-browser'] ? 'pass' : 'warn',
       label: 'browser SDK installed',
-      detail: dependencies['@tracelens/browser'] ?? 'not found in package.json',
+      detail:
+        dependencies['@leracherry/tracelens-browser'] ??
+        'not found in package.json',
     },
     {
-      status: dependencies['@tracelens/react'] ? 'pass' : 'warn',
+      status: dependencies['@leracherry/tracelens-react'] ? 'pass' : 'warn',
       label: 'React instrumentation enabled',
-      detail: dependencies['@tracelens/react'] ?? 'optional',
+      detail: dependencies['@leracherry/tracelens-react'] ?? 'optional',
     },
     {
       status: releaseConfigured ? 'pass' : 'warn',

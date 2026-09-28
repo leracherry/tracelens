@@ -6,8 +6,8 @@ import {
   type ProfilerOnRenderCallback,
   type ReactNode,
 } from 'react';
-import { recordReactRender } from '@tracelens/browser';
-import type { ReactRenderPayload } from '@tracelens/protocol';
+import { recordReactRender } from '@leracherry/tracelens-browser';
+import type { ReactRenderPayload } from '@leracherry/tracelens-protocol';
 
 export interface TraceLensProfilerProps {
   children: ReactNode;

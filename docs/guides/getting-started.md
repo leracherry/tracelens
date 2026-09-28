@@ -3,14 +3,14 @@
 Use Node.js 22 or newer for the CLI and build integration. Packages are ESM with TypeScript declarations.
 
 ```bash
-npm install @tracelens/browser
-npx @tracelens/cli@0.2.0 studio
+npm install @leracherry/tracelens-browser
+npx @leracherry/tracelens-cli@0.2.1 studio
 ```
 
 Open http://127.0.0.1:4173. Add this to your application's browser entry point:
 
 ```ts
-import { init } from '@tracelens/browser';
+import { init } from '@leracherry/tracelens-browser';
 
 const stop = init({
   app: 'dashboard',
@@ -26,12 +26,12 @@ Initialize once per page. The SDK batches events every second by default. Use ex
 ## Vite
 
 ```bash
-npm install --save-dev @tracelens/vite
+npm install --save-dev @leracherry/tracelens-vite
 ```
 
 ```ts
 import { defineConfig } from 'vite';
-import { tracelens } from '@tracelens/vite';
+import { tracelens } from '@leracherry/tracelens-vite';
 
 export default defineConfig({ plugins: [tracelens()] });
 ```
@@ -40,7 +40,7 @@ The plugin injects the nearest package version, Git commit, current build time, 
 
 ## React and custom work
 
-Install `@tracelens/react` alongside `@tracelens/browser` and follow the [React guide](react-attribution.md). Wrap expensive operations with `trace('operation-name', fn)` to capture custom spans.
+Install `@leracherry/tracelens-react` alongside `@leracherry/tracelens-browser` and follow the [React guide](react-attribution.md). Wrap expensive operations with `trace('operation-name', fn)` to capture custom spans.
 
 ## Local collection and data handling
 
@@ -48,7 +48,7 @@ The packaged Studio requires neither Vite nor a repository checkout. It retains 
 
 ```bash
 curl http://127.0.0.1:4173/__tracelens -o trace.json
-npx @tracelens/cli inspect trace.json
+npx @leracherry/tracelens-cli inspect trace.json
 ```
 
 Use Studio on loopback for local debugging. It has no authentication and permits browser applications to post telemetry across origins. An HTTPS application may block an HTTP collector as mixed content; use a suitable local proxy in that case.

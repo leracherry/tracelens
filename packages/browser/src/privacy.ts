@@ -1,4 +1,4 @@
-import type { AnyTraceLensEvent } from '@tracelens/protocol';
+import type { AnyTraceLensEvent } from '@leracherry/tracelens-protocol';
 
 export interface PrivacyOptions {
   /** Raw DOM text, input values, and headers are never collected. */

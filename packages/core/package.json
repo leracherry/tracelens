@@ -1,6 +1,6 @@
 {
-  "name": "@tracelens/core",
-  "version": "0.2.0",
+  "name": "@leracherry/tracelens-core",
+  "version": "0.2.1",
   "type": "module",
   "exports": {
     ".": {
@@ -10,7 +10,7 @@
     }
   },
   "dependencies": {
-    "@tracelens/protocol": "workspace:*"
+    "@leracherry/tracelens-protocol": "workspace:*"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

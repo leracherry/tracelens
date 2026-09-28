@@ -8,7 +8,7 @@ importers:
 
   .:
     devDependencies:
-      '@tracelens/cli':
+      '@leracherry/tracelens-cli':
         specifier: workspace:*
         version: link:packages/cli
       '@types/node':
@@ -29,13 +29,13 @@ importers:
 
   apps/playground:
     dependencies:
-      '@tracelens/browser':
+      '@leracherry/tracelens-browser':
         specifier: workspace:*
         version: link:../../packages/browser
-      '@tracelens/react':
+      '@leracherry/tracelens-react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@tracelens/vite':
+      '@leracherry/tracelens-vite':
         specifier: workspace:*
         version: link:../../packages/vite
       '@vitejs/plugin-react':
@@ -60,10 +60,10 @@ importers:
 
   apps/studio:
     dependencies:
-      '@tracelens/core':
+      '@leracherry/tracelens-core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@tracelens/protocol':
+      '@leracherry/tracelens-protocol':
         specifier: workspace:*
         version: link:../../packages/protocol
       '@vitejs/plugin-react':
@@ -88,16 +88,16 @@ importers:
 
   packages/browser:
     dependencies:
-      '@tracelens/protocol':
+      '@leracherry/tracelens-protocol':
         specifier: workspace:*
         version: link:../protocol
 
   packages/cli:
     dependencies:
-      '@tracelens/core':
+      '@leracherry/tracelens-core':
         specifier: workspace:*
         version: link:../core
-      '@tracelens/protocol':
+      '@leracherry/tracelens-protocol':
         specifier: workspace:*
         version: link:../protocol
     devDependencies:
@@ -107,13 +107,13 @@ importers:
 
   packages/core:
     dependencies:
-      '@tracelens/protocol':
+      '@leracherry/tracelens-protocol':
         specifier: workspace:*
         version: link:../protocol
 
   packages/otel:
     dependencies:
-      '@tracelens/protocol':
+      '@leracherry/tracelens-protocol':
         specifier: workspace:*
         version: link:../protocol
 
@@ -121,10 +121,10 @@ importers:
 
   packages/react:
     dependencies:
-      '@tracelens/browser':
+      '@leracherry/tracelens-browser':
         specifier: workspace:*
         version: link:../browser
-      '@tracelens/protocol':
+      '@leracherry/tracelens-protocol':
         specifier: workspace:*
         version: link:../protocol
     devDependencies:
@@ -137,10 +137,10 @@ importers:
 
   packages/storage-file:
     dependencies:
-      '@tracelens/core':
+      '@leracherry/tracelens-core':
         specifier: workspace:*
         version: link:../core
-      '@tracelens/protocol':
+      '@leracherry/tracelens-protocol':
         specifier: workspace:*
         version: link:../protocol
     devDependencies:
@@ -150,10 +150,10 @@ importers:
 
   packages/storage-memory:
     dependencies:
-      '@tracelens/core':
+      '@leracherry/tracelens-core':
         specifier: workspace:*
         version: link:../core
-      '@tracelens/protocol':
+      '@leracherry/tracelens-protocol':
         specifier: workspace:*
         version: link:../protocol
 

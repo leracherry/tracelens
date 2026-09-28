@@ -1,4 +1,4 @@
-import type { PerformanceDelta } from '@tracelens/core';
+import type { PerformanceDelta } from '@leracherry/tracelens-core';
 
 export type DeltaTone =
   'regression' | 'improvement' | 'neutral' | 'new' | 'removed';

@@ -8,7 +8,7 @@ import {
   type TraceLensEvent,
   type WebVitalPayload,
   type TraceContext,
-} from '@tracelens/protocol';
+} from '@leracherry/tracelens-protocol';
 import { InteractionCorrelator, sanitizeNetworkUrl } from './correlation.js';
 import { sanitizeEvent, type PrivacyOptions } from './privacy.js';
 import {

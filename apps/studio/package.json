@@ -1,6 +1,6 @@
 {
-  "name": "@tracelens/studio",
-  "version": "0.2.0",
+  "name": "@leracherry/tracelens-studio",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,8 +9,8 @@
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {
-    "@tracelens/core": "workspace:*",
-    "@tracelens/protocol": "workspace:*",
+    "@leracherry/tracelens-core": "workspace:*",
+    "@leracherry/tracelens-protocol": "workspace:*",
     "@vitejs/plugin-react": "^4.5.2",
     "vite": "^6.3.5",
     "react": "^19.1.0",

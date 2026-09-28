@@ -1,13 +1,13 @@
 {
-  "name": "@tracelens/storage-file",
-  "version": "0.2.0",
+  "name": "@leracherry/tracelens-storage-file",
+  "version": "0.2.1",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@tracelens/core": "workspace:*",
-    "@tracelens/protocol": "workspace:*"
+    "@leracherry/tracelens-core": "workspace:*",
+    "@leracherry/tracelens-protocol": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.15.0"

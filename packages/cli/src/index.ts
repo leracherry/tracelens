@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { resolve } from 'node:path';
-import { compareReleases } from '@tracelens/core';
+import { compareReleases } from '@leracherry/tracelens-core';
 import { formatReleaseComparison } from './compare.js';
 import { formatDoctor, runDoctor } from './doctor.js';
 import { formatInteractionReport } from './format.js';
@@ -77,7 +77,7 @@ async function main(): Promise<number> {
     }
     case '--version':
     case '-v':
-      console.log('tracelens 0.2.0');
+      console.log('tracelens 0.2.1');
       return 0;
     case '--help':
     case '-h':

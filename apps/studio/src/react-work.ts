@@ -1,4 +1,4 @@
-import type { ReactRenderPayload } from '@tracelens/protocol';
+import type { ReactRenderPayload } from '@leracherry/tracelens-protocol';
 
 export interface ComponentRenderSummary {
   component: string;

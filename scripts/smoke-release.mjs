@@ -26,12 +26,15 @@ execFileSync(
     '--input-type=module',
     '-e',
     `
-  for (const name of ['protocol','browser','react','vite','core','storage-file','storage-memory','otel']) await import('@tracelens/' + name);
+  for (const name of ['protocol','browser','react','vite','core','storage-file','storage-memory','otel']) await import('@leracherry/tracelens-' + name);
 `,
   ],
   { cwd: directory, stdio: 'inherit' },
 );
-const cli = join(directory, 'node_modules/@tracelens/cli/dist/index.js');
+const cli = join(
+  directory,
+  'node_modules/@leracherry/tracelens-cli/dist/index.js',
+);
 assert.equal(
   execFileSync(process.execPath, [cli, '--version'], {
     encoding: 'utf8',

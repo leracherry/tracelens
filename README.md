@@ -10,17 +10,17 @@ TraceLens captures browser performance events and correlates slow interactions w
 
 Requires Node.js 22+ for the CLI. Packages ship compiled ESM and TypeScript declarations.
 
-Registry note: npm publication under `@tracelens` requires scope access and has not yet been confirmed. Use the source checkout below or the authenticated [GitHub Packages mirror](docs/guides/publishing.md). The npm commands below apply once publication succeeds.
+Starting with v0.2.1, both registries use `@leracherry/tracelens-*`. See [registry setup](docs/guides/publishing.md) for the authenticated GitHub Packages mirror.
 
 ```bash
-npm install @tracelens/browser
-npx @tracelens/cli@0.2.0 studio
+npm install @leracherry/tracelens-browser
+npx @leracherry/tracelens-cli@0.2.1 studio
 ```
 
 Open http://127.0.0.1:4173 and initialize the SDK in your application's browser entry point:
 
 ```ts
-import { init } from '@tracelens/browser';
+import { init } from '@leracherry/tracelens-browser';
 
 init({
   app: 'dashboard',
@@ -53,32 +53,32 @@ Click an instrumented control, then inspect its timing and correlated work in St
 - [Playground walkthrough](docs/guides/performance-debugging-walkthrough.md)
 - [Interaction correlation](docs/architecture/interaction-correlation.md)
 - [Publishing and registry setup](docs/guides/publishing.md)
-- [v0.2.0 release notes and migration](docs/releases/v0.2.0.md)
+- [v0.2.1 release notes and migration](docs/releases/v0.2.1.md)
 
 ## Packages
 
-| npm package                 | Purpose                                  |
-| --------------------------- | ---------------------------------------- |
-| `@tracelens/browser`        | Browser instrumentation and transports   |
-| `@tracelens/react`          | React profiler and explicit boundaries   |
-| `@tracelens/vite`           | Build metadata injection                 |
-| `@tracelens/cli`            | Bundled Studio, inspect, compare, doctor |
-| `@tracelens/protocol`       | Versioned telemetry types                |
-| `@tracelens/core`           | Queries and release comparisons          |
-| `@tracelens/storage-memory` | In-memory storage adapter                |
-| `@tracelens/storage-file`   | JSON file storage adapter                |
-| `@tracelens/otel`           | OTLP/HTTP JSON trace transport           |
+| npm package                            | Purpose                                  |
+| -------------------------------------- | ---------------------------------------- |
+| `@leracherry/tracelens-browser`        | Browser instrumentation and transports   |
+| `@leracherry/tracelens-react`          | React profiler and explicit boundaries   |
+| `@leracherry/tracelens-vite`           | Build metadata injection                 |
+| `@leracherry/tracelens-cli`            | Bundled Studio, inspect, compare, doctor |
+| `@leracherry/tracelens-protocol`       | Versioned telemetry types                |
+| `@leracherry/tracelens-core`           | Queries and release comparisons          |
+| `@leracherry/tracelens-storage-memory` | In-memory storage adapter                |
+| `@leracherry/tracelens-storage-file`   | JSON file storage adapter                |
+| `@leracherry/tracelens-otel`           | OTLP/HTTP JSON trace transport           |
 
 See [GitHub Releases](https://github.com/leracherry/tracelens/releases) for release notes and tarballs. The [GitHub Packages mirror](https://github.com/leracherry/tracelens/packages) uses `@leracherry/tracelens-*` names; see the registry guide above for authentication and installation.
 
 ## CLI
 
 ```bash
-npx @tracelens/cli studio
-npx @tracelens/cli inspect trace.json
-npx @tracelens/cli compare 1.0.0 1.1.0 --file trace.json
-npx @tracelens/cli doctor
-npx @tracelens/cli privacy audit --file trace.json
+npx @leracherry/tracelens-cli studio
+npx @leracherry/tracelens-cli inspect trace.json
+npx @leracherry/tracelens-cli compare 1.0.0 1.1.0 --file trace.json
+npx @leracherry/tracelens-cli doctor
+npx @leracherry/tracelens-cli privacy audit --file trace.json
 ```
 
 Omit `--file` to compare events from a running Studio collector.
@@ -97,7 +97,7 @@ Open http://127.0.0.1:4174 for controlled search, settings, checkout, layout, an
 
 ## Current limits
 
-v0.2.0 covers the plan through Phase 17: ReleaseScope, privacy controls, and OpenTelemetry export. Source maps and CI budgets are future work. The OTLP transport exports traces, not metrics, and is not an OpenTelemetry SDK SpanExporter.
+v0.2.1 covers the plan through Phase 17: ReleaseScope, privacy controls, and OpenTelemetry export. Source maps and CI budgets are future work. The OTLP transport exports traces, not metrics, and is not an OpenTelemetry SDK SpanExporter.
 
 Studio is a local development tool with in-memory storage and no authentication. Browser API support varies. React production profiling requires a profiling-enabled build. Release deltas describe captured samples and do not establish statistical significance; see the comparison guide for calculation details.
 

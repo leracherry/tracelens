@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { AnyTraceLensEvent } from '@tracelens/protocol';
+import type { AnyTraceLensEvent } from '@leracherry/tracelens-protocol';
 import { MemoryStorage } from './index';
 
 const event: AnyTraceLensEvent = {

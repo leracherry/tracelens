@@ -4,7 +4,7 @@ import type {
   InteractionPayload,
   LongFramePayload,
   NetworkPayload,
-} from '@tracelens/protocol';
+} from '@leracherry/tracelens-protocol';
 
 const ESCAPE = '\u001B[';
 

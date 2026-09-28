@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { TraceLensEvent } from '@tracelens/protocol';
+import type { TraceLensEvent } from '@leracherry/tracelens-protocol';
 import {
   createTraceLensExporter,
   mapTraceLensEvent,

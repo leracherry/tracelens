@@ -1,6 +1,6 @@
 {
-  "name": "@tracelens/react",
-  "version": "0.2.0",
+  "name": "@leracherry/tracelens-react",
+  "version": "0.2.1",
   "description": "React render attribution for TraceLens",
   "type": "module",
   "exports": {
@@ -14,8 +14,8 @@
     "react": ">=18"
   },
   "dependencies": {
-    "@tracelens/browser": "workspace:*",
-    "@tracelens/protocol": "workspace:*"
+    "@leracherry/tracelens-browser": "workspace:*",
+    "@leracherry/tracelens-protocol": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19.1.8",

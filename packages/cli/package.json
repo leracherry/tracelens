@@ -1,6 +1,6 @@
 {
-  "name": "@tracelens/cli",
-  "version": "0.2.0",
+  "name": "@leracherry/tracelens-cli",
+  "version": "0.2.1",
   "description": "Local CLI for inspecting TraceLens interaction telemetry",
   "type": "module",
   "bin": {
@@ -16,8 +16,8 @@
     "node": ">=22"
   },
   "dependencies": {
-    "@tracelens/core": "workspace:*",
-    "@tracelens/protocol": "workspace:*"
+    "@leracherry/tracelens-core": "workspace:*",
+    "@leracherry/tracelens-protocol": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.15.0"

@@ -2,7 +2,7 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { dirname, extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { AnyTraceLensEvent } from '@tracelens/protocol';
+import type { AnyTraceLensEvent } from '@leracherry/tracelens-protocol';
 
 export interface StudioOptions {
   host: string;

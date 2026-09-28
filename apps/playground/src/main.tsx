@@ -7,8 +7,8 @@ import {
   type ReactNode,
 } from 'react';
 import { createRoot } from 'react-dom/client';
-import { init, mark, trace } from '@tracelens/browser';
-import { TraceBoundary, TraceLensProfiler } from '@tracelens/react';
+import { init, mark, trace } from '@leracherry/tracelens-browser';
+import { TraceBoundary, TraceLensProfiler } from '@leracherry/tracelens-react';
 import {
   createSearchDataset,
   scenarioById,

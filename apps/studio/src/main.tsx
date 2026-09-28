@@ -8,7 +8,7 @@ import type {
   LongFramePayload,
   NetworkPayload,
   ReactRenderPayload,
-} from '@tracelens/protocol';
+} from '@leracherry/tracelens-protocol';
 import './styles.css';
 import { aggregateReactRenders } from './react-work';
 import { ReleaseComparisonView } from './release-comparison';

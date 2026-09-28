@@ -1,4 +1,7 @@
-import type { AnyTraceLensEvent, EventType } from '@tracelens/protocol';
+import type {
+  AnyTraceLensEvent,
+  EventType,
+} from '@leracherry/tracelens-protocol';
 
 export interface TraceQuery {
   app?: string;

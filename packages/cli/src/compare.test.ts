@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { ReleaseComparison } from '@tracelens/core';
+import type { ReleaseComparison } from '@leracherry/tracelens-core';
 import { formatReleaseComparison } from './compare';
 
 const summary = (release: string) => ({

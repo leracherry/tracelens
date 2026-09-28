@@ -1,4 +1,4 @@
-import type { TraceContext } from '@tracelens/protocol';
+import type { TraceContext } from '@leracherry/tracelens-protocol';
 
 export interface TracePropagationOptions {
   /** Exact HTTP(S) origins, including scheme and port. Disabled by default. */

@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import type { AnyTraceLensEvent } from '@tracelens/protocol';
+import type { AnyTraceLensEvent } from '@leracherry/tracelens-protocol';
 
 export async function readTraceFile(
   path: string,

@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
-import type { AnyTraceLensEvent } from '@tracelens/protocol';
+import type { AnyTraceLensEvent } from '@leracherry/tracelens-protocol';
 
 function collector(): Plugin {
   const events: AnyTraceLensEvent[] = [];

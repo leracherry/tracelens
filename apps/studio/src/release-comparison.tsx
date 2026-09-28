@@ -5,8 +5,8 @@ import {
   type ComponentPerformanceDelta,
   type ReleaseComparison,
   type ScopePerformanceDelta,
-} from '@tracelens/core';
-import type { AnyTraceLensEvent } from '@tracelens/protocol';
+} from '@leracherry/tracelens-core';
+import type { AnyTraceLensEvent } from '@leracherry/tracelens-protocol';
 import type { ReleaseOption } from './release-selection';
 import { classifyDelta } from './release-delta';
 

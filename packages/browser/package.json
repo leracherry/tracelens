@@ -1,12 +1,12 @@
 {
-  "name": "@tracelens/browser",
-  "version": "0.2.0",
+  "name": "@leracherry/tracelens-browser",
+  "version": "0.2.1",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@tracelens/protocol": "workspace:*"
+    "@leracherry/tracelens-protocol": "workspace:*"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

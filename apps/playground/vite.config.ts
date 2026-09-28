@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react';
-import { tracelens } from '@tracelens/vite';
+import { tracelens } from '@leracherry/tracelens-vite';
 import { defineConfig, type Plugin } from 'vite';
 
 function slowApi(): Plugin {

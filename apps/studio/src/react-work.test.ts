@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { ReactRenderPayload } from '@tracelens/protocol';
+import type { ReactRenderPayload } from '@leracherry/tracelens-protocol';
 import { aggregateReactRenders } from './react-work';
 
 function render(

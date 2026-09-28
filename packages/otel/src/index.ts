@@ -1,4 +1,7 @@
-import type { AnyTraceLensEvent, TraceContext } from '@tracelens/protocol';
+import type {
+  AnyTraceLensEvent,
+  TraceContext,
+} from '@leracherry/tracelens-protocol';
 
 export interface OtlpAttribute {
   key: string;
@@ -185,7 +188,10 @@ export function toOtlpTraceRequest(
           }),
         },
         scopeSpans: [
-          { scope: { name: '@tracelens/otel', version: '0.2.0' }, spans: [] },
+          {
+            scope: { name: '@leracherry/tracelens-otel', version: '0.2.1' },
+            spans: [],
+          },
         ],
       };
       groups.set(key, group);

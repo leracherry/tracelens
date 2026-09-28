@@ -1,18 +1,18 @@
 # React attribution
 
-`@tracelens/react` records React Profiler commits and correlates them with the browser interaction that triggered the work.
+`@leracherry/tracelens-react` records React Profiler commits and correlates them with the browser interaction that triggered the work.
 
 ## Install
 
 ```bash
-pnpm add @tracelens/browser @tracelens/react
+pnpm add @leracherry/tracelens-browser @leracherry/tracelens-react
 ```
 
 Initialize the browser SDK before mounting React, then wrap the application:
 
 ```tsx
-import { init } from '@tracelens/browser';
-import { TraceLensProfiler } from '@tracelens/react';
+import { init } from '@leracherry/tracelens-browser';
+import { TraceLensProfiler } from '@leracherry/tracelens-react';
 
 init({ app: 'dashboard', release: '2.14.0' });
 
@@ -28,7 +28,7 @@ root.render(
 Add named boundaries around expensive product areas when root-level commit timing is too broad:
 
 ```tsx
-import { TraceBoundary } from '@tracelens/react';
+import { TraceBoundary } from '@leracherry/tracelens-react';
 
 <TraceBoundary name="Checkout">
   <Checkout />

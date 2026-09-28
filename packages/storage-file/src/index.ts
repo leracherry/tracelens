@@ -4,8 +4,11 @@ import {
   applyTraceQuery,
   type StorageAdapter,
   type TraceQuery,
-} from '@tracelens/core';
-import { isTraceLensEvent, type AnyTraceLensEvent } from '@tracelens/protocol';
+} from '@leracherry/tracelens-core';
+import {
+  isTraceLensEvent,
+  type AnyTraceLensEvent,
+} from '@leracherry/tracelens-protocol';
 
 export class FileStorage implements StorageAdapter {
   constructor(private readonly path: string) {}

@@ -1,4 +1,4 @@
-import { cp, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { cp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
@@ -28,17 +28,12 @@ for (const name of names) {
   if (manifest.version !== version)
     throw new Error(`Version mismatch for ${name}: expected ${version}`);
 }
-const rename = (name) =>
-  target === 'github'
-    ? name.replace('@tracelens/', '@leracherry/tracelens-')
-    : name;
 await mkdir(output, { recursive: true });
 for (const name of names) {
   const source = join(root, 'packages', name);
   const stage = join(output, name);
   await mkdir(stage, { recursive: true });
   const manifest = JSON.parse(await readFile(join(source, 'package.json')));
-  manifest.name = rename(manifest.name);
   manifest.version = version;
   manifest.description ??= `TraceLens ${name}: frontend performance debugging`;
   manifest.license = 'MIT';
@@ -72,7 +67,7 @@ for (const name of names) {
   if (manifest.dependencies)
     manifest.dependencies = Object.fromEntries(
       Object.entries(manifest.dependencies).map(([key, value]) => [
-        rename(key),
+        key,
         value.startsWith('workspace:') ? version : value,
       ]),
     );
@@ -80,33 +75,12 @@ for (const name of names) {
     recursive: true,
     filter: (path) => !path.includes('.test.'),
   });
-  if (target === 'github') {
-    for (const file of await readdir(join(stage, 'dist'), {
-      recursive: true,
-    })) {
-      if (!/\.(js|ts|map)$/.test(file)) continue;
-      const path = join(stage, 'dist', file);
-      await writeFile(
-        path,
-        (await readFile(path, 'utf8')).replaceAll(
-          '@tracelens/',
-          '@leracherry/tracelens-',
-        ),
-      );
-    }
-  }
   if (name === 'cli')
     await cp(join(root, 'apps/studio/dist'), join(stage, 'studio'), {
       recursive: true,
     });
   await cp(join(root, 'LICENSE'), join(stage, 'LICENSE'));
-  await writeFile(
-    join(stage, 'README.md'),
-    (await readFile(join(source, 'README.md'), 'utf8')).replaceAll(
-      '@tracelens/',
-      target === 'github' ? '@leracherry/tracelens-' : '@tracelens/',
-    ),
-  );
+  await cp(join(source, 'README.md'), join(stage, 'README.md'));
   await writeFile(
     join(stage, 'package.json'),
     JSON.stringify(manifest, null, 2) + '\n',

@@ -1,13 +1,13 @@
 {
-  "name": "@tracelens/storage-memory",
-  "version": "0.2.0",
+  "name": "@leracherry/tracelens-storage-memory",
+  "version": "0.2.1",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@tracelens/core": "workspace:*",
-    "@tracelens/protocol": "workspace:*"
+    "@leracherry/tracelens-core": "workspace:*",
+    "@leracherry/tracelens-protocol": "workspace:*"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

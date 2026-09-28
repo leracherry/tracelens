@@ -1,18 +1,18 @@
 {
-  "name": "@tracelens/playground",
-  "version": "0.2.0",
+  "name": "@leracherry/tracelens-playground",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "pnpm --filter @tracelens/vite build",
+    "predev": "pnpm --filter @leracherry/tracelens-vite build",
     "dev": "vite --host 127.0.0.1 --port 4174",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {
-    "@tracelens/browser": "workspace:*",
-    "@tracelens/react": "workspace:*",
-    "@tracelens/vite": "workspace:*",
+    "@leracherry/tracelens-browser": "workspace:*",
+    "@leracherry/tracelens-react": "workspace:*",
+    "@leracherry/tracelens-vite": "workspace:*",
     "@vitejs/plugin-react": "^4.5.2",
     "vite": "^6.3.5",
     "react": "^19.1.0",

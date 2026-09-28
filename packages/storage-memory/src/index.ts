@@ -2,8 +2,8 @@ import {
   applyTraceQuery,
   type StorageAdapter,
   type TraceQuery,
-} from '@tracelens/core';
-import type { AnyTraceLensEvent } from '@tracelens/protocol';
+} from '@leracherry/tracelens-core';
+import type { AnyTraceLensEvent } from '@leracherry/tracelens-protocol';
 
 export class MemoryStorage implements StorageAdapter {
   private events: AnyTraceLensEvent[] = [];
