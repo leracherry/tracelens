@@ -27,7 +27,12 @@ async function main(): Promise<number> {
     }
     case 'compare': {
       const [before, after] = args;
-      if (!before || !after || before.startsWith('-') || after.startsWith('-')) {
+      if (
+        !before ||
+        !after ||
+        before.startsWith('-') ||
+        after.startsWith('-')
+      ) {
         throw new Error(
           'Usage: tracelens compare <before> <after> [--file trace.json]',
         );

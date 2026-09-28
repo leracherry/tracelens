@@ -9,6 +9,7 @@
   "scripts": {
     "build": "pnpm -r build",
     "dev": "pnpm --parallel --filter @tracelens/studio --filter @tracelens/playground dev",
+    "pretest": "pnpm --filter @tracelens/core build",
     "test": "vitest run",
     "typecheck": "pnpm -r typecheck",
     "format": "prettier --write .",

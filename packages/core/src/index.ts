@@ -245,7 +245,12 @@ function compareComponents(
 ): ComponentPerformanceDelta[] {
   const components = new Map<
     string,
-    { before: number[]; after: number[]; beforeRenders: number; afterRenders: number }
+    {
+      before: number[];
+      after: number[];
+      beforeRenders: number;
+      afterRenders: number;
+    }
   >();
   for (const event of events) {
     if (
@@ -303,7 +308,10 @@ function compareRegression(
   right: PerformanceDelta,
 ): number {
   const score = (delta: PerformanceDelta) =>
-    delta.percent ?? (delta.before === undefined && delta.after !== undefined ? Infinity : -Infinity);
+    delta.percent ??
+    (delta.before === undefined && delta.after !== undefined
+      ? Infinity
+      : -Infinity);
   return score(right) - score(left);
 }
 

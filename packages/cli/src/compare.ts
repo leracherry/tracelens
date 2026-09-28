@@ -1,7 +1,4 @@
-import type {
-  PerformanceDelta,
-  ReleaseComparison,
-} from '@tracelens/core';
+import type { PerformanceDelta, ReleaseComparison } from '@tracelens/core';
 
 const ESCAPE = '\u001B[';
 
