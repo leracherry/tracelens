@@ -299,6 +299,51 @@ nav .active {
 .delta-empty {
   padding: 28px 20px;
 }
+.component-delta-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 90px 90px 90px 110px;
+  gap: 16px;
+  align-items: center;
+  min-height: 52px;
+  padding: 8px 20px;
+  border-bottom: 1px solid #202923;
+}
+.component-delta-row:last-child {
+  border-bottom: 0;
+}
+.component-delta-row > span {
+  color: #7e8a83;
+  font: 10px DM Mono;
+}
+.component-delta-row > b {
+  font: 500 11px DM Mono;
+}
+.component-delta-row.regression,
+.component-delta-row.new {
+  background: linear-gradient(90deg, rgba(97, 218, 251, 0.07), transparent);
+  box-shadow: inset 2px 0 #61dafb;
+}
+.component-delta-row.regression > b,
+.component-delta-row.new > b {
+  color: #61dafb;
+}
+.component-delta-row.improvement,
+.component-delta-row.removed {
+  box-shadow: inset 2px 0 #74f0ad;
+}
+.component-delta-row.improvement > b,
+.component-delta-row.removed > b {
+  color: #74f0ad;
+}
+.render-delta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.render-delta small {
+  color: #61dafb;
+  font: 8px DM Mono;
+}
 .capture {
   margin-top: auto;
   border-top: 1px solid #253029;

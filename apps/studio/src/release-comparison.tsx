@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   compareReleases,
   type PerformanceDelta,
+  type ComponentPerformanceDelta,
   type ReleaseComparison,
   type ScopePerformanceDelta,
 } from '@tracelens/core';
@@ -152,7 +153,59 @@ function Comparison({ comparison }: { comparison: ReleaseComparison }) {
       </section>
       <DeltaTable title="Interaction deltas" rows={comparison.interactions} />
       <DeltaTable title="Route deltas" rows={comparison.routes} />
+      <ComponentDeltaTable rows={comparison.components} />
     </>
+  );
+}
+
+function ComponentDeltaTable({
+  rows,
+}: {
+  rows: readonly ComponentPerformanceDelta[];
+}) {
+  return (
+    <section className="panel delta-panel">
+      <div className="panel-title">
+        <div>
+          <p className="eyebrow">React attribution</p>
+          <h2>Component deltas</h2>
+        </div>
+        <span>{rows.length} components</span>
+      </div>
+      {rows.length ? (
+        <div className="delta-table">
+          <div className="component-delta-row delta-header">
+            <span>Component</span>
+            <span>Before</span>
+            <span>After</span>
+            <span>Duration</span>
+            <span>Renders</span>
+          </div>
+          {rows.slice(0, 12).map((row) => (
+            <div
+              className={`component-delta-row ${classifyDelta(row)}`}
+              key={row.key}
+            >
+              <strong>{row.name}</strong>
+              <span>{formatValue(row.before, 'ms', 1)}</span>
+              <span>{formatValue(row.after, 'ms', 1)}</span>
+              <b>{formatPercent(row.percent)}</b>
+              <span className="render-delta">
+                {row.beforeRenders} → {row.afterRenders}
+                <small>
+                  {row.renderDelta >= 0 ? '+' : ''}
+                  {row.renderDelta}
+                </small>
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="muted delta-empty">
+          No React profiler samples are shared by these releases.
+        </p>
+      )}
+    </section>
   );
 }
 
