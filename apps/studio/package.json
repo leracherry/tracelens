@@ -9,6 +9,7 @@
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {
+    "@tracelens/core": "workspace:*",
     "@tracelens/protocol": "workspace:*",
     "@vitejs/plugin-react": "^4.5.2",
     "vite": "^6.3.5",

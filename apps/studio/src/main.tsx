@@ -11,12 +11,14 @@ import type {
 } from '@tracelens/protocol';
 import './styles.css';
 import { aggregateReactRenders } from './react-work';
+import { ReleaseComparisonView } from './release-comparison';
 import { filterByRelease, listReleases } from './release-selection';
 
 function App() {
   const [events, setEvents] = useState<AnyTraceLensEvent[]>([]);
   const [selected, setSelected] = useState<string>();
   const [selectedRelease, setSelectedRelease] = useState('all');
+  const [view, setView] = useState<'interactions' | 'releases'>('interactions');
 
   useEffect(() => {
     const load = async () => {
@@ -94,9 +96,19 @@ function App() {
       <aside>
         <p className="eyebrow">Workspace</p>
         <nav>
-          <a className="active">Interactions</a>
-          <a>Sessions</a>
-          <a>Releases</a>
+          <button
+            className={view === 'interactions' ? 'active' : ''}
+            onClick={() => setView('interactions')}
+          >
+            Interactions
+          </button>
+          <button disabled>Sessions</button>
+          <button
+            className={view === 'releases' ? 'active' : ''}
+            onClick={() => setView('releases')}
+          >
+            Releases
+          </button>
         </nav>
         <div className="capture">
           <span className="pulse" /> Capturing locally
@@ -108,81 +120,85 @@ function App() {
           </small>
         </div>
       </aside>
-      <main>
-        <section className="hero">
-          <div>
-            <p className="eyebrow">Interaction health</p>
-            <h1>See where the frame went.</h1>
-            <p className="muted">
-              Real browser timings, correlated into one debugging view.
-            </p>
-          </div>
-          <div className="metric">
-            <span>INP max</span>
-            <strong>
-              {Math.round(inp)}
-              <small> ms</small>
-            </strong>
-            <em className={inp > 200 ? 'warn' : 'good'}>
-              {inp ? (inp > 200 ? 'needs work' : 'good') : 'waiting'}
-            </em>
-          </div>
-        </section>
-        <section className="panel">
-          <div className="panel-title">
+      {view === 'interactions' ? (
+        <main>
+          <section className="hero">
             <div>
-              <p className="eyebrow">Captured interactions</p>
-              <h2>Slowest first</h2>
-            </div>
-            <span>{interactions.length} traces</span>
-          </div>
-          {interactions.length === 0 ? (
-            <div className="empty">
-              <div className="scope" />
-              <h3>Waiting for an interaction</h3>
-              <p>
-                Open the playground at <code>localhost:4174</code> and click
-                “Save settings”.
+              <p className="eyebrow">Interaction health</p>
+              <h1>See where the frame went.</h1>
+              <p className="muted">
+                Real browser timings, correlated into one debugging view.
               </p>
             </div>
-          ) : (
-            <div className="trace-grid">
-              <div className="trace-list">
-                {[...interactions]
-                  .sort((a, b) => b.payload.duration - a.payload.duration)
-                  .map((event) => (
-                    <button
-                      className={
-                        active?.id === event.id ? 'trace selected' : 'trace'
-                      }
-                      key={event.id}
-                      onClick={() => setSelected(event.id)}
-                    >
-                      <div>
-                        <strong>{event.payload.name}</strong>
-                        <span>
-                          {event.payload.route}
-                          {event.release ? ` · ${event.release}` : ''}
-                        </span>
-                      </div>
-                      <b>{Math.round(event.payload.duration)} ms</b>
-                    </button>
-                  ))}
-              </div>
-              {active && (
-                <Detail
-                  interaction={active.payload}
-                  frames={frames.map((event) => event.payload)}
-                  networks={networks.map((event) => event.payload)}
-                  shifts={shifts.map((event) => event.payload)}
-                  spans={spans.map((event) => event.payload)}
-                  reactRenders={reactRenders.map((event) => event.payload)}
-                />
-              )}
+            <div className="metric">
+              <span>INP max</span>
+              <strong>
+                {Math.round(inp)}
+                <small> ms</small>
+              </strong>
+              <em className={inp > 200 ? 'warn' : 'good'}>
+                {inp ? (inp > 200 ? 'needs work' : 'good') : 'waiting'}
+              </em>
             </div>
-          )}
-        </section>
-      </main>
+          </section>
+          <section className="panel">
+            <div className="panel-title">
+              <div>
+                <p className="eyebrow">Captured interactions</p>
+                <h2>Slowest first</h2>
+              </div>
+              <span>{interactions.length} traces</span>
+            </div>
+            {interactions.length === 0 ? (
+              <div className="empty">
+                <div className="scope" />
+                <h3>Waiting for an interaction</h3>
+                <p>
+                  Open the playground at <code>localhost:4174</code> and click
+                  “Save settings”.
+                </p>
+              </div>
+            ) : (
+              <div className="trace-grid">
+                <div className="trace-list">
+                  {[...interactions]
+                    .sort((a, b) => b.payload.duration - a.payload.duration)
+                    .map((event) => (
+                      <button
+                        className={
+                          active?.id === event.id ? 'trace selected' : 'trace'
+                        }
+                        key={event.id}
+                        onClick={() => setSelected(event.id)}
+                      >
+                        <div>
+                          <strong>{event.payload.name}</strong>
+                          <span>
+                            {event.payload.route}
+                            {event.release ? ` · ${event.release}` : ''}
+                          </span>
+                        </div>
+                        <b>{Math.round(event.payload.duration)} ms</b>
+                      </button>
+                    ))}
+                </div>
+                {active && (
+                  <Detail
+                    interaction={active.payload}
+                    frames={frames.map((event) => event.payload)}
+                    networks={networks.map((event) => event.payload)}
+                    shifts={shifts.map((event) => event.payload)}
+                    spans={spans.map((event) => event.payload)}
+                    reactRenders={reactRenders.map((event) => event.payload)}
+                  />
+                )}
+              </div>
+            )}
+          </section>
+        </main>
+      ) : (
+        <ReleaseComparisonView events={events} releases={releases} />
+      )}
     </div>
   );
 }

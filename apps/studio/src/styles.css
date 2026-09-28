@@ -11,7 +11,8 @@
 body {
   margin: 0;
 }
-button {
+button,
+select {
   font: inherit;
 }
 .shell {
@@ -96,15 +97,141 @@ nav {
   display: grid;
   gap: 5px;
 }
-nav a {
+nav button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
   padding: 10px 12px;
   color: #7f8b85;
   font-size: 13px;
+  cursor: pointer;
+}
+nav button:disabled {
+  cursor: default;
+  opacity: 0.45;
 }
 nav .active {
   color: #e7ece8;
   background: #141a17;
   border-left: 2px solid #74f0ad;
+}
+.comparison-view {
+  display: grid;
+  gap: 24px;
+}
+.comparison-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 30px;
+}
+.comparison-hero h1 {
+  max-width: 680px;
+}
+.release-pickers {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  padding-bottom: 4px;
+}
+.release-pickers label {
+  display: grid;
+  gap: 7px;
+  color: #78867e;
+  font: 9px DM Mono;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.release-pickers select {
+  min-width: 165px;
+  border: 1px solid #344139;
+  border-radius: 3px;
+  background: #101512;
+  color: #e7ece8;
+  padding: 9px;
+  font: 11px DM Mono;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.compare-arrow {
+  color: #74f0ad;
+  padding-bottom: 10px;
+  font: 16px DM Mono;
+}
+.comparison-empty {
+  padding: 70px 20px;
+  text-align: center;
+}
+.comparison-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.comparison-metric {
+  border: 1px solid #29352e;
+  background: #101512;
+  padding: 19px;
+}
+.comparison-metric > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0;
+}
+.comparison-metric strong {
+  font: 500 20px DM Mono;
+}
+.comparison-metric > div span {
+  color: #56625b;
+}
+.comparison-metric > b {
+  color: #aeb9b2;
+  font: 500 11px DM Mono;
+}
+.delta-panel {
+  min-width: 0;
+}
+.delta-table {
+  display: grid;
+}
+.delta-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 100px 100px 90px;
+  gap: 16px;
+  align-items: center;
+  min-height: 52px;
+  padding: 8px 20px;
+  border-bottom: 1px solid #202923;
+}
+.delta-row:last-child {
+  border-bottom: 0;
+}
+.delta-row > div {
+  display: grid;
+  gap: 4px;
+}
+.delta-row small,
+.delta-row > span {
+  color: #7e8a83;
+  font: 10px DM Mono;
+}
+.delta-row > b {
+  font: 500 11px DM Mono;
+}
+.delta-header {
+  min-height: 36px;
+  background: #111713;
+  color: #68756d;
+  font: 8px DM Mono;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.delta-header span {
+  font-size: 8px;
+}
+.delta-empty {
+  padding: 28px 20px;
 }
 .capture {
   margin-top: auto;
