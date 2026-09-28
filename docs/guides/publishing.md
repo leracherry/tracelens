@@ -1,6 +1,6 @@
 # Publishing TraceLens
 
-The **Release** GitHub Actions workflow validates the repository, builds eight packages, installs their tarballs in a temporary project, tests the bundled Studio, publishes both registries, and creates a GitHub Release with npm tarballs attached.
+The **Release** GitHub Actions workflow validates the repository, builds nine packages (including `@tracelens/otel` on `main`), installs their tarballs in a temporary project, tests the bundled Studio, publishes both registries, and creates a GitHub Release with npm tarballs attached. Changes after v0.1.0 require a new version before publication.
 
 Requirements:
 

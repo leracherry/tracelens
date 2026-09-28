@@ -9,7 +9,7 @@ const artifacts = resolve(root, 'dist/release/npm');
 const tarballs = (await readdir(artifacts))
   .filter((file) => file.endsWith('.tgz'))
   .map((file) => join(artifacts, file));
-assert.equal(tarballs.length, 8);
+assert.equal(tarballs.length, 9);
 await writeFile(
   join(directory, 'package.json'),
   '{"private":true,"type":"module"}\n',
@@ -25,7 +25,7 @@ execFileSync(
     '--input-type=module',
     '-e',
     `
-  for (const name of ['protocol','browser','react','vite','core','storage-file','storage-memory']) await import('@tracelens/' + name);
+  for (const name of ['protocol','browser','react','vite','core','storage-file','storage-memory','otel']) await import('@tracelens/' + name);
 `,
   ],
   { cwd: directory, stdio: 'inherit' },
@@ -94,7 +94,7 @@ try {
     event,
   ]);
   console.log(
-    'Release smoke test passed: eight tarballs, runtime imports, CLI, bundled Studio, collector.',
+    'Release smoke test passed: nine tarballs, runtime imports, CLI, bundled Studio, collector.',
   );
 } finally {
   server.kill();

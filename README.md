@@ -45,6 +45,7 @@ Click an instrumented control, then inspect its timing and correlated work in St
 - [React attribution](docs/guides/react-attribution.md)
 - [Comparing releases](docs/guides/releases.md)
 - [Privacy controls and audit (main)](docs/guides/privacy.md)
+- [OpenTelemetry and collector setup (main)](docs/guides/opentelemetry.md)
 - [Playground walkthrough](docs/guides/performance-debugging-walkthrough.md)
 - [Interaction correlation](docs/architecture/interaction-correlation.md)
 - [Publishing and registry setup](docs/guides/publishing.md)
@@ -90,7 +91,7 @@ Open http://127.0.0.1:4174 for controlled search, settings, checkout, layout, an
 
 ## Current limits
 
-v0.1.0 covers the plan through Phase 15 (ReleaseScope). `main` additionally implements Phase 16 privacy controls and the privacy audit command. Source maps, OpenTelemetry, and CI budgets are future work. The privacy guide describes the differences from v0.1.0.
+v0.1.0 covers the plan through Phase 15 (ReleaseScope). `main` additionally implements Phase 16 privacy controls and Phase 17 OpenTelemetry export and fetch propagation via `@tracelens/otel`. Source maps and CI budgets are future work. The privacy and OpenTelemetry guides describe the differences from v0.1.0.
 
 Studio is a local development tool with in-memory storage and no authentication. Browser API support varies. React production profiling requires a profiling-enabled build. Release deltas describe captured samples and do not establish statistical significance; see the comparison guide for calculation details.
 

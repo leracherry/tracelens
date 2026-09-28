@@ -31,7 +31,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm whoami
-          for name in protocol browser core storage-memory storage-file react vite cli; do
+          for name in protocol browser core storage-memory storage-file react vite cli otel; do
             package="@tracelens/$name"
             version=$(node -p "require('./package.json').version")
             if npm view "$package@$version" version > /dev/null 2>&1; then
@@ -50,7 +50,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for name in protocol browser core storage-memory storage-file react vite cli; do
+          for name in protocol browser core storage-memory storage-file react vite cli otel; do
             package="@leracherry/tracelens-$name"
             version=$(node -p "require('./package.json').version")
             if npm view "$package@$version" version --registry https://npm.pkg.github.com > /dev/null 2>&1; then

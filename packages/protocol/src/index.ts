@@ -117,10 +117,19 @@ export interface PayloadMap {
   'react-render': ReactRenderPayload;
 }
 
+export interface TraceContext {
+  traceId: string;
+  spanId: string;
+  parentSpanId?: string;
+  traceFlags: number;
+}
+
 export interface TraceLensEvent<T extends EventType = EventType> {
   version: typeof TRACE_LENS_VERSION;
   id: string;
   timestamp: number;
+  timeOrigin?: number;
+  traceContext?: TraceContext;
   sessionId: string;
   app: string;
   release?: string;

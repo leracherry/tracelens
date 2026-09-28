@@ -16,6 +16,7 @@ const names = [
   'react',
   'vite',
   'cli',
+  'otel',
 ];
 const version = JSON.parse(await readFile(join(root, 'package.json'))).version;
 const rename = (name) =>

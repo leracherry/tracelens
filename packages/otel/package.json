@@ -1,0 +1,16 @@
+{
+  "name": "@tracelens/otel",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "TraceLens event mapping and OTLP HTTP JSON export",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@tracelens/protocol": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

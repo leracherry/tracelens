@@ -7,9 +7,16 @@ import {
   type ReactRenderPayload,
   type TraceLensEvent,
   type WebVitalPayload,
+  type TraceContext,
 } from '@tracelens/protocol';
 import { InteractionCorrelator, sanitizeNetworkUrl } from './correlation.js';
 import { sanitizeEvent, type PrivacyOptions } from './privacy.js';
+import {
+  createTraceContext,
+  propagateFetchContext,
+  type TracePropagationOptions,
+} from './trace-context.js';
+export type { TracePropagationOptions } from './trace-context.js';
 export { sanitizeTelemetryUrl, type PrivacyOptions } from './privacy.js';
 
 export { InteractionCorrelator, sanitizeNetworkUrl } from './correlation.js';
@@ -30,6 +37,7 @@ export interface InitOptions {
   flushInterval?: number;
   batchSize?: number;
   privacy?: PrivacyOptions;
+  tracePropagation?: TracePropagationOptions;
 }
 
 export interface BuildMetadata {
@@ -105,6 +113,21 @@ class Runtime {
   private readonly seenBrowserInteractions = new Set<number>();
   private readonly correlator = new InteractionCorrelator();
   private readonly cleanup: Array<() => void> = [];
+  private readonly interactionContexts = new Map<string, TraceContext>();
+
+  contextFor(interactionId?: string, root = false): TraceContext {
+    if (!interactionId) return createTraceContext();
+    let parent = this.interactionContexts.get(interactionId);
+    if (!parent) {
+      parent = createTraceContext();
+      this.interactionContexts.set(interactionId, parent);
+      if (this.interactionContexts.size > 1000)
+        this.interactionContexts.delete(
+          this.interactionContexts.keys().next().value!,
+        );
+    }
+    return root ? parent : createTraceContext(parent);
+  }
 
   constructor(
     private readonly options: Required<
@@ -130,11 +153,20 @@ class Runtime {
     );
   }
 
-  emit<T extends EventType>(type: T, payload: PayloadMap[T]): void {
+  emit<T extends EventType>(
+    type: T,
+    payload: PayloadMap[T],
+    traceContext?: TraceContext,
+  ): void {
+    const interactionId =
+      'interactionId' in payload ? payload.interactionId : undefined;
     const event: TraceLensEvent<T> = {
       version: TRACE_LENS_VERSION,
       id: crypto.randomUUID(),
       timestamp: Date.now(),
+      timeOrigin: performance.timeOrigin,
+      traceContext:
+        traceContext ?? this.contextFor(interactionId, type === 'interaction'),
       sessionId: this.sessionId,
       app: this.options.app,
       release: this.options.release,
@@ -370,27 +402,42 @@ class Runtime {
         init?.method ?? (input instanceof Request ? input.method : 'GET')
       ).toUpperCase();
       const interactionId = runtime.correlator.active(startTime)?.id;
+      const context = runtime.contextFor(interactionId);
+      const tracedInit = propagateFetchContext(
+        input,
+        init,
+        context,
+        runtime.options.tracePropagation,
+      );
       try {
-        const response = await original(input, init);
-        runtime.emit('network', {
-          method,
-          url: rawUrl,
-          status: response.status,
-          startTime,
-          duration: performance.now() - startTime,
-          interactionId,
-          transport: 'fetch',
-        });
+        const response = await original(input, tracedInit);
+        runtime.emit(
+          'network',
+          {
+            method,
+            url: rawUrl,
+            status: response.status,
+            startTime,
+            duration: performance.now() - startTime,
+            interactionId,
+            transport: 'fetch',
+          },
+          context,
+        );
         return response;
       } catch (error) {
-        runtime.emit('network', {
-          method,
-          url: rawUrl,
-          startTime,
-          duration: performance.now() - startTime,
-          interactionId,
-          transport: 'fetch',
-        });
+        runtime.emit(
+          'network',
+          {
+            method,
+            url: rawUrl,
+            startTime,
+            duration: performance.now() - startTime,
+            interactionId,
+            transport: 'fetch',
+          },
+          context,
+        );
         throw error;
       }
     };
@@ -518,22 +565,32 @@ export async function trace<T>(
   fn: () => T | Promise<T>,
 ): Promise<T> {
   const startTime = performance.now();
+  const active = runtime;
+  const context = active?.contextFor(active.activeInteractionId(startTime));
   try {
     const result = await fn();
-    runtime?.emit('custom-span', {
-      name,
-      startTime,
-      duration: performance.now() - startTime,
-      status: 'ok',
-    });
+    active?.emit(
+      'custom-span',
+      {
+        name,
+        startTime,
+        duration: performance.now() - startTime,
+        status: 'ok',
+      },
+      context,
+    );
     return result;
   } catch (error) {
-    runtime?.emit('custom-span', {
-      name,
-      startTime,
-      duration: performance.now() - startTime,
-      status: 'error',
-    });
+    active?.emit(
+      'custom-span',
+      {
+        name,
+        startTime,
+        duration: performance.now() - startTime,
+        status: 'error',
+      },
+      context,
+    );
     throw error;
   }
 }
