@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { AnyTraceLensEvent } from '@tracelens/protocol';
-import { aggregateReleases } from './index';
+import { aggregateReleases, compareReleases } from './index';
 
 function event(
   overrides: Partial<AnyTraceLensEvent> &
@@ -87,5 +87,112 @@ describe('aggregateReleases', () => {
         mark('2.14.0', 20),
       ]).map((release) => release.release),
     ).toEqual(['2.14.0', '2.13.0']);
+  });
+});
+
+describe('compareReleases', () => {
+  const interaction = (
+    release: string,
+    route: string,
+    name: string,
+    duration: number,
+  ) =>
+    event({
+      release,
+      type: 'interaction',
+      payload: {
+        interactionId: crypto.randomUUID(),
+        interactionType: 'click',
+        name,
+        route,
+        startTime: 0,
+        duration,
+        timing: {
+          total: duration,
+          inputDelay: 0,
+          processingDuration: duration,
+          presentationDelay: 0,
+        },
+      },
+    });
+  const render = (release: string, component: string, duration: number) =>
+    event({
+      release,
+      type: 'react-render',
+      payload: {
+        component,
+        phase: 'update',
+        duration,
+        baseDuration: duration,
+        startTime: 0,
+        commitTime: duration,
+        renderCount: 1,
+      },
+    });
+
+  it('calculates metrics and ranks interaction regressions', () => {
+    const comparison = compareReleases(
+      [
+        interaction('2.13.0', '/settings', 'Save settings', 200),
+        interaction('2.14.0', '/settings', 'Save settings', 300),
+        interaction('2.13.0', '/search', 'Search', 100),
+        interaction('2.14.0', '/search', 'Search', 110),
+        event({
+          release: '2.13.0',
+          type: 'web-vital',
+          payload: { name: 'LCP', value: 1_800, rating: 'good', route: '/' },
+        }),
+        event({
+          release: '2.14.0',
+          type: 'web-vital',
+          payload: { name: 'LCP', value: 1_980, rating: 'good', route: '/' },
+        }),
+      ],
+      '2.13.0',
+      '2.14.0',
+    );
+
+    expect(comparison.metrics.inpP75).toMatchObject({
+      before: 200,
+      after: 300,
+      percent: 50,
+    });
+    expect(comparison.metrics.lcpP75.percent).toBeCloseTo(10);
+    expect(comparison.interactions[0]).toMatchObject({
+      route: '/settings',
+      name: 'Save settings',
+      percent: 50,
+    });
+  });
+
+  it('reports component duration and render-count deltas', () => {
+    const comparison = compareReleases(
+      [
+        render('2.13.0', 'BillingForm', 40),
+        render('2.14.0', 'BillingForm', 60),
+        render('2.14.0', 'BillingForm', 80),
+      ],
+      '2.13.0',
+      '2.14.0',
+    );
+
+    expect(comparison.components[0]).toMatchObject({
+      name: 'BillingForm',
+      before: 40,
+      after: 80,
+      percent: 100,
+      beforeRenders: 1,
+      afterRenders: 2,
+      renderDelta: 1,
+    });
+  });
+
+  it('rejects missing or identical releases', () => {
+    expect(() => compareReleases([], 'same', 'same')).toThrow(
+      'two different releases',
+    );
+    expect(() => compareReleases([], 'missing', 'after')).toThrow(
+      'Release not found: missing',
+    );
   });
 });

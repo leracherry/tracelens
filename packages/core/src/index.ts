@@ -25,8 +25,42 @@ export interface ReleaseSummary {
   sessionCount: number;
   interactionCount: number;
   inpP75?: number;
+  lcpP75?: number;
   longFrameCount: number;
   longFramesPerSession: number;
+}
+
+export interface PerformanceDelta {
+  before?: number;
+  after?: number;
+  absolute?: number;
+  percent?: number;
+}
+
+export interface ScopePerformanceDelta extends PerformanceDelta {
+  key: string;
+  route?: string;
+  name: string;
+}
+
+export interface ComponentPerformanceDelta extends ScopePerformanceDelta {
+  beforeRenders: number;
+  afterRenders: number;
+  renderDelta: number;
+}
+
+export interface ReleaseComparison {
+  before: ReleaseSummary;
+  after: ReleaseSummary;
+  metrics: {
+    inpP75: PerformanceDelta;
+    lcpP75: PerformanceDelta;
+    longFramesPerSession: PerformanceDelta;
+  };
+  routes: ScopePerformanceDelta[];
+  interactions: ScopePerformanceDelta[];
+  components: ComponentPerformanceDelta[];
+  newLongFrames: number;
 }
 
 export function applyTraceQuery(
@@ -52,6 +86,7 @@ export function aggregateReleases(
       summary: ReleaseSummary;
       sessions: Set<string>;
       interactionDurations: number[];
+      lcpValues: number[];
     }
   >();
 
@@ -75,6 +110,7 @@ export function aggregateReleases(
         },
         sessions: new Set(),
         interactionDurations: [],
+        lcpValues: [],
       };
       groups.set(event.release, group);
     }
@@ -93,13 +129,17 @@ export function aggregateReleases(
       summary.interactionCount += 1;
       group.interactionDurations.push(event.payload.duration);
     }
+    if (event.type === 'web-vital' && event.payload.name === 'LCP') {
+      group.lcpValues.push(event.payload.value);
+    }
     if (event.type === 'long-frame') summary.longFrameCount += 1;
   }
 
   return [...groups.values()]
-    .map(({ summary, sessions, interactionDurations }) => {
+    .map(({ summary, sessions, interactionDurations, lcpValues }) => {
       summary.sessionCount = sessions.size;
       summary.inpP75 = percentile(interactionDurations, 0.75);
+      summary.lcpP75 = percentile(lcpValues, 0.75);
       summary.longFramesPerSession = sessions.size
         ? summary.longFrameCount / sessions.size
         : 0;
@@ -108,7 +148,169 @@ export function aggregateReleases(
     .sort((a, b) => b.lastSeen - a.lastSeen);
 }
 
-function percentile(values: readonly number[], quantile: number) {
+export function compareReleases(
+  events: readonly AnyTraceLensEvent[],
+  beforeRelease: string,
+  afterRelease: string,
+): ReleaseComparison {
+  if (beforeRelease === afterRelease) {
+    throw new Error('Release comparison requires two different releases.');
+  }
+  const summaries = aggregateReleases(events);
+  const before = summaries.find((summary) => summary.release === beforeRelease);
+  const after = summaries.find((summary) => summary.release === afterRelease);
+  if (!before) throw new Error(`Release not found: ${beforeRelease}`);
+  if (!after) throw new Error(`Release not found: ${afterRelease}`);
+
+  return {
+    before,
+    after,
+    metrics: {
+      inpP75: performanceDelta(before.inpP75, after.inpP75),
+      lcpP75: performanceDelta(before.lcpP75, after.lcpP75),
+      longFramesPerSession: performanceDelta(
+        before.longFramesPerSession,
+        after.longFramesPerSession,
+      ),
+    },
+    routes: compareScopes(events, beforeRelease, afterRelease, (event) => {
+      if (event.type !== 'interaction') return undefined;
+      return { key: event.payload.route, name: event.payload.route };
+    }),
+    interactions: compareScopes(
+      events,
+      beforeRelease,
+      afterRelease,
+      (event) => {
+        if (event.type !== 'interaction') return undefined;
+        return {
+          key: `${event.payload.route}\u0000${event.payload.name}`,
+          route: event.payload.route,
+          name: event.payload.name,
+        };
+      },
+    ),
+    components: compareComponents(events, beforeRelease, afterRelease),
+    newLongFrames: Math.max(0, after.longFrameCount - before.longFrameCount),
+  };
+}
+
+function compareScopes(
+  events: readonly AnyTraceLensEvent[],
+  beforeRelease: string,
+  afterRelease: string,
+  identify: (
+    event: AnyTraceLensEvent,
+  ) => { key: string; route?: string; name: string } | undefined,
+): ScopePerformanceDelta[] {
+  const scopes = new Map<
+    string,
+    {
+      route?: string;
+      name: string;
+      before: number[];
+      after: number[];
+    }
+  >();
+  for (const event of events) {
+    if (event.release !== beforeRelease && event.release !== afterRelease)
+      continue;
+    const identity = identify(event);
+    if (!identity || event.type !== 'interaction') continue;
+    let scope = scopes.get(identity.key);
+    if (!scope) {
+      scope = { ...identity, before: [], after: [] };
+      scopes.set(identity.key, scope);
+    }
+    const values = event.release === beforeRelease ? scope.before : scope.after;
+    values.push(event.payload.duration);
+  }
+  return [...scopes.entries()]
+    .map(([key, scope]) => ({
+      key,
+      route: scope.route,
+      name: scope.name,
+      ...performanceDelta(
+        percentile(scope.before, 0.75),
+        percentile(scope.after, 0.75),
+      ),
+    }))
+    .sort(compareRegression);
+}
+
+function compareComponents(
+  events: readonly AnyTraceLensEvent[],
+  beforeRelease: string,
+  afterRelease: string,
+): ComponentPerformanceDelta[] {
+  const components = new Map<
+    string,
+    { before: number[]; after: number[]; beforeRenders: number; afterRenders: number }
+  >();
+  for (const event of events) {
+    if (
+      event.type !== 'react-render' ||
+      (event.release !== beforeRelease && event.release !== afterRelease)
+    )
+      continue;
+    let component = components.get(event.payload.component);
+    if (!component) {
+      component = { before: [], after: [], beforeRenders: 0, afterRenders: 0 };
+      components.set(event.payload.component, component);
+    }
+    if (event.release === beforeRelease) {
+      component.before.push(event.payload.duration);
+      component.beforeRenders += 1;
+    } else {
+      component.after.push(event.payload.duration);
+      component.afterRenders += 1;
+    }
+  }
+  return [...components.entries()]
+    .map(([name, component]) => ({
+      key: name,
+      name,
+      ...performanceDelta(
+        percentile(component.before, 0.75),
+        percentile(component.after, 0.75),
+      ),
+      beforeRenders: component.beforeRenders,
+      afterRenders: component.afterRenders,
+      renderDelta: component.afterRenders - component.beforeRenders,
+    }))
+    .sort(compareRegression);
+}
+
+function performanceDelta(
+  before: number | undefined,
+  after: number | undefined,
+): PerformanceDelta {
+  const absolute =
+    before === undefined || after === undefined ? undefined : after - before;
+  return {
+    before,
+    after,
+    absolute,
+    percent:
+      absolute === undefined || before === undefined || before === 0
+        ? undefined
+        : (absolute / before) * 100,
+  };
+}
+
+function compareRegression(
+  left: PerformanceDelta,
+  right: PerformanceDelta,
+): number {
+  const score = (delta: PerformanceDelta) =>
+    delta.percent ?? (delta.before === undefined && delta.after !== undefined ? Infinity : -Infinity);
+  return score(right) - score(left);
+}
+
+function percentile(
+  values: readonly number[],
+  quantile: number,
+): number | undefined {
   if (!values.length) return undefined;
   const sorted = [...values].sort((a, b) => a - b);
   return sorted[Math.ceil(sorted.length * quantile) - 1];
