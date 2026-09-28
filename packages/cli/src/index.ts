@@ -5,12 +5,29 @@ import { formatReleaseComparison } from './compare.js';
 import { formatDoctor, runDoctor } from './doctor.js';
 import { formatInteractionReport } from './format.js';
 import { startStudio } from './studio.js';
+import { auditPrivacy, formatPrivacyAudit } from './privacy.js';
 import { readTraceFile, readTraceUrl } from './trace-file.js';
 
 const [command, ...args] = process.argv.slice(2);
 
 async function main(): Promise<number> {
   switch (command) {
+    case 'privacy': {
+      if (args[0] !== 'audit')
+        throw new Error('Usage: tracelens privacy audit [--file trace.json]');
+      const file = optionalStringOption(args, '--file');
+      const events = file
+        ? await readTraceFile(resolve(file))
+        : await readTraceUrl(
+            stringOption(
+              args,
+              '--endpoint',
+              'http://127.0.0.1:4173/__tracelens',
+            ),
+          );
+      console.log(formatPrivacyAudit(events));
+      return auditPrivacy(events).length ? 1 : 0;
+    }
     case 'inspect': {
       const path = args.find((argument) => !argument.startsWith('-'));
       if (!path) throw new Error('Usage: tracelens inspect <trace.json>');
@@ -82,7 +99,10 @@ function optionalStringOption(
   name: string,
 ): string | undefined {
   const index = args.indexOf(name);
-  return index === -1 ? undefined : args[index + 1];
+  if (index === -1) return undefined;
+  if (!args[index + 1] || args[index + 1]!.startsWith('--'))
+    throw new Error(`${name} requires a value.`);
+  return args[index + 1];
 }
 
 function numberOption(args: string[], name: string, fallback: number): number {
@@ -101,6 +121,7 @@ Usage
   tracelens inspect <trace.json>
   tracelens compare <before> <after> [--file trace.json]
   tracelens doctor
+  tracelens privacy audit [--file trace.json] [--endpoint URL]
 
 Options
   -h, --help       Show command help

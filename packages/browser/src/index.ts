@@ -9,6 +9,8 @@ import {
   type WebVitalPayload,
 } from '@tracelens/protocol';
 import { InteractionCorrelator, sanitizeNetworkUrl } from './correlation.js';
+import { sanitizeEvent, type PrivacyOptions } from './privacy.js';
+export { sanitizeTelemetryUrl, type PrivacyOptions } from './privacy.js';
 
 export { InteractionCorrelator, sanitizeNetworkUrl } from './correlation.js';
 
@@ -27,6 +29,7 @@ export interface InitOptions {
   endpoint?: string;
   flushInterval?: number;
   batchSize?: number;
+  privacy?: PrivacyOptions;
 }
 
 export interface BuildMetadata {
@@ -141,7 +144,9 @@ class Runtime {
       type,
       payload,
     };
-    this.queue.push(event as AnyTraceLensEvent);
+    this.queue.push(
+      sanitizeEvent(event as AnyTraceLensEvent, this.options.privacy),
+    );
     if (this.queue.length >= this.options.batchSize) void this.flush();
   }
 
@@ -212,7 +217,7 @@ class Runtime {
         );
         const target =
           entry.target instanceof Element
-            ? describeElement(entry.target)
+            ? describeElement(entry.target, this.options.privacy)
             : undefined;
         const candidate = this.correlator.match(entry.name, entry.startTime);
         this.emit('interaction', {
@@ -259,7 +264,7 @@ class Runtime {
             entry.duration,
           )?.id,
           scripts: (entry.scripts ?? []).map((script) => ({
-            source: sanitizeUrl(script.sourceURL),
+            source: script.sourceURL,
             functionName: script.sourceFunctionName,
             duration: script.duration,
             thirdParty: script.sourceURL
@@ -324,7 +329,7 @@ class Runtime {
       if (!['click', 'keydown', 'pointerdown'].includes(event.type)) return;
       const target =
         event.target instanceof Element
-          ? describeElement(event.target)
+          ? describeElement(event.target, this.options.privacy)
           : undefined;
       const startTime = performance.now();
       const pointerCandidate =
@@ -369,7 +374,7 @@ class Runtime {
         const response = await original(input, init);
         runtime.emit('network', {
           method,
-          url: sanitizeNetworkUrl(rawUrl),
+          url: rawUrl,
           status: response.status,
           startTime,
           duration: performance.now() - startTime,
@@ -380,7 +385,7 @@ class Runtime {
       } catch (error) {
         runtime.emit('network', {
           method,
-          url: sanitizeNetworkUrl(rawUrl),
+          url: rawUrl,
           startTime,
           duration: performance.now() - startTime,
           interactionId,
@@ -423,7 +428,7 @@ class Runtime {
           () => {
             runtime.emit('network', {
               method: meta.method,
-              url: sanitizeNetworkUrl(meta.url),
+              url: meta.url,
               status: this.status || undefined,
               startTime: meta.startTime!,
               duration: performance.now() - meta.startTime!,
@@ -533,28 +538,29 @@ export async function trace<T>(
   }
 }
 
-export function describeElement(element: Element): ElementDescriptor {
-  const explicit = element.getAttribute('data-tracelens-name');
-  const aria = element.getAttribute('aria-label');
-  const role = element.getAttribute('role') ?? undefined;
-  const type = element.getAttribute('type');
+export function describeElement(
+  element: Element,
+  privacy: PrivacyOptions = {},
+): ElementDescriptor {
+  const allowed = new Set(
+    privacy.allowedElementAttributes ?? ['data-tracelens-name', 'role', 'type'],
+  );
+  const attribute = (
+    name: 'data-tracelens-name' | 'aria-label' | 'role' | 'type' | 'id',
+  ) => (allowed.has(name) ? element.getAttribute(name) : null);
+  const explicit = attribute('data-tracelens-name');
+  const aria = attribute('aria-label');
+  const role = attribute('role') ?? undefined;
+  const type = attribute('type');
   const name =
     (explicit ?? aria ?? [role, type].filter(Boolean).join(' ')) ||
     element.tagName.toLowerCase();
-  const id = element.id ? `#${CSS.escape(element.id)}` : '';
+  const elementId = attribute('id');
+  const id = elementId ? `#${CSS.escape(elementId)}` : '';
   return {
     tagName: element.tagName.toLowerCase(),
     role,
     name,
     selector: `${element.tagName.toLowerCase()}${id}`,
   };
-}
-
-function sanitizeUrl(value?: string): string | undefined {
-  if (!value) return undefined;
-  try {
-    return sanitizeNetworkUrl(value);
-  } catch {
-    return undefined;
-  }
 }

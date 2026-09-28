@@ -72,6 +72,6 @@ export function sanitizeNetworkUrl(
     const url = new URL(value, base);
     return `${url.origin}${url.pathname}`;
   } catch {
-    return value.split('?')[0] ?? value;
+    return '[redacted]';
   }
 }
