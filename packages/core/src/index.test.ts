@@ -45,7 +45,10 @@ describe('aggregateReleases', () => {
       interaction(200),
       interaction(300, 'session-2'),
       interaction(400, 'session-2'),
-      event({ type: 'long-frame', payload: { startTime: 0, duration: 60, scripts: [] } }),
+      event({
+        type: 'long-frame',
+        payload: { startTime: 0, duration: 60, scripts: [] },
+      }),
       event({
         timestamp: 2,
         commit: '7ac841f',

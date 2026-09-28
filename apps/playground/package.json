@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "pnpm --filter @tracelens/vite build",
     "dev": "vite --host 127.0.0.1 --port 4174",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty false"
