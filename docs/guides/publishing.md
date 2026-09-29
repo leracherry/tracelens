@@ -1,8 +1,8 @@
 # Publishing TraceLens
 
-The **Release** GitHub Actions workflow validates the repository, builds nine packages (including `@leracherry/tracelens-otel`), installs their tarballs in a temporary project, tests the bundled Studio, attempts publication to both registries, and creates a GitHub Release with npm-format tarballs attached. v0.2.1 includes Phases 16 and 17.
+The **Release** GitHub Actions workflow validates the repository, builds nine packages (including `@leracherry/tracelens-otel`), installs their tarballs in a temporary project, tests the bundled Studio, attempts publication to both registries, and creates a GitHub Release with npm-format tarballs attached.
 
-v0.2.1 moves npm publication from the unavailable `@tracelens` scope to the account-owned `@leracherry` scope. A successful GitHub Release does not prove npm publication succeeded; the workflow reports npm failures separately.
+Since v0.2.1, npm publication uses the account-owned `@leracherry` scope. A successful GitHub Release does not prove npm publication succeeded; the workflow reports npm failures separately.
 
 Requirements:
 
@@ -34,8 +34,8 @@ For GitHub Packages, configure the scope registry and authenticate with a token 
 ```bash
 npm config set @leracherry:registry https://npm.pkg.github.com
 npm login --scope=@leracherry --registry=https://npm.pkg.github.com
-npm install @leracherry/tracelens-browser@0.2.1
-npx @leracherry/tracelens-cli@0.2.1 studio
+npm install @leracherry/tracelens-browser@0.3.0
+npx @leracherry/tracelens-cli@0.3.0 studio
 ```
 
 Use `import { init } from '@leracherry/tracelens-browser'` on either registry. Keep all TraceLens packages on the same version. GitHub package visibility and account permissions govern installation from the mirror.

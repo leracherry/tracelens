@@ -1,6 +1,6 @@
-# Source maps (Phase 18, unreleased)
+# Source maps
 
-Source maps connect long-frame script contributions with original files and line/column locations. This feature is on `main`, not in the published v0.2.1 packages.
+Source maps connect long-frame script contributions with original files and line/column locations. This integration was introduced in v0.3.0 (Phase 18).
 
 ## Local workflow
 

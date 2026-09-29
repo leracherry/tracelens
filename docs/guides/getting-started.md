@@ -4,7 +4,7 @@ Use Node.js 22 or newer for the CLI and build integration. Packages are ESM with
 
 ```bash
 npm install @leracherry/tracelens-browser
-npx @leracherry/tracelens-cli@0.2.1 studio
+npx @leracherry/tracelens-cli@0.3.0 studio
 ```
 
 Open http://127.0.0.1:4173. Add this to your application's browser entry point:

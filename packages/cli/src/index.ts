@@ -105,7 +105,7 @@ async function main(): Promise<number> {
     }
     case '--version':
     case '-v':
-      console.log('tracelens 0.2.1');
+      console.log('tracelens 0.3.0');
       return 0;
     case '--help':
     case '-h':

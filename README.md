@@ -2,9 +2,18 @@
 
 **Real-user performance debugging for frontend engineers.**
 
+[![CI](https://github.com/leracherry/tracelens/actions/workflows/ci.yml/badge.svg)](https://github.com/leracherry/tracelens/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/%40leracherry%2Ftracelens-browser?label=npm&color=74f0ad)](https://www.npmjs.com/package/@leracherry/tracelens-browser)
+[![GitHub release](https://img.shields.io/github/v/release/leracherry/tracelens?color=f3be68)](https://github.com/leracherry/tracelens/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-8c9891.svg)](LICENSE)
+
 Find the interaction. Find the frame. Find the component. Find the release.
 
-TraceLens captures browser performance events and correlates slow interactions with long frames, network requests, custom spans, and React profiler commits. Run Studio locally to inspect traces and compare releases.
+TraceLens turns browser performance telemetry into an explanation: which interaction was slow, where its time went, what React rendered, which request overlapped it, and which release introduced the regression.
+
+![TraceLens Studio interaction view showing a 487 ms Save settings interaction correlated with browser, React, custom, network, layout, and source-mapped script work](docs/assets/studio-interaction.png)
+
+<p align="center"><em>One interaction, from input delay to its source-mapped long-frame contributor.</em></p>
 
 ## Quick start
 
@@ -14,7 +23,7 @@ Starting with v0.2.1, both registries use `@leracherry/tracelens-*`. See [regist
 
 ```bash
 npm install @leracherry/tracelens-browser
-npx @leracherry/tracelens-cli@0.2.1 studio
+npx @leracherry/tracelens-cli@0.3.0 studio
 ```
 
 Open http://127.0.0.1:4173 and initialize the SDK in your application's browser entry point:
@@ -32,7 +41,7 @@ init({
 
 Click an instrumented control, then inspect its timing and correlated work in Studio. The CLI includes the built Studio; a repository checkout is not required.
 
-## What is included
+## A debugging view, not another metrics dashboard
 
 - Browser interaction timing with input, processing, and presentation breakdowns.
 - Web Vitals, long animation frames, fetch/XHR timing, layout shifts, and custom spans.
@@ -42,6 +51,30 @@ Click an instrumented control, then inspect its timing and correlated work in St
 - CLI commands for Studio, trace inspection, release comparison, and diagnostics.
 - Configurable URL/element privacy controls and a heuristic privacy audit.
 - OTLP/HTTP trace export and opt-in, origin-allowlisted fetch propagation.
+- Release-bound source-map resolution with original file locations and safe GitHub links.
+
+## Find the release that changed the frame
+
+ReleaseScope compares observed responsiveness across builds and ranks interaction, route, and React component regressions.
+
+![TraceLens ReleaseScope comparing releases 2.13.4 and 2.14.0 with INP, LCP, long-frame, interaction, route, and React component deltas](docs/assets/studio-release-comparison.png)
+
+<p align="center"><em>Release-level signal with the exact interactions and components that moved.</em></p>
+
+## How it fits
+
+```text
+Browser SDK + React profiler
+            │
+            ▼
+privacy-aware event correlation ──► OTLP/HTTP
+            │
+            ▼
+local Studio collector
+            │
+            ├── interaction timeline + source locations
+            └── ReleaseScope + CLI reports
+```
 
 ## Documentation
 
@@ -50,11 +83,11 @@ Click an instrumented control, then inspect its timing and correlated work in St
 - [Comparing releases](docs/guides/releases.md)
 - [Privacy controls and audit](docs/guides/privacy.md)
 - [OpenTelemetry and collector setup](docs/guides/opentelemetry.md)
-- [Source maps and GitHub file links (main)](docs/guides/source-maps.md)
+- [Source maps and GitHub file links](docs/guides/source-maps.md)
 - [Playground walkthrough](docs/guides/performance-debugging-walkthrough.md)
 - [Interaction correlation](docs/architecture/interaction-correlation.md)
 - [Publishing and registry setup](docs/guides/publishing.md)
-- [v0.2.1 release notes and migration](docs/releases/v0.2.1.md)
+- [v0.3.0 release notes](docs/releases/v0.3.0.md)
 
 ## Packages
 
@@ -80,6 +113,7 @@ npx @leracherry/tracelens-cli inspect trace.json
 npx @leracherry/tracelens-cli compare 1.0.0 1.1.0 --file trace.json
 npx @leracherry/tracelens-cli doctor
 npx @leracherry/tracelens-cli privacy audit --file trace.json
+npx @leracherry/tracelens-cli sourcemaps upload ./dist --app dashboard --release 1.0.0 --url-prefix https://app.example/
 ```
 
 Omit `--file` to compare events from a running Studio collector.
@@ -98,7 +132,7 @@ Open http://127.0.0.1:4174 for controlled search, settings, checkout, layout, an
 
 ## Current limits
 
-v0.2.1 covers the plan through Phase 17: ReleaseScope, privacy controls, and OpenTelemetry export. `main` additionally implements Phase 18: local source-map imports, long-frame source resolution, and GitHub file links. Performance budgets are next. The OTLP transport exports traces, not metrics, and is not an OpenTelemetry SDK SpanExporter.
+v0.3.0 covers the plan through Phase 18: ReleaseScope, privacy controls, OpenTelemetry export, and local source-map resolution. Performance budgets are next. The OTLP transport exports traces, not metrics, and is not an OpenTelemetry SDK SpanExporter.
 
 Studio is a local development tool with in-memory storage and no authentication. Browser API support varies. React production profiling requires a profiling-enabled build. Release deltas describe captured samples and do not establish statistical significance; see the comparison guide for calculation details.
 
@@ -111,6 +145,9 @@ pnpm typecheck
 pnpm test
 pnpm build
 pnpm format:check
+
+# Rebuild the README product screenshots (requires Playwright Chromium)
+pnpm docs:capture
 ```
 
 ## License
