@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "@leracherry/tracelens-core": "workspace:*",
-    "@leracherry/tracelens-protocol": "workspace:*"
+    "@leracherry/tracelens-protocol": "workspace:*",
+    "yaml": "^2.9.1"
   },
   "devDependencies": {
     "@types/node": "^22.15.0"

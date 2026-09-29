@@ -1,0 +1,19 @@
+minimumSamples: 20
+
+performance:
+  inp:
+    p75: 200
+  lcp:
+    p75: 2500
+  cls:
+    p75: 0.1
+  longFramesPerSession:
+    max: 1
+
+routes:
+  /checkout:
+    inp:
+      p75: 150
+  /settings/profile:
+    inp:
+      p75: 200

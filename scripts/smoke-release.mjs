@@ -165,8 +165,23 @@ try {
     collected[1].payload.scripts[0].originalLocation.source,
     'src/app.ts',
   );
+  const budgetConfig = join(directory, 'tracelens.yml');
+  const budgetTrace = join(directory, 'budget-trace.json');
+  await writeFile(
+    budgetConfig,
+    'performance:\n  longFramesPerSession:\n    max: 1\n',
+  );
+  await writeFile(budgetTrace, JSON.stringify([frame]));
+  assert.match(
+    execFileSync(
+      process.execPath,
+      [cli, 'budget', 'check', '--config', budgetConfig, '--file', budgetTrace],
+      { encoding: 'utf8' },
+    ),
+    /All budgets passed/,
+  );
   console.log(
-    'Release smoke test passed: nine tarballs, runtime imports, CLI, bundled Studio, collector.',
+    'Release smoke test passed: nine tarballs, runtime imports, CLI, budgets, bundled Studio, collector.',
   );
 } finally {
   server.kill();

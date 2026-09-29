@@ -8,11 +8,51 @@ import { startStudio } from './studio.js';
 import { uploadSourceMaps } from './source-maps.js';
 import { auditPrivacy, formatPrivacyAudit } from './privacy.js';
 import { readTraceFile, readTraceUrl } from './trace-file.js';
+import {
+  evaluateBudgets,
+  formatBudgetReport,
+  loadBudgetConfig,
+} from './budget.js';
 
 const [command, ...args] = process.argv.slice(2);
 
 async function main(): Promise<number> {
   switch (command) {
+    case 'budget': {
+      if (args[0] !== 'check')
+        throw new Error(
+          'Usage: tracelens budget check [--config tracelens.yml] [--file trace.json] [--release VERSION]',
+        );
+      const config = await loadBudgetConfig(
+        resolve(stringOption(args, '--config', 'tracelens.yml')),
+      );
+      const file = optionalStringOption(args, '--file');
+      const events = file
+        ? await readTraceFile(resolve(file))
+        : await readTraceUrl(
+            stringOption(
+              args,
+              '--endpoint',
+              'http://127.0.0.1:4173/__tracelens',
+            ),
+          );
+      const report = evaluateBudgets(events, config, {
+        release: optionalStringOption(args, '--release'),
+        app: optionalStringOption(args, '--app'),
+        environment: optionalStringOption(args, '--environment'),
+      });
+      const format = args.includes('--json')
+        ? 'json'
+        : stringOption(args, '--format', 'text');
+      if (!['text', 'json'].includes(format))
+        throw new Error('--format must be text or json');
+      console.log(
+        format === 'json'
+          ? JSON.stringify(report, null, 2)
+          : formatBudgetReport(report, { color: process.stdout.isTTY }),
+      );
+      return report.passed ? 0 : 1;
+    }
     case 'sourcemaps': {
       if (args[0] !== 'upload' || !args[1] || args[1].startsWith('-'))
         throw new Error(
@@ -150,6 +190,8 @@ Usage
   tracelens compare <before> <after> [--file trace.json]
   tracelens doctor
   tracelens privacy audit [--file trace.json] [--endpoint URL]
+  tracelens budget check [--config tracelens.yml] [--file trace.json]
+    [--release VERSION] [--app NAME] [--environment NAME] [--format text|json]
   tracelens sourcemaps upload <dist> --app NAME --release VERSION --url-prefix URL
     [--store .tracelens/sourcemaps] [--repository https://github.com/OWNER/REPO --commit SHA]
 

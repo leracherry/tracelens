@@ -1,4 +1,4 @@
-import { cp, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
@@ -32,6 +32,7 @@ await mkdir(output, { recursive: true });
 for (const name of names) {
   const source = join(root, 'packages', name);
   const stage = join(output, name);
+  await rm(stage, { recursive: true, force: true });
   await mkdir(stage, { recursive: true });
   const manifest = JSON.parse(await readFile(join(source, 'package.json')));
   manifest.version = version;
