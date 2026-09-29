@@ -68,7 +68,8 @@ function App() {
     <div className="shell">
       <header>
         <div className="brand">
-          <span className="mark">TL</span> TraceLens
+          <img className="mark" src="/logo.svg" alt="" width="36" height="36" />{' '}
+          TraceLens
         </div>
         <div className="context">
           <span className="live" /> local <span>/</span>

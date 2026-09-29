@@ -10,7 +10,9 @@ export default defineConfig({
   lastUpdated: true,
   head: [
     ['link', { rel: 'icon', href: '/tracelens/favicon.svg' }],
-    ['meta', { name: 'theme-color', content: '#091a18' }],
+    ['link', { rel: 'alternate icon', href: '/tracelens/favicon.ico' }],
+    ['link', { rel: 'apple-touch-icon', href: '/tracelens/logo-512.png' }],
+    ['meta', { name: 'theme-color', content: '#1683f4' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'TraceLens Documentation' }],
     [

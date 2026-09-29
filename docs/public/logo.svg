@@ -1,11 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="TraceLens">
-  <defs>
-    <linearGradient id="a" x1="20" y1="18" x2="108" y2="110" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#62e6c1"/>
-      <stop offset="1" stop-color="#d99a3d"/>
-    </linearGradient>
-  </defs>
-  <circle cx="57" cy="57" r="38" fill="#091a18" stroke="url(#a)" stroke-width="9"/>
-  <path d="m84 84 28 28" stroke="url(#a)" stroke-width="12" stroke-linecap="round"/>
-  <path d="M31 62h12l7-20 11 35 8-24 7 9h8" fill="none" stroke="#f6fbf9" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="TraceLens logo">
+  <title>TraceLens logo</title>
+
+  <!-- Outer ring -->
+  <path
+    d="M256 48
+       A208 208 0 1 1 108.9 403.1
+       L156.9 355.1
+       A140 140 0 1 0 256 116
+       Z"
+    fill="#A9C9F5"/>
+
+  <!-- Inner white lens ring -->
+  <circle cx="256" cy="245" r="92" fill="#FFFFFF"/>
+
+  <!-- Head -->
+  <circle cx="256" cy="245" r="54" fill="#1683F4"/>
+
+  <!-- Lens handle / separator -->
+  <path
+    d="M173 306
+       C180 298 191 298 200 304
+       L222 319
+       L176 365
+       L151 340
+       Z"
+    fill="#FFFFFF"/>
+
+  <!-- Body -->
+  <path
+    d="M198 319
+       C212 331 231 338 256 338
+       C281 338 300 331 314 319
+       C320 314 329 314 335 320
+       L383 369
+       C390 376 389 387 381 393
+       C346 419 303 433 256 433
+       C209 433 166 419 131 393
+       C123 387 122 376 129 369
+       L177 320
+       C183 314 192 314 198 319
+       Z"
+    fill="#1683F4"/>
 </svg>

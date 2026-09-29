@@ -1,11 +1,15 @@
-# TraceLens
-
-**Real-user performance debugging for frontend engineers.**
+<p align="center">
+  <a href="https://leracherry.github.io/tracelens/">
+    <img src="docs/public/logo.svg" alt="TraceLens" width="112" height="112" />
+  </a>
+</p>
+<h1 align="center">TraceLens</h1>
+<p align="center"><strong>Real-user performance debugging for frontend engineers.</strong></p>
 
 [![CI](https://github.com/leracherry/tracelens/actions/workflows/ci.yml/badge.svg)](https://github.com/leracherry/tracelens/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/%40leracherry%2Ftracelens-browser?label=npm&color=74f0ad)](https://www.npmjs.com/package/@leracherry/tracelens-browser)
-[![GitHub release](https://img.shields.io/github/v/release/leracherry/tracelens?color=f3be68)](https://github.com/leracherry/tracelens/releases)
-[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-0d8f7a)](https://leracherry.github.io/tracelens/)
+[![npm](https://img.shields.io/npm/v/%40leracherry%2Ftracelens-browser?label=npm&color=1683f4)](https://www.npmjs.com/package/@leracherry/tracelens-browser)
+[![GitHub release](https://img.shields.io/github/v/release/leracherry/tracelens?color=a9c9f5)](https://github.com/leracherry/tracelens/releases)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-0863c5)](https://leracherry.github.io/tracelens/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-8c9891.svg)](LICENSE)
 
 Find the interaction. Find the frame. Find the component. Find the release.

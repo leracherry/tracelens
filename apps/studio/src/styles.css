@@ -38,10 +38,9 @@ header {
   align-items: center;
 }
 .mark {
-  border: 1px solid #74f0ad;
-  color: #74f0ad;
-  font: 500 12px DM Mono;
-  padding: 5px;
+  display: block;
+  width: 36px;
+  height: 36px;
 }
 .context {
   color: #8c9891;

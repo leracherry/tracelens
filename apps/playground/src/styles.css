@@ -39,11 +39,9 @@ header {
   gap: 12px;
   align-items: center;
 }
-.brand span {
-  color: #76efad;
-  border: 1px solid #76efad;
-  font: 11px DM Mono;
-  padding: 5px;
+.brand img {
+  display: block;
+  flex-shrink: 0;
 }
 .header-actions {
   gap: 22px;
