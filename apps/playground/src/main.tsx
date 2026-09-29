@@ -45,7 +45,7 @@ function App() {
     <div className="app-shell">
       <header>
         <div className="brand">
-          <img src="/logo.png" alt="" width="41" height="32" /> TraceLens
+          <img src="/logo.png" alt="" width="32" height="32" /> TraceLens
           Playground
         </div>
         <div className="header-actions">

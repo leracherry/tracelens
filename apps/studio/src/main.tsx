@@ -68,7 +68,7 @@ function App() {
     <div className="shell">
       <header>
         <div className="brand">
-          <img className="mark" src="/logo.png" alt="" width="46" height="36" />{' '}
+          <img className="mark" src="/logo.png" alt="" width="36" height="36" />{' '}
           TraceLens
         </div>
         <div className="context">
