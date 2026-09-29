@@ -1,9 +1,14 @@
-import { mkdir } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { execFileSync } from 'node:child_process';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright';
 import { createStudioServer } from '../packages/cli/dist/studio.js';
 
 const output = resolve(import.meta.dirname, '../docs/assets');
+const animate = process.argv.includes('--animate');
+if (animate) execFileSync('ffmpeg', ['-version'], { stdio: 'ignore' });
+let frames;
 await mkdir(output, { recursive: true });
 
 const events = [];
@@ -218,6 +223,7 @@ const origin = `http://127.0.0.1:${address.port}`;
 
 let browser;
 try {
+  if (animate) frames = await mkdtemp(resolve(tmpdir(), 'tracelens-demo-'));
   const response = await fetch(origin + '/__tracelens', {
     method: 'POST',
     body: JSON.stringify(events),
@@ -229,13 +235,40 @@ try {
     deviceScaleFactor: 1,
   });
   await page.goto(origin, { waitUntil: 'networkidle' });
+  if (frames) await page.screenshot({ path: resolve(frames, 'frame-0.png') });
   await page.getByText('Save settings', { exact: true }).first().click();
   await page.screenshot({
     path: resolve(output, 'studio-interaction.png'),
     fullPage: true,
   });
+  if (frames) {
+    await page
+      .getByText('Long animation frames', { exact: true })
+      .scrollIntoViewIfNeeded();
+    await page.screenshot({ path: resolve(frames, 'frame-1.png') });
+    await page.evaluate(() => window.scrollTo(0, 0));
+  }
   await page.getByRole('button', { name: 'Releases' }).click();
   await page.getByText('Interaction deltas').waitFor();
+  if (frames) {
+    await page.screenshot({ path: resolve(frames, 'frame-2.png') });
+    execFileSync(
+      'ffmpeg',
+      [
+        '-y',
+        '-framerate',
+        '1/3',
+        '-i',
+        resolve(frames, 'frame-%d.png'),
+        '-filter_complex',
+        '[0:v]scale=1080:-1:flags=lanczos,split[a][b];[a]palettegen[p];[b][p]paletteuse',
+        '-loop',
+        '0',
+        resolve(output, 'studio-demo.gif'),
+      ],
+      { stdio: 'pipe' },
+    );
+  }
   await page.screenshot({
     path: resolve(output, 'studio-release-comparison.png'),
     fullPage: true,
@@ -244,4 +277,5 @@ try {
 } finally {
   await browser?.close();
   server.close();
+  if (frames) await rm(frames, { recursive: true, force: true });
 }

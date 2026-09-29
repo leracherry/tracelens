@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a reproducible TraceLens problem using sanitized data.
+title: '[Bug]: '
+body:
+  - type: markdown
+    attributes:
+      value: 'For vulnerabilities, use our [security policy](https://github.com/leracherry/tracelens/blob/main/SECURITY.md). Do not include tokens, private source maps, or real user telemetry.'
+  - type: input
+    id: version
+    attributes:
+      label: Package and version
+      placeholder: '@leracherry/tracelens-browser 0.4.0'
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, OS, Node.js, framework versions, and relevant configuration.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Minimal synthetic example and exact steps. Include expected and actual behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized logs or screenshots
+      description: Optional evidence with personal and confidential information removed.

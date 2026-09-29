@@ -60,6 +60,14 @@ npx @leracherry/tracelens-cli@0.4.0 studio
 
 [Instrument the browser →](./guides/browser-instrumentation.md)
 
+::: details Watch the nine-second Studio tour
+![Studio demo: interaction list, Save settings detail, then ReleaseScope](./assets/studio-demo.gif)
+
+Captured from the real Studio UI using synthetic telemetry. Each view is held for three seconds. Collapse this section to hide the animation; the image above is a static alternative. [Reproduce the capture](https://github.com/leracherry/tracelens/blob/main/CONTRIBUTING.md#product-screenshots-and-demo).
+:::
+
+[Contribute](https://github.com/leracherry/tracelens/blob/main/CONTRIBUTING.md) · [Code of Conduct](https://github.com/leracherry/tracelens/blob/main/CODE_OF_CONDUCT.md) · [Report a vulnerability privately](https://github.com/leracherry/tracelens/security/advisories/new)
+
 ## Make regressions part of the workflow
 
 Define release and route budgets in YAML, evaluate captured telemetry locally, then run the same engine in pull requests.

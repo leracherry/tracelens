@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/leracherry/tracelens/security/advisories/new
+    about: Report vulnerabilities privately, not in public issues.
+  - name: Documentation
+    url: https://leracherry.github.io/tracelens/
+    about: Setup, instrumentation, privacy, and troubleshooting guides.

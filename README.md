@@ -10,11 +10,22 @@
 
 Find the interaction. Find the frame. Find the component. Find the release.
 
+[Get started](#quick-start) · [Documentation](https://leracherry.github.io/tracelens/) · [Playground](#try-the-playground) · [Contribute](CONTRIBUTING.md)
+
 TraceLens turns browser performance telemetry into an explanation: which interaction was slow, where its time went, what React rendered, which request overlapped it, and which release introduced the regression.
 
 ![TraceLens Studio interaction view showing a 487 ms Save settings interaction correlated with browser, React, custom, network, layout, and source-mapped script work](docs/assets/studio-interaction.png)
 
 <p align="center"><em>One interaction, from input delay to its source-mapped long-frame contributor.</em></p>
+
+<details>
+<summary>Watch the Studio demo: interactions → correlated work → release comparison</summary>
+
+![Animated Studio tour: select Save settings, inspect its correlated work, then compare releases in ReleaseScope](docs/assets/studio-demo.gif)
+
+Actual Studio views with deterministic, synthetic telemetry; three views held for three seconds each. Collapse this section to stop viewing the animation. The screenshots above and below provide static alternatives. [Reproduce the demo](CONTRIBUTING.md#product-screenshots-and-demo).
+
+</details>
 
 ## Quick start
 
@@ -42,7 +53,7 @@ init({
 
 Click an instrumented control, then inspect its timing and correlated work in Studio. The CLI includes the built Studio; a repository checkout is not required.
 
-## A debugging view, not another metrics dashboard
+## Follow the evidence
 
 - Browser interaction timing with input, processing, and presentation breakdowns.
 - Web Vitals, long animation frames, fetch/XHR timing, layout shifts, and custom spans.
@@ -89,8 +100,8 @@ local Studio collector
 - [Privacy controls and audit](docs/guides/privacy.md)
 - [OpenTelemetry and collector setup](docs/guides/opentelemetry.md)
 - [Source maps and GitHub file links](docs/guides/source-maps.md)
-- [Performance budgets (main)](docs/guides/performance-budgets.md)
-- [GitHub Action and PR reporting (main)](docs/guides/github-action.md)
+- [Performance budgets](docs/guides/performance-budgets.md)
+- [GitHub Action and PR reporting](docs/guides/github-action.md)
 - [Playground walkthrough](docs/guides/performance-debugging-walkthrough.md)
 - [Interaction correlation](docs/architecture/interaction-correlation.md)
 - [Architecture overview](docs/architecture/overview.md)
@@ -128,7 +139,7 @@ npx @leracherry/tracelens-cli budget check --file trace.json --release 1.0.0
 
 Omit `--file` to compare events from a running Studio collector.
 
-The source-development GitHub Action can enforce the same budgets in pull requests:
+The released GitHub Action can enforce the same budgets in pull requests:
 
 ```yaml
 - uses: leracherry/tracelens@v0.4.0
@@ -161,6 +172,8 @@ The SDK omits input values, request bodies, and headers. URL credentials, query 
 
 ## Development
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, package boundaries, testing, and reproducible product captures. All participants are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ```bash
 pnpm typecheck
 pnpm test
@@ -170,7 +183,14 @@ pnpm docs:build
 
 # Rebuild the README product screenshots (requires Playwright Chromium)
 pnpm docs:capture
+
+# Rebuild the animated tour as well (also requires FFmpeg)
+pnpm docs:demo
 ```
+
+## Support and security
+
+Use the [issue templates](https://github.com/leracherry/tracelens/issues/new/choose) for reproducible bugs and focused feature requests. Remove private telemetry before sharing a report. Report vulnerabilities privately using the [security policy](SECURITY.md), not a public issue.
 
 ## License
 
