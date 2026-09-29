@@ -16,10 +16,16 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Install Chromium for browser checks
+        run: pnpm exec playwright install --with-deps chromium
       - run: pnpm format:check
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      - name: Verify browser SDK in Chromium
+        run: pnpm test:browser
+      - name: Enforce browser SDK size and overhead budgets
+        run: pnpm size:browser && pnpm bench:browser
       - run: pnpm docs:build
       - name: Verify committed action bundle
         run: git diff --exit-code -- packages/action/dist/index.cjs

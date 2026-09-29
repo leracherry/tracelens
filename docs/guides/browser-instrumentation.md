@@ -132,6 +132,8 @@ Instrumentation is capability-based. Unsupported `PerformanceObserver` entry typ
 
 Sampling is decided once per page session. Start with a conservative production `sampleRate`, watch event volume and collector latency, and keep custom transports asynchronous. TraceLens patches `fetch` and `XMLHttpRequest` until shutdown; initialize only once.
 
+The repository runs the compiled SDK in Chromium and enforces bundle-size, initialization, mark, trace, and idle-task budgets in CI. See [browser testing and overhead](browser-testing-overhead.md) for coverage, thresholds, and local commands.
+
 ## Next steps
 
 - Add [React attribution](react-attribution.md).

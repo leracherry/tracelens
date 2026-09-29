@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>TraceLens browser integration fixture</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "@leracherry/tracelens-protocol": "/packages/protocol/dist/index.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <button data-tracelens-name="Save settings">Save settings</button>
+    <script type="module">
+      import {
+        init,
+        mark,
+        MemoryTransport,
+        shutdown,
+        trace,
+      } from '/packages/browser/dist/index.js';
+
+      const native = {
+        fetch: window.fetch,
+        xhrOpen: XMLHttpRequest.prototype.open,
+        xhrSend: XMLHttpRequest.prototype.send,
+      };
+      let transport;
+
+      const xhr = (url) =>
+        new Promise((resolve, reject) => {
+          const request = new XMLHttpRequest();
+          request.open('GET', url);
+          request.addEventListener('load', () => resolve(request.status));
+          request.addEventListener('error', reject);
+          request.send();
+        });
+
+      document.querySelector('button').addEventListener('click', async () => {
+        const until = performance.now() + 120;
+        while (performance.now() < until) {
+          // Deliberately block to create real Event Timing and LoAF entries.
+        }
+        await fetch('/api/click?account=private-value');
+        window.__clickComplete = true;
+      });
+
+      window.__tracelens = {
+        native,
+        start(options = {}) {
+          transport = new MemoryTransport();
+          const startedAt = performance.now();
+          init({
+            app: 'browser-fixture',
+            release: 'phase-23',
+            transport,
+            batchSize: 100_000,
+            flushInterval: 60_000,
+            ...options,
+          });
+          return performance.now() - startedAt;
+        },
+        mark,
+        trace,
+        xhr,
+        async stop() {
+          await shutdown();
+          return transport.events;
+        },
+        patchesRestored() {
+          return (
+            window.fetch === native.fetch &&
+            XMLHttpRequest.prototype.open === native.xhrOpen &&
+            XMLHttpRequest.prototype.send === native.xhrSend
+          );
+        },
+        supportedEntryTypes: PerformanceObserver.supportedEntryTypes ?? [],
+      };
+    </script>
+  </body>
+</html>

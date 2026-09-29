@@ -1,0 +1,7 @@
+{
+  "browserCoreGzipBytes": 20480,
+  "initializationMilliseconds": 25,
+  "markAddedMillisecondsPerCall": 0.5,
+  "traceMillisecondsPerCall": 0.5,
+  "idleTaskMillisecondsPerSecond": 10
+}

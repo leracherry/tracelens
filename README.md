@@ -99,6 +99,7 @@ local Studio collector
 - [Searchable documentation site](https://leracherry.github.io/tracelens/)
 - [Getting started and data handling](docs/guides/getting-started.md)
 - [Browser instrumentation](docs/guides/browser-instrumentation.md)
+- [Browser support, integration tests, and overhead budgets](docs/guides/browser-testing-overhead.md)
 - [React attribution](docs/guides/react-attribution.md)
 - [Comparing releases](docs/guides/releases.md)
 - [Privacy controls and audit](docs/guides/privacy.md)
@@ -182,6 +183,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, package boundaries, testing, a
 pnpm typecheck
 pnpm test
 pnpm build
+pnpm quality:browser
 pnpm format:check
 pnpm docs:build
 

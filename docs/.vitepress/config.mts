@@ -42,6 +42,10 @@ export default defineConfig({
               text: 'Browser instrumentation',
               link: '/guides/browser-instrumentation',
             },
+            {
+              text: 'Browser support and overhead',
+              link: '/guides/browser-testing-overhead',
+            },
             { text: 'React attribution', link: '/guides/react-attribution' },
             {
               text: 'Debug an interaction',

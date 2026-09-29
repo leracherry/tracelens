@@ -11,6 +11,7 @@ it('exports the propagated client span as a child of a later interaction event',
   const fetch = vi.fn(async () => new Response('{}'));
   vi.stubGlobal('fetch', fetch);
   vi.stubGlobal('window', { fetch, setInterval, clearInterval });
+  const originalFetch = window.fetch;
   vi.stubGlobal('document', new EventTarget());
   vi.stubGlobal('Element', class {});
   vi.stubGlobal('location', {
@@ -79,6 +80,7 @@ it('exports the propagated client span as a child of a later interaction event',
     ],
   });
   await shutdown();
+  expect(window.fetch).toBe(originalFetch);
   const frame = transport.events.find((event) => event.type === 'long-frame')!;
   expect(frame.payload.scripts[0]?.sourceCharPosition).toBe(12);
   expect(frame.payload.scripts[0]?.source).toBe('https://app.test/app.js');

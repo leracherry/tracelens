@@ -36,12 +36,15 @@ pnpm format:check
 pnpm typecheck
 pnpm test
 pnpm build
+pnpm quality:browser
 pnpm docs:build
 node scripts/release.mjs npm
 node scripts/smoke-release.mjs
 ```
 
 Use `pnpm exec prettier --write <changed-files>` to fix formatting. CI also verifies that the committed `packages/action/dist/index.cjs` matches the build: include the regenerated bundle when changing Action code or its bundled dependencies. Other `dist` directories are generated and ignored. The release packing and smoke commands above run locally without publishing.
+
+The browser quality command loads the compiled SDK in Chromium, checks its production gzip size, and enforces conservative runtime overhead ceilings. Install Chromium with `pnpm exec playwright install chromium` if needed. Update a budget only with a documented reason and measurements from the same machine before and after the change; see the [browser overhead guide](docs/guides/browser-testing-overhead.md).
 
 ## Product screenshots and demo
 

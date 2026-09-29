@@ -388,7 +388,7 @@ class Runtime {
   }
 
   private instrumentFetch(): void {
-    const original = window.fetch.bind(window);
+    const original = window.fetch;
     const endpoint = sanitizeNetworkUrl(
       this.options.endpoint ?? '/__tracelens',
     );
@@ -398,7 +398,8 @@ class Runtime {
       init?: RequestInit,
     ) {
       const rawUrl = input instanceof Request ? input.url : String(input);
-      if (sanitizeNetworkUrl(rawUrl) === endpoint) return original(input, init);
+      if (sanitizeNetworkUrl(rawUrl) === endpoint)
+        return original.call(window, input, init);
       const startTime = performance.now();
       const method = (
         init?.method ?? (input instanceof Request ? input.method : 'GET')
@@ -412,7 +413,7 @@ class Runtime {
         runtime.options.tracePropagation,
       );
       try {
-        const response = await original(input, tracedInit);
+        const response = await original.call(window, input, tracedInit);
         runtime.emit(
           'network',
           {
