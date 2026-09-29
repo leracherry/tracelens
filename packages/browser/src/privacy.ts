@@ -32,7 +32,7 @@ export function sanitizeTelemetryUrl(
       if (!['http:', 'https:'].includes(url.protocol)) return '[redacted]';
       const keys = new Set(privacy.url?.redactSegments ?? []);
       const segments = url.pathname.split('/');
-      const decoded = segments.map((segment) => decodeURIComponent(segment));
+      const decoded = segments.map(decodePathSegment);
       url.pathname = segments
         .map((segment, index) =>
           keys.has(decoded[index - 1] ?? '') ||
@@ -69,6 +69,16 @@ export function sanitizeTelemetryUrl(
   } catch {
     return '[redacted]';
   }
+}
+
+function decodePathSegment(value: string): string {
+  let decoded = value;
+  for (let pass = 0; pass < 3; pass += 1) {
+    const next = decodeURIComponent(decoded);
+    if (next === decoded) return decoded;
+    decoded = next;
+  }
+  return decoded;
 }
 
 export function sanitizeEvent(

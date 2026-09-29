@@ -103,6 +103,7 @@ local Studio collector
 - [React attribution](docs/guides/react-attribution.md)
 - [Comparing releases](docs/guides/releases.md)
 - [Privacy controls and audit](docs/guides/privacy.md)
+- [Delivery reliability and lifecycle](docs/guides/reliability.md)
 - [OpenTelemetry and collector setup](docs/guides/opentelemetry.md)
 - [Source maps and GitHub file links](docs/guides/source-maps.md)
 - [Performance budgets](docs/guides/performance-budgets.md)

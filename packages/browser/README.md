@@ -15,13 +15,16 @@ npm install @leracherry/tracelens-browser@0.4.0
 ```tsx
 import { init } from '@leracherry/tracelens-browser';
 
-init({
+const stop = init({
   app: 'dashboard',
   release: '1.0.0',
   endpoint: 'http://127.0.0.1:4173/__tracelens',
 });
+
+// Await during application teardown when possible.
+await stop();
 ```
 
-Captures interactions, Web Vitals, long frames, fetch/XHR timings, and custom spans. Browser support varies. URL queries and fragments are stripped by default; IDs and aria-labels require opt-in. Review explicit names and metadata for sensitive data.
+Captures interactions, Web Vitals, long frames, fetch/XHR timings, and custom spans. Browser support varies. URL queries and fragments are stripped by default; IDs and aria-labels require opt-in. Review explicit names and metadata for sensitive data. Shutdown restores patched APIs and drains queued batches; it rejects on persistent delivery failure so the caller can retry while the page remains alive.
 
-See the [guide](https://github.com/leracherry/tracelens/blob/main/docs/guides/privacy.md) and [release notes](https://github.com/leracherry/tracelens/blob/main/docs/releases/v0.4.0.md). Licensed MIT.
+See the [privacy guide](https://github.com/leracherry/tracelens/blob/main/docs/guides/privacy.md), [reliability guide](https://github.com/leracherry/tracelens/blob/main/docs/guides/reliability.md), and [release notes](https://github.com/leracherry/tracelens/blob/main/docs/releases/v0.4.0.md). Licensed MIT.

@@ -17,6 +17,9 @@ describe('URL privacy', () => {
     expect(
       sanitizeTelemetryUrl('/settings?secret=1#private', {}, undefined, true),
     ).toBe('/settings');
+    expect(
+      sanitizeTelemetryUrl('https://app.test/users/alice%2540example.com'),
+    ).toBe('https://app.test/users/[redacted]');
   });
   it('redacts path values and keeps only explicitly permitted query keys', () => {
     expect(

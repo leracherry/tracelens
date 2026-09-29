@@ -63,6 +63,7 @@ export default defineConfig({
             },
             { text: 'GitHub Action', link: '/guides/github-action' },
             { text: 'Privacy controls', link: '/guides/privacy' },
+            { text: 'Reliability and lifecycle', link: '/guides/reliability' },
             { text: 'Source maps', link: '/guides/source-maps' },
             { text: 'OpenTelemetry', link: '/guides/opentelemetry' },
           ],

@@ -87,12 +87,16 @@ class HttpTransport implements Transport {
   ) {}
 
   async send(events: readonly AnyTraceLensEvent[]): Promise<void> {
-    await this.request(this.endpoint, {
+    const response = await this.request(this.endpoint, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(events),
       keepalive: true,
     });
+    if (!response.ok)
+      throw new Error(
+        `TraceLens collector rejected telemetry with HTTP ${response.status}.`,
+      );
   }
 }
 
@@ -115,6 +119,8 @@ class Runtime {
   private readonly correlator = new InteractionCorrelator();
   private readonly cleanup: Array<() => void> = [];
   private readonly interactionContexts = new Map<string, TraceContext>();
+  private flushChain: Promise<void> = Promise.resolve();
+  private stopped = false;
 
   contextFor(interactionId?: string, root = false): TraceContext {
     if (!interactionId) return createTraceContext();
@@ -148,10 +154,9 @@ class Runtime {
       route: `${location.pathname}${location.hash}`,
       startTime: 0,
     });
-    this.timer = window.setInterval(
-      () => void this.flush(),
-      this.options.flushInterval,
-    );
+    this.timer = window.setInterval(() => {
+      void this.flush().catch(() => undefined);
+    }, this.options.flushInterval);
   }
 
   emit<T extends EventType>(
@@ -159,6 +164,7 @@ class Runtime {
     payload: PayloadMap[T],
     traceContext?: TraceContext,
   ): void {
+    if (this.stopped) return;
     const interactionId =
       'interactionId' in payload ? payload.interactionId : undefined;
     const event: TraceLensEvent<T> = {
@@ -180,24 +186,39 @@ class Runtime {
     this.queue.push(
       sanitizeEvent(event as AnyTraceLensEvent, this.options.privacy),
     );
-    if (this.queue.length >= this.options.batchSize) void this.flush();
+    if (this.queue.length >= this.options.batchSize)
+      void this.flush().catch(() => undefined);
   }
 
   async flush(): Promise<void> {
+    const next = this.flushChain.then(
+      () => this.flushBatch(),
+      () => this.flushBatch(),
+    );
+    this.flushChain = next.catch(() => undefined);
+    return next;
+  }
+
+  private async flushBatch(): Promise<void> {
     if (this.queue.length === 0) return;
     const batch = this.queue.splice(0, this.options.batchSize);
     try {
       await this.options.transport?.send(batch);
-    } catch {
+    } catch (error) {
       this.queue.unshift(...batch);
+      throw new Error('TraceLens could not deliver its telemetry batch.', {
+        cause: error,
+      });
     }
   }
 
   async stop(): Promise<void> {
+    this.stopped = true;
     this.observers.forEach((observer) => observer.disconnect());
     this.cleanup.splice(0).forEach((cleanup) => cleanup());
     if (this.timer !== undefined) window.clearInterval(this.timer);
-    await this.flush();
+    await this.flushChain;
+    while (this.queue.length > 0) await this.flush();
   }
 
   activeInteractionId(at = performance.now()): string | undefined {
@@ -500,6 +521,7 @@ class Runtime {
 
 export function init(options: InitOptions): () => Promise<void> {
   if (runtime) throw new Error('TraceLens has already been initialized.');
+  validateInitOptions(options);
   if (Math.random() > (options.sampleRate ?? 1)) return async () => undefined;
   const originalFetch = globalThis.fetch.bind(globalThis);
   const metadata = resolveBuildMetadata(options, readInjectedBuildMetadata());
@@ -537,7 +559,34 @@ function readInjectedBuildMetadata(): BuildMetadata {
 export async function shutdown(): Promise<void> {
   const active = runtime;
   runtime = undefined;
-  await active?.stop();
+  try {
+    await active?.stop();
+  } catch (error) {
+    runtime = active;
+    throw error;
+  }
+}
+
+function validateInitOptions(options: InitOptions): void {
+  if (!options.app.trim())
+    throw new TypeError('TraceLens app must not be empty.');
+  if (
+    options.sampleRate !== undefined &&
+    (!Number.isFinite(options.sampleRate) ||
+      options.sampleRate < 0 ||
+      options.sampleRate > 1)
+  )
+    throw new RangeError('TraceLens sampleRate must be between 0 and 1.');
+  if (
+    options.batchSize !== undefined &&
+    (!Number.isInteger(options.batchSize) || options.batchSize <= 0)
+  )
+    throw new RangeError('TraceLens batchSize must be a positive integer.');
+  if (
+    options.flushInterval !== undefined &&
+    (!Number.isFinite(options.flushInterval) || options.flushInterval <= 0)
+  )
+    throw new RangeError('TraceLens flushInterval must be greater than zero.');
 }
 
 export function mark(name: string): void {
