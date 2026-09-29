@@ -1,0 +1,25 @@
+{
+  "name": "@leracherry/tracelens-action",
+  "version": "0.3.0",
+  "private": true,
+  "description": "GitHub Action for TraceLens performance budgets",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@actions/artifact": "^6.2.1",
+    "@actions/core": "^3.0.1",
+    "@actions/github": "^9.1.1",
+    "@leracherry/tracelens-protocol": "workspace:*",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "esbuild": "^0.28.2"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noEmit && esbuild src/index.ts --bundle --platform=node --target=node24 --format=cjs --minify-whitespace --outfile=dist/index.cjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

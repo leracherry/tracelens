@@ -1,6 +1,6 @@
-# Performance budgets (Phase 19, source development)
+# Performance budgets
 
-Performance budgets turn captured release telemetry into a CI-friendly pass or fail result. This feature is on `main`; it is not included in the published v0.3.0 packages.
+Performance budgets turn captured release telemetry into a CI-friendly pass or fail result. The CLI feature is on `main`; it is not included in the published v0.3.0 packages. Phase 20 also provides a [GitHub Action](github-action.md) for checks, job summaries, report artifacts, and pull-request comments.
 
 ## Configuration
 
@@ -72,4 +72,4 @@ JSON is written to stdout without terminal colors. Errors go to stderr. The repo
 
 The current `inp.p75` budget is the p75 of captured TraceLens interaction durations, not the page-level INP algorithm used by CrUX. LCP and CLS budgets use captured final Web Vital samples. Route budgets currently support interaction p75. These results describe the supplied sample and do not establish statistical significance; choose a meaningful `minimumSamples` and compare equivalent traffic populations.
 
-Phase 20 will package these reports into a GitHub Action and pull-request summary.
+Use the [GitHub Action](github-action.md) to publish the report as a check, a workflow artifact, a job summary, and a deduplicated pull-request comment.

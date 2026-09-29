@@ -1,0 +1,31 @@
+name: Performance budget
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  performance-budget:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Replace this step with the command that downloads or produces your
+      # TraceLens event array at artifacts/tracelens-events.json.
+      - name: Produce TraceLens telemetry
+        run: npm run test:performance
+
+      - name: Check TraceLens performance budgets
+        uses: leracherry/tracelens@main
+        with:
+          trace-file: artifacts/tracelens-events.json
+          config-file: tracelens.yml
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          app: billing-dashboard
+          environment: production

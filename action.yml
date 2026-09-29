@@ -1,0 +1,60 @@
+name: TraceLens Performance Budget
+description: Check TraceLens release telemetry against performance budgets
+author: TraceLens
+branding:
+  icon: activity
+  color: green
+inputs:
+  trace-file:
+    description: Path to a TraceLens JSON event array
+    required: true
+  config-file:
+    description: Path to the TraceLens budget configuration
+    required: false
+    default: tracelens.yml
+  release:
+    description: Release to check; defaults to the newest release in the trace
+    required: false
+  app:
+    description: Application selector
+    required: false
+  environment:
+    description: Environment selector
+    required: false
+  github-token:
+    description: GitHub token used for checks and pull-request comments
+    required: false
+  create-check:
+    description: Create a GitHub check run when github-token is provided
+    required: false
+    default: 'true'
+  comment:
+    description: Pull-request comment mode (auto, always, or never)
+    required: false
+    default: auto
+  upload-artifact:
+    description: Upload the JSON report as a workflow artifact
+    required: false
+    default: 'true'
+  artifact-name:
+    description: Workflow artifact name
+    required: false
+    default: tracelens-performance-report
+  report-file:
+    description: Workspace-relative path for the JSON report
+    required: false
+    default: tracelens-budget-report.json
+  fail-on-budget:
+    description: Fail the action when a budget fails or has insufficient data
+    required: false
+    default: 'true'
+outputs:
+  passed:
+    description: Whether every configured performance budget passed
+  report-file:
+    description: Absolute path to the generated JSON report
+  summary:
+    description: Concise result summary
+runs:
+  using: node24
+  main: packages/action/dist/index.cjs

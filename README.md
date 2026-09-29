@@ -53,6 +53,7 @@ Click an instrumented control, then inspect its timing and correlated work in St
 - OTLP/HTTP trace export and opt-in, origin-allowlisted fetch propagation.
 - Release-bound source-map resolution with original file locations and safe GitHub links.
 - Release and route performance budgets with text and CI-ready JSON reports.
+- A reusable GitHub Action with check runs, job summaries, artifacts, and deduplicated PR comments.
 
 ## Find the release that changed the frame
 
@@ -86,6 +87,7 @@ local Studio collector
 - [OpenTelemetry and collector setup](docs/guides/opentelemetry.md)
 - [Source maps and GitHub file links](docs/guides/source-maps.md)
 - [Performance budgets (main)](docs/guides/performance-budgets.md)
+- [GitHub Action and PR reporting (main)](docs/guides/github-action.md)
 - [Playground walkthrough](docs/guides/performance-debugging-walkthrough.md)
 - [Interaction correlation](docs/architecture/interaction-correlation.md)
 - [Publishing and registry setup](docs/guides/publishing.md)
@@ -121,6 +123,17 @@ npx @leracherry/tracelens-cli budget check --file trace.json --release 1.0.0
 
 Omit `--file` to compare events from a running Studio collector.
 
+The source-development GitHub Action can enforce the same budgets in pull requests:
+
+```yaml
+- uses: leracherry/tracelens@main
+  with:
+    trace-file: artifacts/tracelens-events.json
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+See the [Action guide](docs/guides/github-action.md) for permissions, inputs, output artifacts, and a complete workflow. Pin a commit SHA when adopting the development version in production.
+
 ## Try the playground
 
 ```bash
@@ -135,7 +148,7 @@ Open http://127.0.0.1:4174 for controlled search, settings, checkout, layout, an
 
 ## Current limits
 
-v0.3.0 covers the plan through Phase 18: ReleaseScope, privacy controls, OpenTelemetry export, and local source-map resolution. `main` additionally implements Phase 19 performance budgets. The GitHub Action and PR reporting are next. The OTLP transport exports traces, not metrics, and is not an OpenTelemetry SDK SpanExporter.
+v0.3.0 covers the plan through Phase 18: ReleaseScope, privacy controls, OpenTelemetry export, and local source-map resolution. `main` additionally implements Phase 19 performance budgets and the Phase 20 GitHub Action. The OTLP transport exports traces, not metrics, and is not an OpenTelemetry SDK SpanExporter.
 
 Studio is a local development tool with in-memory storage and no authentication. Browser API support varies. React production profiling requires a profiling-enabled build. Release deltas describe captured samples and do not establish statistical significance; see the comparison guide for calculation details.
 

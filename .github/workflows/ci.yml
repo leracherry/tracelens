@@ -20,5 +20,24 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      - name: Verify committed action bundle
+        run: git diff --exit-code -- packages/action/dist/index.cjs
       - run: node scripts/release.mjs npm
       - run: node scripts/smoke-release.mjs
+  action-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the repository action
+        id: budget
+        uses: ./
+        with:
+          trace-file: examples/traces/slow-settings.json
+          config-file: examples/budgets/tracelens.yml
+          upload-artifact: false
+          create-check: false
+          comment: never
+          fail-on-budget: false
+      - name: Verify fail-closed output
+        if: steps.budget.outputs.passed != 'false'
+        run: exit 1
