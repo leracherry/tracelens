@@ -42,6 +42,7 @@ header {
 .brand img {
   display: block;
   flex-shrink: 0;
+  object-fit: contain;
 }
 .header-actions {
   gap: 22px;

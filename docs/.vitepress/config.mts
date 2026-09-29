@@ -9,9 +9,8 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   head: [
-    ['link', { rel: 'icon', href: '/tracelens/favicon.svg' }],
-    ['link', { rel: 'alternate icon', href: '/tracelens/favicon.ico' }],
-    ['link', { rel: 'apple-touch-icon', href: '/tracelens/logo-512.png' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/tracelens/logo.png' }],
+    ['link', { rel: 'apple-touch-icon', href: '/tracelens/logo.png' }],
     ['meta', { name: 'theme-color', content: '#1683f4' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'TraceLens Documentation' }],
@@ -25,7 +24,7 @@ export default defineConfig({
     ],
   ],
   themeConfig: {
-    logo: '/logo.svg',
+    logo: '/logo.png',
     siteTitle: 'TraceLens',
     nav: [
       { text: 'Guide', link: '/guides/getting-started' },

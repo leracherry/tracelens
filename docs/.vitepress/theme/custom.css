@@ -32,14 +32,16 @@
 }
 
 .VPHomeHero .image-src {
-  width: 280px;
-  height: 280px;
+  width: 360px;
+  height: auto;
+  object-fit: contain;
   filter: drop-shadow(0 20px 32px rgba(22, 131, 244, 0.12));
 }
 
 .VPNavBarTitle .logo {
-  width: 32px;
+  width: 41px;
   height: 32px;
+  object-fit: contain;
 }
 
 .VPHomeHero .name,

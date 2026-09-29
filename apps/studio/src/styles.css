@@ -39,8 +39,9 @@ header {
 }
 .mark {
   display: block;
-  width: 36px;
+  width: 46px;
   height: 36px;
+  object-fit: contain;
 }
 .context {
   color: #8c9891;
