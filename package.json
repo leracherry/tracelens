@@ -1,6 +1,6 @@
 {
   "name": "tracelens",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "packageManager": "pnpm@10.17.1",
   "engines": {
@@ -14,7 +14,10 @@
     "typecheck": "pnpm -r typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "docs:capture": "pnpm build && node scripts/capture-readme.mjs"
+    "docs:capture": "pnpm build && node scripts/capture-readme.mjs",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@leracherry/tracelens-cli": "workspace:*",
@@ -23,6 +26,7 @@
     "playwright": "^1.63.0",
     "prettier": "^3.6.2",
     "typescript": "^5.8.3",
+    "vitepress": "1.6.4",
     "vitest": "^3.2.4"
   }
 }

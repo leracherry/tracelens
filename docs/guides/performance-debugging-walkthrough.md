@@ -1,38 +1,106 @@
-# Performance debugging walkthrough
+# Debug a slow interaction
 
-The TraceLens Playground contains controlled performance failures. Use it to verify instrumentation or practice reading an interaction trace without modifying a production application.
+This walkthrough uses the TraceLens Playground to move from a slow click to a concrete explanation, then turns that finding into a release budget.
 
-## Start the workspace
+## Start Studio and the playground
 
 ```bash
+git clone https://github.com/leracherry/tracelens.git
+cd tracelens
 pnpm install
 pnpm dev
 ```
 
-Open the playground at <http://localhost:4174> and Studio at <http://localhost:4173>.
+Open the playground at `http://localhost:4174` and Studio at `http://localhost:4173`. Keep both tabs visible so the newest event is easy to identify.
 
-## Run a scenario
+## Reproduce one controlled failure
 
-Choose one scenario from the left navigation and select a load intensity. Run it once, then switch to Studio and select the newest interaction.
+Choose **Settings save**, select `1×`, and run it once. Then open the newest **Save settings** interaction in Studio.
 
-| Scenario          | Simulated problem                        | Signals to inspect                            |
-| ----------------- | ---------------------------------------- | --------------------------------------------- |
-| Slow search       | Large synchronous filter                 | Processing time, custom span, long frame      |
-| Settings save     | Serialization and delayed PATCH          | INP subparts, network lane, blocking duration |
-| Slow checkout     | Delayed POST and render fan-out          | Network duration, follow-up frame             |
-| Layout thrash     | Repeated geometry reads and style writes | Long frame and layout lane                    |
-| Third-party block | Synchronous analytics initialization     | Script/custom-span attribution                |
+![TraceLens Studio showing the Save settings interaction and its correlated work](../assets/studio-interaction.png)
 
-## Read the trace
+The example interaction takes 487 ms. Do not begin with the aggregate score; begin with the timing split:
 
-Start with the three INP subparts:
+| Subpart      | Question                                               | Typical next move                                            |
+| ------------ | ------------------------------------------------------ | ------------------------------------------------------------ |
+| Input delay  | What blocked the main thread before the handler began? | Inspect work immediately before processing.                  |
+| Processing   | What did the handler execute synchronously?            | Inspect custom spans, React commits, and long-frame scripts. |
+| Presentation | What delayed the next painted frame after the handler? | Inspect rendering, style/layout, and follow-up work.         |
 
-- High **input delay** means earlier main-thread work prevented the handler from starting.
-- High **processing** means the interaction handler itself performed expensive work.
-- High **presentation** means rendering and painting delayed the next frame.
+In this trace, processing is the largest named segment. That makes synchronous handler work and the overlapping long frame stronger leads than the PATCH request.
 
-Next, inspect the primary contributor and correlated timeline. Network work can extend beyond the INP interval while still sharing the initiating interaction ID. Long frames report blocking duration separately from total frame duration.
+## Follow correlated work
 
-## Compare intensity levels
+Read the timeline from the interaction outward:
 
-Repeat a scenario at `0.7×`, `1×`, and `1.4×`. The result should preserve the same attribution shape while durations increase. Exact values vary with browser and hardware.
+1. Select the long frame overlapping the processing interval.
+2. Compare total duration with blocking duration; blocking is the portion beyond the responsiveness allowance.
+3. Inspect first-party script contributors. With uploaded source maps, open the original file location rather than a generated bundle offset.
+4. Check React commits during the same interval. A high actual duration or repeated render count points to UI work; absence of a costly commit shifts attention back to application code.
+5. Treat the network lane as causal only when its timing supports that claim. A request can share the initiating interaction ID but finish after the INP interval.
+
+Correlation is evidence of shared initiation or overlap, not proof that every span caused the delay.
+
+## Confirm the hypothesis
+
+Run **Settings save** again at `0.7×`, `1×`, and `1.4×`. The absolute numbers vary by browser and hardware, but a valid hypothesis should preserve its shape: the suspected custom span or long-frame contributor should grow with the interaction's processing time.
+
+Use the other scenarios to practice distinguishing shapes:
+
+| Scenario          | Simulated problem                    | Strongest signals                       |
+| ----------------- | ------------------------------------ | --------------------------------------- |
+| Slow search       | Large synchronous filter             | Processing, custom span, long frame     |
+| Slow checkout     | Delayed POST and render fan-out      | Network span, follow-up frame, React    |
+| Layout thrash     | Repeated geometry reads and writes   | Presentation, layout shifts, long frame |
+| Third-party block | Synchronous analytics initialization | Third-party script contribution         |
+
+## Compare the release
+
+Capture representative before/after samples with stable `app`, `environment`, route, interaction names, and React boundary names. Then compare them:
+
+```bash
+npx @leracherry/tracelens-cli@0.4.0 compare 2.13.4 2.14.0 \
+  --file trace.json
+```
+
+ReleaseScope ranks the interaction, route, and component deltas. It describes the supplied sample; it does not prove statistical significance or normalize different traffic populations.
+
+![TraceLens ReleaseScope comparing two releases](../assets/studio-release-comparison.png)
+
+## Prevent the regression
+
+Once the population is representative, define a budget for the affected route:
+
+```yaml
+minimumSamples: 20
+
+performance:
+  inp:
+    p75: 200
+
+routes:
+  /settings:
+    inp:
+      p75: 180
+```
+
+Check it locally:
+
+```bash
+npx @leracherry/tracelens-cli@0.4.0 budget check \
+  --config tracelens.yml \
+  --file trace.json \
+  --release 2.14.0 \
+  --app playground \
+  --environment production
+```
+
+Then move the same check into the [GitHub Action](github-action.md). Insufficient samples fail closed, so missing telemetry cannot silently approve a release.
+
+## What a useful finding looks like
+
+A good TraceLens investigation ends with a falsifiable statement, not merely a red score:
+
+> Save settings regressed in 2.14.0 because `validateSettings` added roughly 280 ms of first-party synchronous work inside the interaction's processing interval. The PATCH completed later and was correlated, but did not account for the INP delay.
+
+That statement tells an engineer what to change, what not to blame, and which budget will catch a recurrence.

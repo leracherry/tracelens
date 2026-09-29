@@ -1,8 +1,8 @@
-# GitHub Action (Phase 20, source development)
+# GitHub Action
 
 The TraceLens Action checks a JSON event export against `tracelens.yml`, publishes the same stable JSON report as a workflow artifact, adds a Markdown job summary, creates a GitHub Check, and creates or updates one pull-request comment.
 
-This feature is available on `main`; it is not part of the published v0.3.0 release. Pin a commit SHA in production workflows. The examples below use `@main` so they can exercise the source-development version.
+The Action ships with the v0.4.0 repository release. Version tags are convenient for examples; pin a full commit SHA when your security policy requires an immutable action reference.
 
 ## Workflow
 
@@ -15,10 +15,10 @@ permissions:
   pull-requests: write
 
 steps:
-  - uses: actions/checkout@v4
+  - uses: actions/checkout@v5
 
   - name: Check TraceLens performance budgets
-    uses: leracherry/tracelens@main
+    uses: leracherry/tracelens@v0.4.0
     with:
       trace-file: artifacts/tracelens-events.json
       config-file: tracelens.yml

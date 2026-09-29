@@ -1,6 +1,6 @@
 # Performance budgets
 
-Performance budgets turn captured release telemetry into a CI-friendly pass or fail result. The CLI feature is on `main`; it is not included in the published v0.3.0 packages. Phase 20 also provides a [GitHub Action](github-action.md) for checks, job summaries, report artifacts, and pull-request comments.
+Performance budgets turn captured release telemetry into a CI-friendly pass or fail result. v0.4.0 includes the CLI engine and a [GitHub Action](github-action.md) for checks, job summaries, report artifacts, and pull-request comments.
 
 ## Configuration
 

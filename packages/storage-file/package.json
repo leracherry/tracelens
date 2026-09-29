@@ -1,6 +1,6 @@
 {
   "name": "@leracherry/tracelens-storage-file",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"

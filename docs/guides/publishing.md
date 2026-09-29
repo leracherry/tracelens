@@ -34,8 +34,8 @@ For GitHub Packages, configure the scope registry and authenticate with a token 
 ```bash
 npm config set @leracherry:registry https://npm.pkg.github.com
 npm login --scope=@leracherry --registry=https://npm.pkg.github.com
-npm install @leracherry/tracelens-browser@0.3.0
-npx @leracherry/tracelens-cli@0.3.0 studio
+npm install @leracherry/tracelens-browser@0.4.0
+npx @leracherry/tracelens-cli@0.4.0 studio
 ```
 
 Use `import { init } from '@leracherry/tracelens-browser'` on either registry. Keep all TraceLens packages on the same version. GitHub package visibility and account permissions govern installation from the mirror.

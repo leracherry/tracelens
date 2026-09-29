@@ -5,6 +5,7 @@
 [![CI](https://github.com/leracherry/tracelens/actions/workflows/ci.yml/badge.svg)](https://github.com/leracherry/tracelens/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/%40leracherry%2Ftracelens-browser?label=npm&color=74f0ad)](https://www.npmjs.com/package/@leracherry/tracelens-browser)
 [![GitHub release](https://img.shields.io/github/v/release/leracherry/tracelens?color=f3be68)](https://github.com/leracherry/tracelens/releases)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-0d8f7a)](https://leracherry.github.io/tracelens/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-8c9891.svg)](LICENSE)
 
 Find the interaction. Find the frame. Find the component. Find the release.
@@ -23,7 +24,7 @@ Starting with v0.2.1, both registries use `@leracherry/tracelens-*`. See [regist
 
 ```bash
 npm install @leracherry/tracelens-browser
-npx @leracherry/tracelens-cli@0.3.0 studio
+npx @leracherry/tracelens-cli@0.4.0 studio
 ```
 
 Open http://127.0.0.1:4173 and initialize the SDK in your application's browser entry point:
@@ -80,7 +81,9 @@ local Studio collector
 
 ## Documentation
 
+- [Searchable documentation site](https://leracherry.github.io/tracelens/)
 - [Getting started and data handling](docs/guides/getting-started.md)
+- [Browser instrumentation](docs/guides/browser-instrumentation.md)
 - [React attribution](docs/guides/react-attribution.md)
 - [Comparing releases](docs/guides/releases.md)
 - [Privacy controls and audit](docs/guides/privacy.md)
@@ -90,7 +93,9 @@ local Studio collector
 - [GitHub Action and PR reporting (main)](docs/guides/github-action.md)
 - [Playground walkthrough](docs/guides/performance-debugging-walkthrough.md)
 - [Interaction correlation](docs/architecture/interaction-correlation.md)
+- [Architecture overview](docs/architecture/overview.md)
 - [Publishing and registry setup](docs/guides/publishing.md)
+- [v0.4.0 release notes](docs/releases/v0.4.0.md)
 - [v0.3.0 release notes](docs/releases/v0.3.0.md)
 
 ## Packages
@@ -126,13 +131,13 @@ Omit `--file` to compare events from a running Studio collector.
 The source-development GitHub Action can enforce the same budgets in pull requests:
 
 ```yaml
-- uses: leracherry/tracelens@main
+- uses: leracherry/tracelens@v0.4.0
   with:
     trace-file: artifacts/tracelens-events.json
     github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-See the [Action guide](docs/guides/github-action.md) for permissions, inputs, output artifacts, and a complete workflow. Pin a commit SHA when adopting the development version in production.
+See the [Action guide](docs/guides/github-action.md) for permissions, inputs, output artifacts, and a complete workflow. Pin a full commit SHA when your security policy requires immutable action references.
 
 ## Try the playground
 
@@ -148,7 +153,7 @@ Open http://127.0.0.1:4174 for controlled search, settings, checkout, layout, an
 
 ## Current limits
 
-v0.3.0 covers the plan through Phase 18: ReleaseScope, privacy controls, OpenTelemetry export, and local source-map resolution. `main` additionally implements Phase 19 performance budgets and the Phase 20 GitHub Action. The OTLP transport exports traces, not metrics, and is not an OpenTelemetry SDK SpanExporter.
+v0.4.0 adds performance budgets, the GitHub Action, and the searchable documentation site. The OTLP transport exports traces, not metrics, and is not an OpenTelemetry SDK SpanExporter.
 
 Studio is a local development tool with in-memory storage and no authentication. Browser API support varies. React production profiling requires a profiling-enabled build. Release deltas describe captured samples and do not establish statistical significance; see the comparison guide for calculation details.
 
@@ -161,6 +166,7 @@ pnpm typecheck
 pnpm test
 pnpm build
 pnpm format:check
+pnpm docs:build
 
 # Rebuild the README product screenshots (requires Playwright Chromium)
 pnpm docs:capture

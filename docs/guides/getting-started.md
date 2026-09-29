@@ -4,7 +4,7 @@ Use Node.js 22 or newer for the CLI and build integration. Packages are ESM with
 
 ```bash
 npm install @leracherry/tracelens-browser
-npx @leracherry/tracelens-cli@0.3.0 studio
+npx @leracherry/tracelens-cli@0.4.0 studio
 ```
 
 Open http://127.0.0.1:4173. Add this to your application's browser entry point:
@@ -38,9 +38,9 @@ export default defineConfig({ plugins: [tracelens()] });
 
 The plugin injects the nearest package version, Git commit, current build time, and Vite mode. You can override these in the plugin options or SDK `init()`; explicit SDK values take priority.
 
-## React and custom work
+## Browser, React, and custom work
 
-Install `@leracherry/tracelens-react` alongside `@leracherry/tracelens-browser` and follow the [React guide](react-attribution.md). Wrap expensive operations with `trace('operation-name', fn)` to capture custom spans.
+Use the [browser instrumentation guide](browser-instrumentation.md) for transports, naming, custom spans, trace propagation, and browser support. Install `@leracherry/tracelens-react` alongside `@leracherry/tracelens-browser` and follow the [React guide](react-attribution.md). Wrap expensive operations with `trace('operation-name', fn)` to capture custom spans.
 
 ## Local collection and data handling
 

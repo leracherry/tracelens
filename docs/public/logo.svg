@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="TraceLens">
+  <defs>
+    <linearGradient id="a" x1="20" y1="18" x2="108" y2="110" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#62e6c1"/>
+      <stop offset="1" stop-color="#d99a3d"/>
+    </linearGradient>
+  </defs>
+  <circle cx="57" cy="57" r="38" fill="#091a18" stroke="url(#a)" stroke-width="9"/>
+  <path d="m84 84 28 28" stroke="url(#a)" stroke-width="12" stroke-linecap="round"/>
+  <path d="M31 62h12l7-20 11 35 8-24 7 9h8" fill="none" stroke="#f6fbf9" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

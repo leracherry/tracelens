@@ -1,6 +1,6 @@
 {
   "name": "@leracherry/tracelens-otel",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "description": "TraceLens event mapping and OTLP HTTP JSON export",
   "exports": {
