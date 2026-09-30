@@ -109,6 +109,7 @@ local Studio collector
 - [Performance budgets](docs/guides/performance-budgets.md)
 - [GitHub Action and PR reporting](docs/guides/github-action.md)
 - [Playground walkthrough](docs/guides/performance-debugging-walkthrough.md)
+- [Studio accessibility, responsive, and visual validation](docs/guides/studio-ux-validation.md)
 - [Interaction correlation](docs/architecture/interaction-correlation.md)
 - [Architecture overview](docs/architecture/overview.md)
 - [Publishing and registry setup](docs/guides/publishing.md)
@@ -185,6 +186,7 @@ pnpm typecheck
 pnpm test
 pnpm build
 pnpm quality:browser
+pnpm quality:studio
 pnpm format:check
 pnpm docs:build
 

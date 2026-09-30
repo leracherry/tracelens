@@ -70,7 +70,7 @@ export function ReleaseComparisonView({
       </section>
       {!comparison ? (
         <div className="panel comparison-empty">
-          <div className="scope" />
+          <div className="scope" aria-hidden="true" />
           <h2>Two releases are needed</h2>
           <p className="muted">
             Capture or import telemetry from another release to calculate a

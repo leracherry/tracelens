@@ -24,6 +24,16 @@ jobs:
       - run: pnpm build
       - name: Verify browser SDK in Chromium
         run: pnpm test:browser
+      - name: Validate Studio UX in Chromium
+        run: pnpm test:studio && pnpm test:studio:visual
+      - name: Upload Studio UX diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-ux-diagnostics
+          path: test-results/studio-ux
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Enforce browser SDK size and overhead budgets
         run: pnpm size:browser && pnpm bench:browser
       - run: pnpm docs:build

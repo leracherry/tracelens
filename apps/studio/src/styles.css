@@ -15,6 +15,12 @@ button,
 select {
   font: inherit;
 }
+button:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid #a9c9f5;
+  outline-offset: 3px;
+}
 .shell {
   min-height: 100vh;
   display: grid;
@@ -49,6 +55,22 @@ header {
   display: flex;
   gap: 10px;
   align-items: center;
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.status.error {
+  color: #f3be68;
+}
+.status.error .live {
+  background: #f3be68;
+  box-shadow: 0 0 12px #f3be68;
+}
+.status.loading .live {
+  background: #8c9891;
+  box-shadow: none;
 }
 .release-filter {
   display: flex;
@@ -617,7 +639,7 @@ p {
   min-height: 32px;
   align-items: center;
 }
-.lane label {
+.lane-label {
   color: #77837c;
   font: 9px DM Mono;
   text-transform: uppercase;
@@ -763,17 +785,40 @@ p {
     display: block;
   }
   aside {
+    display: block;
+    padding: 8px 18px;
+    border-right: 0;
+    border-bottom: 1px solid #253029;
+  }
+  aside > .eyebrow,
+  aside > .capture {
     display: none;
+  }
+  aside nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  aside nav button {
+    min-height: 42px;
+    text-align: center;
+  }
+  aside nav .active {
+    border-left: 0;
+    box-shadow: inset 0 -2px #74f0ad;
   }
   header {
     height: 60px;
   }
   .hero {
+    flex-direction: column;
     align-items: start;
     gap: 20px;
   }
   .metric {
+    width: 100%;
     min-width: auto;
+    padding: 16px 0 0;
+    border-top: 1px solid #344139;
+    border-left: 0;
   }
   main {
     padding: 28px 18px;
@@ -786,5 +831,126 @@ p {
   }
   .detail {
     border-top: 1px solid #253029;
+  }
+  .comparison-hero {
+    align-items: start;
+    flex-direction: column;
+  }
+  .release-pickers {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    width: 100%;
+  }
+  .release-pickers label,
+  .release-pickers select {
+    min-width: 0;
+    width: 100%;
+  }
+  .comparison-metrics {
+    grid-template-columns: 1fr;
+  }
+  .delta-table,
+  .component-table {
+    overflow-x: auto;
+  }
+  .delta-row {
+    min-width: 560px;
+  }
+  .component-delta-row {
+    min-width: 660px;
+  }
+  .component-row {
+    min-width: 400px;
+  }
+}
+@media (max-width: 500px) {
+  header {
+    padding: 0 14px;
+  }
+  .brand {
+    gap: 8px;
+  }
+  .context {
+    gap: 0;
+  }
+  .context > .status,
+  .context > span[aria-hidden='true'],
+  .release-filter > span {
+    display: none;
+  }
+  .release-filter select {
+    min-width: 128px;
+  }
+  h1 {
+    font-size: 30px;
+  }
+  .breakdown {
+    grid-template-columns: 1fr;
+  }
+  .delta-table,
+  .component-table {
+    overflow: visible;
+  }
+  .delta-header,
+  .component-header {
+    display: none;
+  }
+  .delta-row:not(.delta-header),
+  .component-delta-row:not(.delta-header) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-width: 0;
+    gap: 14px;
+    padding: 16px 20px;
+  }
+  .delta-row:not(.delta-header) > div,
+  .component-delta-row:not(.delta-header) > strong {
+    grid-column: 1 / -1;
+  }
+  .delta-row:not(.delta-header) > span,
+  .delta-row:not(.delta-header) > b,
+  .component-delta-row:not(.delta-header) > span,
+  .component-delta-row:not(.delta-header) > b {
+    display: grid;
+    gap: 5px;
+  }
+  .delta-row:not(.delta-header) > span::before,
+  .delta-row:not(.delta-header) > b::before,
+  .component-delta-row:not(.delta-header) > span::before,
+  .component-delta-row:not(.delta-header) > b::before {
+    color: #657169;
+    font: 8px DM Mono;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .delta-row:not(.delta-header) > span:nth-child(2)::before,
+  .component-delta-row:not(.delta-header) > span:nth-child(2)::before {
+    content: 'Before';
+  }
+  .delta-row:not(.delta-header) > span:nth-child(3)::before,
+  .component-delta-row:not(.delta-header) > span:nth-child(3)::before {
+    content: 'After';
+  }
+  .delta-row:not(.delta-header) > b::before {
+    content: 'Delta';
+  }
+  .component-delta-row:not(.delta-header) > b::before {
+    content: 'Duration';
+  }
+  .component-delta-row:not(.delta-header) > span:nth-child(5)::before {
+    content: 'Renders';
+  }
+  .component-row:not(.component-header) {
+    grid-template-columns: 1fr auto;
+    min-width: 0;
+    padding-block: 10px;
+  }
+  .component-row:not(.component-header) > strong {
+    grid-column: 1 / -1;
+  }
+  .frame-row {
+    grid-template-columns: 1fr auto;
+  }
+  .frame-row em {
+    grid-column: 1 / -1;
   }
 }

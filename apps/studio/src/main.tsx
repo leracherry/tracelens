@@ -19,11 +19,21 @@ function App() {
   const [selected, setSelected] = useState<string>();
   const [selectedRelease, setSelectedRelease] = useState('all');
   const [view, setView] = useState<'interactions' | 'releases'>('interactions');
+  const [connection, setConnection] = useState<'loading' | 'ready' | 'error'>(
+    'loading',
+  );
 
   useEffect(() => {
     const load = async () => {
-      const response = await fetch('/__tracelens');
-      setEvents((await response.json()) as AnyTraceLensEvent[]);
+      try {
+        const response = await fetch('/__tracelens');
+        if (!response.ok)
+          throw new Error(`Collector returned HTTP ${response.status}`);
+        setEvents((await response.json()) as AnyTraceLensEvent[]);
+        setConnection('ready');
+      } catch {
+        setConnection('error');
+      }
     };
     void load();
     const timer = window.setInterval(() => void load(), 1_000);
@@ -72,7 +82,19 @@ function App() {
           TraceLens
         </div>
         <div className="context">
-          <span className="live" /> local <span>/</span>
+          <span
+            className={`status ${connection}`}
+            role="status"
+            aria-live="polite"
+          >
+            <span className="live" aria-hidden="true" />
+            {connection === 'ready'
+              ? 'local'
+              : connection === 'error'
+                ? 'offline'
+                : 'loading'}
+          </span>
+          <span aria-hidden="true">/</span>
           <label className="release-filter">
             <span>Release</span>
             <select
@@ -96,9 +118,10 @@ function App() {
       </header>
       <aside>
         <p className="eyebrow">Workspace</p>
-        <nav>
+        <nav aria-label="Studio views">
           <button
             className={view === 'interactions' ? 'active' : ''}
+            aria-pressed={view === 'interactions'}
             onClick={() => setView('interactions')}
           >
             Interactions
@@ -106,13 +129,19 @@ function App() {
           <button disabled>Sessions</button>
           <button
             className={view === 'releases' ? 'active' : ''}
+            aria-pressed={view === 'releases'}
             onClick={() => setView('releases')}
           >
             Releases
           </button>
         </nav>
         <div className="capture">
-          <span className="pulse" /> Capturing locally
+          <span className="pulse" aria-hidden="true" />{' '}
+          {connection === 'ready'
+            ? 'Capturing locally'
+            : connection === 'error'
+              ? 'Collector unavailable'
+              : 'Connecting locally'}
           <br />
           <small>
             {visibleEvents.length}
@@ -152,7 +181,7 @@ function App() {
             </div>
             {interactions.length === 0 ? (
               <div className="empty">
-                <div className="scope" />
+                <div className="scope" aria-hidden="true" />
                 <h3>Waiting for an interaction</h3>
                 <p>
                   Open the playground at <code>localhost:4174</code> and click
@@ -170,6 +199,7 @@ function App() {
                           active?.id === event.id ? 'trace selected' : 'trace'
                         }
                         key={event.id}
+                        aria-pressed={active?.id === event.id}
                         onClick={() => setSelected(event.id)}
                       >
                         <div>
@@ -461,7 +491,7 @@ function TraceTimeline({
       </div>
       {lanes.map((lane) => (
         <div className="lane" key={lane.name}>
-          <label>{lane.name}</label>
+          <span className="lane-label">{lane.name}</span>
           <div className="lane-track">
             {lane.items.map((item) => (
               <div

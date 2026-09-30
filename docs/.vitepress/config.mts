@@ -51,6 +51,10 @@ export default defineConfig({
               text: 'Debug an interaction',
               link: '/guides/performance-debugging-walkthrough',
             },
+            {
+              text: 'Studio UX validation',
+              link: '/guides/studio-ux-validation',
+            },
           ],
         },
         {
