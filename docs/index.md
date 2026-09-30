@@ -20,23 +20,17 @@ hero:
       link: https://github.com/leracherry/tracelens
 
 features:
-  - icon: ⚡
-    title: Interaction-first
+  - title: Interaction-first
     details: Break responsiveness into input delay, processing, and presentation—and connect the result to overlapping browser work.
-  - icon: ⚛️
-    title: React-aware
+  - title: React-aware
     details: Place profiler boundaries around product regions and see commit cost beside the interaction that caused it.
-  - icon: 🔭
-    title: ReleaseScope
+  - title: ReleaseScope
     details: Compare builds by interaction, route, and component to find where a regression entered the release stream.
-  - icon: 🗺️
-    title: Source-mapped
+  - title: Source-mapped
     details: Resolve long-frame script contributions to original source locations and open safe repository links.
-  - icon: 🛡️
-    title: Privacy-conscious
+  - title: Privacy-conscious
     details: Drop query strings, credentials, DOM text, values, bodies, and headers before telemetry leaves the page.
-  - icon: ✅
-    title: CI-enforced
+  - title: CI-enforced
     details: Turn release telemetry into budgets, GitHub Checks, job summaries, artifacts, and one continuously updated PR comment.
 ---
 

@@ -11,7 +11,7 @@ export default defineConfig({
   head: [
     ['link', { rel: 'icon', type: 'image/png', href: '/tracelens/logo.png' }],
     ['link', { rel: 'apple-touch-icon', href: '/tracelens/logo.png' }],
-    ['meta', { name: 'theme-color', content: '#1683f4' }],
+    ['meta', { name: 'theme-color', content: '#ffffff' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'TraceLens Documentation' }],
     [
@@ -85,6 +85,10 @@ export default defineConfig({
             {
               text: 'Interaction correlation',
               link: '/architecture/interaction-correlation',
+            },
+            {
+              text: 'Interface design system',
+              link: '/architecture/interface-design-system',
             },
           ],
         },
