@@ -49,7 +49,7 @@ TraceLens is built for the question a score cannot answer: **what actually made 
 
 ```bash
 npm install @leracherry/tracelens-browser
-npx @leracherry/tracelens-cli@0.4.0 studio
+npx @leracherry/tracelens-cli@1.0.0 studio
 ```
 
 [Instrument the browser →](./guides/browser-instrumentation.md)
@@ -67,7 +67,7 @@ Captured from the real Studio UI using synthetic telemetry. Each view is held fo
 Define release and route budgets in YAML, evaluate captured telemetry locally, then run the same engine in pull requests.
 
 ```yaml
-- uses: leracherry/tracelens@v0.4.0
+- uses: leracherry/tracelens@v1.0.0
   with:
     trace-file: artifacts/tracelens-events.json
     github-token: ${{ secrets.GITHUB_TOKEN }}

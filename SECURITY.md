@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Security fixes target the latest published release (currently the 0.4.x line). Older release lines do not receive promised backports. Upgrade to the latest patch before checking whether an issue remains present.
+Security fixes target the latest published release (currently the 1.0.x line). Older release lines do not receive promised backports. Upgrade to the latest patch before checking whether an issue remains present.
 
 ## Report a vulnerability privately
 

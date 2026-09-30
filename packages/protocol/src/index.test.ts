@@ -20,6 +20,65 @@ describe('isTraceLensEvent', () => {
     expect(isTraceLensEvent({ version: 2 })).toBe(false);
   });
 
+  it('rejects unknown event types and malformed payloads', () => {
+    const envelope = {
+      version: 1,
+      id: 'event-1',
+      timestamp: 1,
+      sessionId: 'session-1',
+      app: 'demo',
+    };
+    expect(
+      isTraceLensEvent({
+        ...envelope,
+        type: 'made-up-event',
+        payload: {},
+      }),
+    ).toBe(false);
+    expect(
+      isTraceLensEvent({
+        ...envelope,
+        type: 'mark',
+        payload: { name: 'ready', startTime: Number.NaN },
+      }),
+    ).toBe(false);
+    expect(
+      isTraceLensEvent({
+        ...envelope,
+        type: 'network',
+        payload: {
+          method: 'GET',
+          url: '/api',
+          startTime: 1,
+          duration: -1,
+          transport: 'fetch',
+        },
+      }),
+    ).toBe(false);
+    expect(
+      isTraceLensEvent({
+        ...envelope,
+        timestamp: -1,
+        type: 'mark',
+        payload: { name: 'ready', startTime: 0 },
+      }),
+    ).toBe(false);
+    expect(
+      isTraceLensEvent({
+        ...envelope,
+        type: 'network',
+        payload: {
+          method: 'GET',
+          url: '/api',
+          status: 200.5,
+          startTime: 1,
+          duration: 1,
+          transport: 'fetch',
+        },
+      }),
+    ).toBe(false);
+  });
+
   it('round-trips correlated network telemetry', () => {
     const event = {
       version: 1,

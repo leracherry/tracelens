@@ -2,7 +2,7 @@
 
 The TraceLens Action checks a JSON event export against `tracelens.yml`, publishes the same stable JSON report as a workflow artifact, adds a Markdown job summary, creates a GitHub Check, and creates or updates one pull-request comment.
 
-The Action ships with the v0.4.0 repository release. Version tags are convenient for examples; pin a full commit SHA when your security policy requires an immutable action reference.
+The Action ships with the v1.0.0 repository release. Version tags are convenient for examples; pin a full commit SHA when your security policy requires an immutable action reference.
 
 ## Workflow
 
@@ -18,7 +18,7 @@ steps:
   - uses: actions/checkout@v5
 
   - name: Check TraceLens performance budgets
-    uses: leracherry/tracelens@v0.4.0
+    uses: leracherry/tracelens@v1.0.0
     with:
       trace-file: artifacts/tracelens-events.json
       config-file: tracelens.yml

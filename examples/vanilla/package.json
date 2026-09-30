@@ -1,0 +1,16 @@
+{
+  "name": "tracelens-example-vanilla",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build"
+  },
+  "dependencies": {
+    "@leracherry/tracelens-browser": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite": "^6.4.3"
+  }
+}

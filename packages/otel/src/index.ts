@@ -189,7 +189,7 @@ export function toOtlpTraceRequest(
         },
         scopeSpans: [
           {
-            scope: { name: '@leracherry/tracelens-otel', version: '0.4.0' },
+            scope: { name: '@leracherry/tracelens-otel', version: '1.0.0' },
             spans: [],
           },
         ],

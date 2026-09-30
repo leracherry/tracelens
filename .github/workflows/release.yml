@@ -22,15 +22,14 @@ jobs:
           registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
+      - run: pnpm version:check
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
-      - run: pnpm docs:build
+      - run: pnpm docs:check
       - run: node scripts/release.mjs npm
       - run: node scripts/smoke-release.mjs
       - name: Publish npm packages
-        id: npm
-        continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
@@ -72,8 +71,3 @@ jobs:
             gh release create "v$version" --target "$GITHUB_SHA" --title "TraceLens v$version" --notes-file "docs/releases/v$version.md"
           fi
           gh release upload "v$version" dist/release/npm/*.tgz --clobber
-      - name: Check npm publication
-        if: steps.npm.outcome == 'failure'
-        run: |
-          echo 'GitHub publication completed, but npm publication failed. See the Publish npm packages step.'
-          exit 1

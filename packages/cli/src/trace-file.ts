@@ -1,5 +1,8 @@
 import { readFile } from 'node:fs/promises';
-import type { AnyTraceLensEvent } from '@leracherry/tracelens-protocol';
+import {
+  isTraceLensEvent,
+  type AnyTraceLensEvent,
+} from '@leracherry/tracelens-protocol';
 
 export async function readTraceFile(
   path: string,
@@ -40,19 +43,4 @@ function validateEvents(value: unknown): AnyTraceLensEvent[] {
     );
   }
   return events;
-}
-
-function isTraceLensEvent(value: unknown): value is AnyTraceLensEvent {
-  if (!value || typeof value !== 'object') return false;
-  const event = value as Record<string, unknown>;
-  return (
-    event.version === 1 &&
-    typeof event.id === 'string' &&
-    typeof event.timestamp === 'number' &&
-    typeof event.sessionId === 'string' &&
-    typeof event.app === 'string' &&
-    typeof event.type === 'string' &&
-    event.payload !== null &&
-    typeof event.payload === 'object'
-  );
 }

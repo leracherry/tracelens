@@ -2,7 +2,10 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { dirname, extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { AnyTraceLensEvent } from '@leracherry/tracelens-protocol';
+import {
+  isTraceLensEvent,
+  type AnyTraceLensEvent,
+} from '@leracherry/tracelens-protocol';
 import { loadSourceMaps } from './source-maps.js';
 
 export interface StudioOptions {
@@ -21,11 +24,28 @@ export function createStudioServer(
   const resolvedEvents = new WeakMap<AnyTraceLensEvent, AnyTraceLensEvent>();
   return createServer(async (request, response) => {
     try {
+      const origin = request.headers.origin;
+      if (origin && !isLoopbackOrigin(origin)) {
+        response
+          .writeHead(403)
+          .end('Cross-origin access is limited to loopback');
+        return;
+      }
+      if (origin) {
+        response.setHeader('access-control-allow-origin', origin);
+        response.setHeader('vary', 'Origin');
+      }
+      response.setHeader('x-content-type-options', 'nosniff');
+      response.setHeader('referrer-policy', 'no-referrer');
+      response.setHeader('x-frame-options', 'DENY');
+      response.setHeader(
+        'content-security-policy',
+        "default-src 'self'; base-uri 'none'; connect-src 'self'; font-src 'self'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'",
+      );
       const pathname = decodeURIComponent(
         new URL(request.url ?? '/', 'http://localhost').pathname,
       );
       if (pathname === '/__tracelens') {
-        response.setHeader('access-control-allow-origin', '*');
         response.setHeader('access-control-allow-headers', 'content-type');
         response.setHeader(
           'access-control-allow-methods',
@@ -70,18 +90,7 @@ export function createStudioServer(
         );
         if (
           !Array.isArray(batch) ||
-          !batch.every(
-            (event) =>
-              event &&
-              event.version === 1 &&
-              typeof event.id === 'string' &&
-              typeof event.timestamp === 'number' &&
-              typeof event.app === 'string' &&
-              typeof event.sessionId === 'string' &&
-              typeof event.type === 'string' &&
-              event.payload &&
-              typeof event.payload === 'object',
-          )
+          !batch.every((event) => isTraceLensEvent(event))
         ) {
           response.writeHead(400).end('Expected a telemetry event array');
           return;
@@ -123,6 +132,22 @@ export function createStudioServer(
         .end('Unable to handle request');
     }
   });
+}
+
+export function isLoopbackOrigin(origin: string): boolean {
+  try {
+    const url = new URL(origin);
+    return (
+      (url.protocol === 'http:' || url.protocol === 'https:') &&
+      (url.hostname === 'localhost' ||
+        url.hostname.endsWith('.localhost') ||
+        url.hostname === '127.0.0.1' ||
+        url.hostname === '::1' ||
+        url.hostname === '[::1]')
+    );
+  } catch {
+    return false;
+  }
 }
 
 export async function startStudio(options: StudioOptions): Promise<number> {

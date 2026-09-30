@@ -1,6 +1,6 @@
 # Studio UX validation
 
-TraceLens validates the built Studio in Chromium on every pull request and push to `main`. The suite seeds deterministic synthetic telemetry through the real local collector and exercises the same application shipped in the CLI package.
+TraceLens validates the built Studio and Playground in Chromium on every pull request and push to `main`. The Studio suite seeds deterministic synthetic telemetry through the real local collector and exercises the same application shipped in the CLI package. The Playground suite verifies that every demo scenario remains reachable, accessible, responsive, and free of browser errors.
 
 ## Covered workflows
 
@@ -23,6 +23,7 @@ Failed CI runs upload the latest desktop and mobile diagnostic screenshots for s
 ```bash
 pnpm build
 pnpm test:studio
+pnpm test:playground
 pnpm test:studio:visual
 
 # Run the complete Studio gate

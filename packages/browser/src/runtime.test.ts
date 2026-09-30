@@ -104,3 +104,11 @@ it('rejects invalid runtime configuration before patching browser APIs', () => {
     'flushInterval',
   );
 });
+
+it('never initializes a session when sampleRate is zero', async () => {
+  vi.spyOn(Math, 'random').mockReturnValue(0);
+  const transport = new MemoryTransport();
+  await init({ app: 'test', transport, sampleRate: 0 })();
+  mark('not-recorded');
+  expect(transport.events).toEqual([]);
+});

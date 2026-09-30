@@ -59,7 +59,7 @@ Use the other scenarios to practice distinguishing shapes:
 Capture representative before/after samples with stable `app`, `environment`, route, interaction names, and React boundary names. Then compare them:
 
 ```bash
-npx @leracherry/tracelens-cli@0.4.0 compare 2.13.4 2.14.0 \
+npx @leracherry/tracelens-cli@1.0.0 compare 2.13.4 2.14.0 \
   --file trace.json
 ```
 
@@ -87,7 +87,7 @@ routes:
 Check it locally:
 
 ```bash
-npx @leracherry/tracelens-cli@0.4.0 budget check \
+npx @leracherry/tracelens-cli@1.0.0 budget check \
   --config tracelens.yml \
   --file trace.json \
   --release 2.14.0 \

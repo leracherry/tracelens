@@ -522,7 +522,7 @@ class Runtime {
 export function init(options: InitOptions): () => Promise<void> {
   if (runtime) throw new Error('TraceLens has already been initialized.');
   validateInitOptions(options);
-  if (Math.random() > (options.sampleRate ?? 1)) return async () => undefined;
+  if (Math.random() >= (options.sampleRate ?? 1)) return async () => undefined;
   const originalFetch = globalThis.fetch.bind(globalThis);
   const metadata = resolveBuildMetadata(options, readInjectedBuildMetadata());
   runtime = new Runtime({

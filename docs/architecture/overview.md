@@ -46,7 +46,7 @@ Packages depend inward toward the protocol and core query layer. The browser SDK
 
 Every event uses protocol version 1 and carries identity, wall-clock timestamp, session, application, optional release metadata, event type, and a typed payload. Browser events also carry `timeOrigin` for timeline placement and W3C-compatible trace context for export.
 
-The envelope is intentionally flat and append-friendly. Consumers reject unsupported versions rather than guessing at semantics. Package release versions and protocol versions are independent: TraceLens v0.4.0 still emits protocol version 1.
+The envelope is intentionally flat and append-friendly. Consumers reject unsupported versions rather than guessing at semantics. Package release versions and protocol versions are independent: TraceLens v1.0.0 still emits protocol version 1.
 
 ## Correlation model
 

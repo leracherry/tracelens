@@ -22,7 +22,7 @@ jobs:
         run: npm run test:performance
 
       - name: Check TraceLens performance budgets
-        uses: leracherry/tracelens@v0.4.0
+        uses: leracherry/tracelens@v1.0.0
         with:
           trace-file: artifacts/tracelens-events.json
           config-file: tracelens.yml

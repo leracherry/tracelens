@@ -1,10 +1,14 @@
 {
   "name": "@leracherry/tracelens-otel",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "TraceLens event mapping and OTLP HTTP JSON export",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   },
   "dependencies": {
     "@leracherry/tracelens-protocol": "workspace:*"

@@ -11,9 +11,38 @@ export default defineConfig({
   head: [
     ['link', { rel: 'icon', type: 'image/png', href: '/tracelens/logo.png' }],
     ['link', { rel: 'apple-touch-icon', href: '/tracelens/logo.png' }],
-    ['meta', { name: 'theme-color', content: '#ffffff' }],
+    [
+      'meta',
+      {
+        name: 'theme-color',
+        content: '#ffffff',
+        media: '(prefers-color-scheme: light)',
+      },
+    ],
+    [
+      'meta',
+      {
+        name: 'theme-color',
+        content: '#171717',
+        media: '(prefers-color-scheme: dark)',
+      },
+    ],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'TraceLens Documentation' }],
+    [
+      'meta',
+      {
+        property: 'og:url',
+        content: 'https://leracherry.github.io/tracelens/',
+      },
+    ],
+    [
+      'meta',
+      {
+        property: 'og:image',
+        content: 'https://leracherry.github.io/tracelens/logo.png',
+      },
+    ],
     [
       'meta',
       {
@@ -22,15 +51,33 @@ export default defineConfig({
           'Find the interaction, frame, component, and release behind frontend regressions.',
       },
     ],
+    ['meta', { name: 'twitter:card', content: 'summary' }],
+    ['meta', { name: 'twitter:title', content: 'TraceLens Documentation' }],
+    [
+      'meta',
+      {
+        name: 'twitter:description',
+        content:
+          'Find the interaction, frame, component, and release behind frontend regressions.',
+      },
+    ],
+    [
+      'meta',
+      {
+        name: 'twitter:image',
+        content: 'https://leracherry.github.io/tracelens/logo.png',
+      },
+    ],
   ],
   themeConfig: {
     logo: '/logo.png',
     siteTitle: 'TraceLens',
     nav: [
       { text: 'Guide', link: '/guides/getting-started' },
+      { text: 'Examples', link: '/examples/react-vite' },
+      { text: 'Reference', link: '/reference/browser-api' },
       { text: 'Architecture', link: '/architecture/overview' },
-      { text: 'GitHub Action', link: '/guides/github-action' },
-      { text: 'v0.4.0', link: '/releases/v0.4.0' },
+      { text: 'v1.0.0', link: '/releases/v1.0.0' },
     ],
     sidebar: {
       '/guides/': [
@@ -51,6 +98,8 @@ export default defineConfig({
               text: 'Debug an interaction',
               link: '/guides/performance-debugging-walkthrough',
             },
+            { text: 'Common workflows', link: '/guides/workflows' },
+            { text: 'Troubleshooting', link: '/guides/troubleshooting' },
             {
               text: 'Studio UX validation',
               link: '/guides/studio-ux-validation',
@@ -77,6 +126,36 @@ export default defineConfig({
           items: [{ text: 'Publishing', link: '/guides/publishing' }],
         },
       ],
+      '/examples/': [
+        {
+          text: 'Examples',
+          items: [
+            { text: 'Vanilla TypeScript', link: '/examples/vanilla' },
+            { text: 'React + Vite', link: '/examples/react-vite' },
+          ],
+        },
+      ],
+      '/integrations/': [
+        {
+          text: 'Integrations',
+          items: [
+            { text: 'Vite', link: '/integrations/vite' },
+            { text: 'React', link: '/guides/react-attribution' },
+            { text: 'OpenTelemetry', link: '/guides/opentelemetry' },
+            { text: 'GitHub Action', link: '/guides/github-action' },
+          ],
+        },
+      ],
+      '/reference/': [
+        {
+          text: 'Reference',
+          items: [
+            { text: 'Browser API', link: '/reference/browser-api' },
+            { text: 'Configuration', link: '/reference/configuration' },
+            { text: 'CLI', link: '/reference/cli' },
+          ],
+        },
+      ],
       '/architecture/': [
         {
           text: 'Architecture',
@@ -97,6 +176,7 @@ export default defineConfig({
         {
           text: 'Releases',
           items: [
+            { text: 'v1.0.0', link: '/releases/v1.0.0' },
             { text: 'v0.4.0', link: '/releases/v0.4.0' },
             { text: 'v0.3.0', link: '/releases/v0.3.0' },
             { text: 'v0.2.1', link: '/releases/v0.2.1' },

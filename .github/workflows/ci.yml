@@ -19,13 +19,14 @@ jobs:
       - name: Install Chromium for browser checks
         run: pnpm exec playwright install --with-deps chromium
       - run: pnpm format:check
+      - run: pnpm version:check
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
       - name: Verify browser SDK in Chromium
         run: pnpm test:browser
-      - name: Validate Studio UX in Chromium
-        run: pnpm test:studio && pnpm test:studio:visual
+      - name: Validate product UX in Chromium
+        run: pnpm test:studio && pnpm test:playground && pnpm test:studio:visual
       - name: Upload Studio UX diagnostics
         if: failure()
         uses: actions/upload-artifact@v4
@@ -36,7 +37,7 @@ jobs:
           retention-days: 7
       - name: Enforce browser SDK size and overhead budgets
         run: pnpm size:browser && pnpm bench:browser
-      - run: pnpm docs:build
+      - run: pnpm docs:check
       - name: Verify committed action bundle
         run: git diff --exit-code -- packages/action/dist/index.cjs
       - run: node scripts/release.mjs npm

@@ -1,9 +1,13 @@
 {
   "name": "@leracherry/tracelens-storage-file",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   },
   "dependencies": {
     "@leracherry/tracelens-core": "workspace:*",

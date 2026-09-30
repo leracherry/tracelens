@@ -20,6 +20,27 @@ execFileSync(
   ['install', '--ignore-scripts', '--no-audit', '--no-fund', ...tarballs],
   { cwd: directory, stdio: 'inherit' },
 );
+for (const name of [
+  'protocol',
+  'browser',
+  'react',
+  'vite',
+  'core',
+  'storage-file',
+  'storage-memory',
+  'otel',
+]) {
+  const packageDirectory = join(
+    directory,
+    'node_modules/@leracherry',
+    `tracelens-${name}`,
+  );
+  const manifest = JSON.parse(
+    await readFile(join(packageDirectory, 'package.json'), 'utf8'),
+  );
+  assert.equal(manifest.exports['.'].types, './dist/index.d.ts');
+  await readFile(join(packageDirectory, manifest.exports['.'].types));
+}
 execFileSync(
   process.execPath,
   [
@@ -181,7 +202,7 @@ try {
     /All budgets passed/,
   );
   console.log(
-    'Release smoke test passed: nine tarballs, runtime imports, CLI, budgets, bundled Studio, collector.',
+    'Release smoke test passed: nine tarballs, runtime imports, type declarations, CLI, budgets, bundled Studio, collector.',
   );
 } finally {
   server.kill();

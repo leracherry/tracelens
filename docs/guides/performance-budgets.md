@@ -1,6 +1,6 @@
 # Performance budgets
 
-Performance budgets turn captured release telemetry into a CI-friendly pass or fail result. v0.4.0 includes the CLI engine and a [GitHub Action](github-action.md) for checks, job summaries, report artifacts, and pull-request comments.
+Performance budgets turn captured release telemetry into a CI-friendly pass or fail result. v1.0.0 includes the CLI engine and a [GitHub Action](github-action.md) for checks, job summaries, report artifacts, and pull-request comments.
 
 ## Configuration
 

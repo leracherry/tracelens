@@ -1,0 +1,40 @@
+:root {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  color: #0d0d0d;
+  background: #f7f7f8;
+}
+body {
+  margin: 0;
+}
+main {
+  width: min(520px, calc(100% - 40px));
+  margin: 15vh auto;
+  padding: 28px;
+  border: 1px solid #e3e3e3;
+  border-radius: 8px;
+  background: #fff;
+}
+p {
+  color: #676767;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+h1 {
+  margin: 8px 0 28px;
+}
+button {
+  border: 0;
+  border-radius: 7px;
+  padding: 11px 16px;
+  background: #0d0d0d;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+output {
+  display: block;
+  margin-top: 20px;
+  color: #676767;
+}

@@ -3,7 +3,7 @@ description: Check TraceLens release telemetry against performance budgets
 author: TraceLens
 branding:
   icon: activity
-  color: green
+  color: blue
 inputs:
   trace-file:
     description: Path to a TraceLens JSON event array

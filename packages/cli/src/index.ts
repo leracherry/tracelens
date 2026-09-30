@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { resolve } from 'node:path';
+import { createRequire } from 'node:module';
 import { compareReleases } from '@leracherry/tracelens-core';
 import { formatReleaseComparison } from './compare.js';
 import { formatDoctor, runDoctor } from './doctor.js';
@@ -15,6 +16,9 @@ import {
 } from './budget.js';
 
 const [command, ...args] = process.argv.slice(2);
+const cliVersion = (
+  createRequire(import.meta.url)('../package.json') as { version: string }
+).version;
 
 async function main(): Promise<number> {
   switch (command) {
@@ -145,7 +149,7 @@ async function main(): Promise<number> {
     }
     case '--version':
     case '-v':
-      console.log('tracelens 0.4.0');
+      console.log(`tracelens ${cliVersion}`);
       return 0;
     case '--help':
     case '-h':

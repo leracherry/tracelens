@@ -1,13 +1,13 @@
 # @leracherry/tracelens-storage-memory
 
-In-memory storage for TraceLens v0.4.0.
+In-memory storage for TraceLens v1.0.0.
 
 ## Installation
 
 Install from npm using the command below, or see [GitHub Packages authentication](https://github.com/leracherry/tracelens/blob/main/docs/guides/publishing.md). Both registries use the same package names. Keep all TraceLens packages on matching versions.
 
 ```bash
-npm install @leracherry/tracelens-storage-memory@0.4.0
+npm install @leracherry/tracelens-storage-memory@1.0.0
 ```
 
 ## Usage
@@ -22,4 +22,4 @@ const interactions = await storage.query({ type: 'interaction', limit: 100 });
 
 Implements the core StorageAdapter interface. Data lasts only for this instance; clear() removes it. This adapter has no automatic size cap. Pass validated, sanitized TraceLens events to append().
 
-See the [guide](https://github.com/leracherry/tracelens/blob/main/docs/guides/getting-started.md) and [release notes](https://github.com/leracherry/tracelens/blob/main/docs/releases/v0.4.0.md). Licensed MIT.
+See the [guide](https://github.com/leracherry/tracelens/blob/main/docs/guides/getting-started.md) and [release notes](https://github.com/leracherry/tracelens/blob/main/docs/releases/v1.0.0.md). Licensed MIT.

@@ -33,12 +33,13 @@ Create a branch from `main`, keep changes focused, and add a regression test for
 
 ```bash
 pnpm format:check
+pnpm version:check
 pnpm typecheck
 pnpm test
 pnpm build
 pnpm quality:browser
 pnpm quality:studio
-pnpm docs:build
+pnpm docs:check
 node scripts/release.mjs npm
 node scripts/smoke-release.mjs
 ```
