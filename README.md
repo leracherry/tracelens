@@ -158,7 +158,7 @@ jobs:
   tracelens:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: leracherry/tracelens@v1.0.0
         with:
           trace-file: artifacts/tracelens-events.json

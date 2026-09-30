@@ -14,7 +14,7 @@ jobs:
   performance-budget:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # Replace this step with the command that downloads or produces your
       # TraceLens event array at artifacts/tracelens-events.json.

@@ -15,7 +15,7 @@ permissions:
   pull-requests: write
 
 steps:
-  - uses: actions/checkout@v5
+  - uses: actions/checkout@v7
 
   - name: Check TraceLens performance budgets
     uses: leracherry/tracelens@v1.0.0
