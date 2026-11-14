@@ -3,6 +3,8 @@ import { tmpdir } from 'node:os';
 import { resolve, join } from 'node:path';
 import { execFileSync, spawn } from 'node:child_process';
 import assert from 'node:assert/strict';
+import { chromium } from 'playwright';
+import { createStudioDemoEvents } from '../tests/studio/demo-events.mjs';
 const root = resolve(import.meta.dirname, '..');
 const version = JSON.parse(await readFile(join(root, 'package.json'))).version;
 const directory = await mkdtemp(join(tmpdir(), 'tracelens-release-'));
@@ -201,6 +203,45 @@ try {
     ),
     /All budgets passed/,
   );
+  if (process.argv.includes('--browser')) {
+    const seeded = await fetch(origin + '/__tracelens', {
+      method: 'POST',
+      body: JSON.stringify(createStudioDemoEvents()),
+    });
+    assert.equal(seeded.status, 202);
+    const browser = await chromium.launch();
+    try {
+      const page = await browser.newPage();
+      const externalRequests = [];
+      const pageErrors = [];
+      page.on('request', (request) => {
+        if (new URL(request.url()).origin !== origin) {
+          externalRequests.push(request.url());
+        }
+      });
+      page.on('pageerror', (error) => pageErrors.push(error.message));
+      await page.goto(origin);
+      await page.getByRole('heading', { name: 'Save settings' }).waitFor();
+      await page.getByRole('button', { name: 'Releases' }).click();
+      await page
+        .getByRole('button', {
+          name: 'View captures for Save settings on /settings/profile',
+        })
+        .click();
+      await page.getByRole('heading', { name: 'Release captures' }).waitFor();
+      await page
+        .getByRole('button', { name: 'Browser: Long animation frame, 381 ms' })
+        .click();
+      await page
+        .locator('#timeline-evidence')
+        .getByRole('link', { name: /BillingForm\.tsx:183:9/ })
+        .waitFor();
+      assert.deepEqual(pageErrors, []);
+      assert.deepEqual(externalRequests, []);
+    } finally {
+      await browser.close();
+    }
+  }
   console.log(
     'Release smoke test passed: nine tarballs, runtime imports, type declarations, CLI, budgets, bundled Studio, collector.',
   );

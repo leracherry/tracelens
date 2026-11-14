@@ -29,15 +29,94 @@ test.afterAll(async () => {
   await new Promise((resolveClose) => server.close(resolveClose));
 });
 
-test('release comparison visual contract', async ({ page }) => {
-  await page.goto(origin, { waitUntil: 'networkidle' });
-  await page.locator('.status.ready').waitFor({ state: 'attached' });
-  await page.getByRole('button', { name: 'Releases' }).click();
-  await page.getByText('Interaction deltas', { exact: true }).waitFor();
-  await page.evaluate(() => document.fonts.ready);
-  await expect(page).toHaveScreenshot('studio-release-desktop.png', {
-    animations: 'disabled',
-    maxDiffPixelRatio: 0.08,
-    threshold: 0.2,
-  });
-});
+for (const [size, viewport] of [
+  ['desktop', { width: 1440, height: 900 }],
+  ['tablet', { width: 1024, height: 900 }],
+  ['mobile', { width: 390, height: 844 }],
+]) {
+  for (const theme of ['light', 'dark']) {
+    for (const view of ['Interactions', 'Releases']) {
+      test(`${view} in ${theme} on ${size}`, async ({ page }) => {
+        await page.setViewportSize(viewport);
+        await page.goto(origin);
+        await page.locator('.status.ready').waitFor();
+        await page.getByRole('combobox', { name: 'Theme' }).selectOption(theme);
+        if (view === 'Releases') {
+          await page.getByRole('button', { name: 'Releases' }).click();
+          await expect(
+            page.getByRole('table', { name: 'Interaction deltas' }),
+          ).toBeVisible();
+          const [baseline, candidate, arrow] = await Promise.all([
+            page.getByRole('combobox', { name: 'Baseline' }).boundingBox(),
+            page.getByRole('combobox', { name: 'Candidate' }).boundingBox(),
+            page.locator('.compare-arrow').boundingBox(),
+          ]);
+          expect(Math.abs(baseline.width - candidate.width)).toBeLessThan(1);
+          expect(Math.abs(baseline.y - candidate.y)).toBeLessThan(1);
+          expect(
+            Math.abs(
+              arrow.y + arrow.height / 2 - (baseline.y + baseline.height / 2),
+            ),
+          ).toBeLessThan(1);
+          expect(
+            Math.abs(
+              arrow.x -
+                (baseline.x + baseline.width) -
+                (candidate.x - arrow.x - arrow.width),
+            ),
+          ).toBeLessThan(1);
+        } else {
+          if (size === 'mobile') {
+            await page
+              .getByRole('button', { name: /Save settings.*487 ms/ })
+              .click();
+          }
+          await expect(
+            page.getByRole('heading', { name: 'Save settings' }),
+          ).toBeVisible();
+          await page
+            .getByRole('button', {
+              name: 'Browser: Long animation frame, 381 ms',
+            })
+            .click();
+          await expect(page.locator('#timeline-evidence')).toContainText(
+            'Start offset 12 ms',
+          );
+        }
+        const spacing = await page.locator('main').evaluate((workspace) => {
+          const { paddingInlineStart, paddingInlineEnd } =
+            getComputedStyle(workspace);
+          return { paddingInlineStart, paddingInlineEnd };
+        });
+        expect(spacing.paddingInlineStart).toBe(spacing.paddingInlineEnd);
+        for (const select of await page
+          .locator('.select-control select:visible')
+          .all()) {
+          const endInsets = await select.evaluate((element) => ({
+            text: getComputedStyle(element).paddingInlineEnd,
+            chevron: getComputedStyle(element.parentElement, '::after')
+              .insetInlineEnd,
+          }));
+          expect(endInsets).toEqual({ text: '36px', chevron: '14px' });
+        }
+        await page.evaluate(() => document.fonts.ready);
+        expect(
+          await page.evaluate(
+            () =>
+              document.documentElement.scrollWidth <=
+              document.documentElement.clientWidth,
+          ),
+        ).toBe(true);
+        const snapshot =
+          view === 'Releases' && theme === 'dark' && size === 'desktop'
+            ? 'studio-release-desktop.png'
+            : `studio-${view.toLowerCase()}-${size}-${theme}.png`;
+        await expect(page).toHaveScreenshot(snapshot, {
+          animations: 'disabled',
+          maxDiffPixelRatio: 0.08,
+          threshold: 0.2,
+        });
+      });
+    }
+  }
+}

@@ -164,11 +164,13 @@ add('2.14.0', 'validation', 'custom-span', {
   name: 'validate-settings',
   startTime: 2130,
   duration: 118,
+  status: 'ok',
 });
 add('2.14.0', 'layout', 'layout-shift', {
   startTime: 2460,
   duration: 8,
   value: 0.03,
+  hadRecentInput: true,
   interactionId: 'save-settings',
 });
 add('2.14.0', 'billing-render', 'react-render', {
@@ -221,6 +223,19 @@ if (!address || typeof address === 'string')
   throw new Error('Studio did not bind');
 const origin = `http://127.0.0.1:${address.port}`;
 
+async function captureStill(page, filename) {
+  const viewport = page.viewportSize();
+  const height = await page.evaluate(
+    () => document.documentElement.scrollHeight,
+  );
+  await page.setViewportSize({
+    ...viewport,
+    height: Math.max(viewport.height, height),
+  });
+  await page.screenshot({ path: resolve(output, filename), fullPage: true });
+  await page.setViewportSize(viewport);
+}
+
 let browser;
 try {
   if (animate) frames = await mkdtemp(resolve(tmpdir(), 'tracelens-demo-'));
@@ -228,29 +243,38 @@ try {
     method: 'POST',
     body: JSON.stringify(events),
   });
-  if (response.status !== 202) throw new Error('Could not seed Studio');
+  if (response.status !== 202) {
+    throw new Error(
+      `Could not seed Studio (HTTP ${response.status}): ${await response.text()}`,
+    );
+  }
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({
     viewport: { width: 1440, height: 1000 },
     deviceScaleFactor: 1,
   });
   await page.goto(origin, { waitUntil: 'networkidle' });
-  if (frames) await page.screenshot({ path: resolve(frames, 'frame-0.png') });
-  await page.getByText('Save settings', { exact: true }).first().click();
-  await page.screenshot({
-    path: resolve(output, 'studio-interaction.png'),
-    fullPage: true,
+  const browserEvidence = page.getByRole('button', {
+    name: 'Browser: Long animation frame, 381 ms',
   });
-  if (frames) {
-    await page
-      .getByText('Long animation frames', { exact: true })
-      .scrollIntoViewIfNeeded();
-    await page.screenshot({ path: resolve(frames, 'frame-1.png') });
-    await page.evaluate(() => window.scrollTo(0, 0));
-  }
+  await browserEvidence.click();
+  await captureStill(page, 'studio-interaction.png');
+
   await page.getByRole('button', { name: 'Releases' }).click();
-  await page.getByText('Interaction deltas').waitFor();
+  const interactionDeltas = page.getByRole('table', {
+    name: 'Interaction deltas',
+  });
+  const pivot = interactionDeltas.getByRole('button', {
+    name: 'View captures for Save settings on /settings/profile',
+  });
+  await pivot.waitFor();
+  await captureStill(page, 'studio-release-comparison.png');
   if (frames) {
+    await page.screenshot({ path: resolve(frames, 'frame-0.png') });
+    await pivot.click();
+    await page.getByRole('heading', { name: 'Release captures' }).waitFor();
+    await page.screenshot({ path: resolve(frames, 'frame-1.png') });
+    await browserEvidence.click();
     await page.screenshot({ path: resolve(frames, 'frame-2.png') });
     execFileSync(
       'ffmpeg',
@@ -269,10 +293,6 @@ try {
       { stdio: 'pipe' },
     );
   }
-  await page.screenshot({
-    path: resolve(output, 'studio-release-comparison.png'),
-    fullPage: true,
-  });
   console.log('Captured Studio README screenshots in docs/assets.');
 } finally {
   await browser?.close();

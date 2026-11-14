@@ -1,0 +1,187 @@
+.select-control {
+  position: relative;
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.select-control select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: var(--control-height);
+  padding: 0 var(--select-end) 0 var(--control-padding);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  line-height: normal;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.select-control select:hover {
+  background: var(--surface-hover);
+}
+
+.select-control::after {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--select-chevron-inset);
+  width: 6px;
+  height: 6px;
+  border-inline-end: var(--icon-stroke) solid var(--muted);
+  border-block-end: var(--icon-stroke) solid var(--muted);
+  transform: translateY(-70%) rotate(45deg);
+  content: '';
+  pointer-events: none;
+}
+
+@media (forced-colors: active) {
+  .select-control select {
+    appearance: auto;
+    padding-inline-end: var(--control-padding);
+  }
+
+  .select-control::after {
+    display: none;
+  }
+}
+
+.workspace-sidebar .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--toolbar-height);
+  padding-inline: var(--panel-padding);
+  border-bottom: 1px solid var(--nav-line);
+  background: var(--masthead);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.workspace-sidebar .brand img {
+  object-fit: contain;
+}
+
+.workspace-sidebar nav {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+}
+
+.workspace-sidebar nav button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 8px 10px;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--nav-text);
+  text-align: start;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.workspace-sidebar nav button:hover {
+  background: var(--nav-hover);
+  color: var(--text);
+}
+
+.workspace-sidebar nav button[aria-pressed='true'] {
+  border-color: var(--nav-selected-border);
+  background: var(--nav-selected);
+  color: var(--nav-marker);
+  font-weight: 600;
+}
+
+.workspace-sidebar nav button:focus-visible {
+  outline-color: var(--nav-focus);
+}
+
+/* Icons inherit the color and state of the labeled control. */
+.ui-icon {
+  position: relative;
+  display: inline-block;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  flex: none;
+  vertical-align: middle;
+  pointer-events: none;
+}
+
+.ui-icon-trace::before,
+.ui-icon-trace::after,
+.ui-icon-release::before,
+.ui-icon-release::after,
+.ui-icon-arrow::before,
+.ui-icon-arrow::after {
+  position: absolute;
+  content: '';
+}
+
+/* The staggered lines echo the interaction waterfall. */
+.ui-icon-trace::before {
+  inset: 3px auto auto 1px;
+  width: 9px;
+  border-top: var(--icon-stroke) solid currentColor;
+}
+
+.ui-icon-trace::after {
+  inset: 7px auto auto 5px;
+  width: 10px;
+  height: 6px;
+  border-block: var(--icon-stroke) solid currentColor;
+  clip-path: polygon(0 0, 100% 0, 100% 50%, 65% 50%, 65% 100%, 0 100%);
+}
+
+.ui-icon-release::before {
+  inset: auto 2px 2px;
+  height: 1px;
+  border-bottom: var(--icon-stroke) solid currentColor;
+}
+
+.ui-icon-release::after {
+  inset: auto 4px 4px;
+  height: 8px;
+  border-inline: var(--icon-stroke) solid currentColor;
+  clip-path: polygon(0 40%, 50% 40%, 50% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.ui-icon-arrow {
+  width: var(--icon-arrow-size);
+  height: var(--icon-arrow-size);
+}
+
+.ui-icon-arrow::before {
+  top: 50%;
+  left: 2px;
+  right: 3px;
+  border-top: var(--icon-stroke) solid currentColor;
+  transform: translateY(-50%);
+}
+
+.ui-icon-arrow::after {
+  top: 50%;
+  right: 3px;
+  width: 5px;
+  height: 5px;
+  border-top: var(--icon-stroke) solid currentColor;
+  border-right: var(--icon-stroke) solid currentColor;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.ui-icon-back {
+  transform: rotate(180deg);
+}
+
+.ui-icon-external {
+  transform: rotate(-45deg);
+}

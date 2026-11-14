@@ -28,7 +28,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/studio-demo.gif" alt="TraceLens Studio tour showing an interaction trace and a release comparison" width="1120" />
+  <img src="docs/assets/studio-demo.gif" alt="TraceLens Studio tour showing a release regression, its matching capture, and the long-frame evidence" width="1120" />
 </p>
 
 TraceLens turns browser telemetry into an explanation. Start with a slow interaction, follow the browser, React, network, layout, and custom work that overlapped it, map expensive scripts back to source, and compare the same signal across releases.
@@ -54,7 +54,7 @@ Requires Node.js 22 or newer.
 <summary><strong>1. Start Studio</strong></summary>
 
 ```bash
-npx @leracherry/tracelens-cli@1.0.0 studio
+npx @leracherry/tracelens-cli@1.1.0 studio
 ```
 
 Studio opens at <http://127.0.0.1:4173> and exposes a loopback-only collector at `/__tracelens`.
@@ -107,15 +107,15 @@ Follow the complete [five-minute setup](docs/guides/getting-started.md), or open
 
 ## What gets correlated
 
-| Signal                 | What TraceLens records                                                        | Where it appears                   |
-| ---------------------- | ----------------------------------------------------------------------------- | ---------------------------------- |
-| Event Timing           | Input delay, processing, presentation, route, accessible interaction name     | Interaction summary and timing bar |
-| Long Animation Frames  | Duration, blocking time, script attribution, first/third-party classification | Browser lane and frame explorer    |
-| React Profiler         | Boundary, phase, actual/base duration, render count                           | React lane and component table     |
-| Fetch and XHR          | Method, sanitized URL, status, duration                                       | Network lane                       |
-| Layout Shift           | Score, recency, interaction correlation                                       | Layout lane                        |
-| Custom spans and marks | Named application work                                                        | Custom lane and exported traces    |
-| Build metadata         | Release, commit, environment, build timestamp                                 | Release selector and ReleaseScope  |
+| Signal                 | What TraceLens records                                                        | Where it appears                        |
+| ---------------------- | ----------------------------------------------------------------------------- | --------------------------------------- |
+| Event Timing           | Input delay, processing, presentation, route, accessible interaction name     | Interaction summary and phase breakdown |
+| Long Animation Frames  | Duration, blocking time, script attribution, first/third-party classification | Browser lane and frame explorer         |
+| React Profiler         | Boundary, phase, actual/base duration, render count                           | React lane and component table          |
+| Fetch and XHR          | Method, sanitized URL, status, duration                                       | Network lane                            |
+| Layout Shift           | Score, recency, interaction correlation                                       | Layout lane                             |
+| Custom spans and marks | Named application work                                                        | Custom lane and exported traces         |
+| Build metadata         | Release, commit, environment, build timestamp                                 | Release selector and ReleaseScope       |
 
 ![TraceLens Studio interaction view showing a 487 ms Save settings interaction correlated with browser, React, network, layout, and source-mapped script work](docs/assets/studio-interaction.png)
 
@@ -124,6 +124,8 @@ Follow the complete [five-minute setup](docs/guides/getting-started.md), or open
 ## Workflows
 
 ### Debug one interaction locally
+
+Open **Interactions** and search by action name or route. Combine search with the release and route filters when several captures match. Each timeline event opens its timing and the available source, request, or React evidence.
 
 ```mermaid
 flowchart LR
@@ -135,7 +137,7 @@ flowchart LR
 
 ### Find a release regression
 
-ReleaseScope compares p75 values across captured builds and ranks the interaction, route, and React component deltas that changed most.
+ReleaseScope compares p75 values across captured builds. Choose a **Baseline** and **Candidate**, then select **View captures** on an interaction or route row to inspect matching candidate evidence. **Back to comparison** restores the release pair and row.
 
 ![TraceLens ReleaseScope comparing releases with INP, LCP, long-frame, interaction, route, and component deltas](docs/assets/studio-release-comparison.png)
 
@@ -159,7 +161,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: leracherry/tracelens@v1.0.0
+      - uses: leracherry/tracelens@v1.1.0
         with:
           trace-file: artifacts/tracelens-events.json
           github-token: ${{ secrets.GITHUB_TOKEN }}

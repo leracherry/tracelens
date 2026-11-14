@@ -43,62 +43,64 @@ function App() {
 
   return (
     <div className="app-shell">
-      <header>
+      <aside className="workspace-sidebar">
         <div className="brand">
-          <img src="/logo.png" alt="" width="32" height="32" /> TraceLens
-          Playground
+          <img src="/logo.png" alt="" width="28" height="28" /> TraceLens
         </div>
-        <div className="header-actions">
-          <i>● capturing</i>
-          <a href="http://localhost:4173" target="_blank">
-            Open Studio ↗
-          </a>
-        </div>
-      </header>
-      <aside>
-        <p className="eyebrow">Scenarios</p>
         <nav aria-label="Performance scenarios">
           {scenarios.map((scenario) => (
             <button
-              className={scenario.id === activeId ? 'active' : ''}
+              aria-pressed={scenario.id === activeId}
               key={scenario.id}
               onClick={() => setActiveId(scenario.id)}
             >
-              <span>{scenario.index}</span>
-              <strong>{scenario.title}</strong>
-              <em>{scenario.signal}</em>
+              {scenario.title}
             </button>
           ))}
         </nav>
-        <div className="intensity">
-          <label htmlFor="intensity">Load intensity</label>
-          <select
-            id="intensity"
-            value={intensity}
-            onChange={(event) => setIntensity(Number(event.target.value))}
-          >
-            <option value="0.7">0.7× moderate</option>
-            <option value="1">1× slow</option>
-            <option value="1.4">1.4× severe</option>
-          </select>
-        </div>
       </aside>
+      <header>
+        <span>Playground</span>
+        <a
+          href="http://localhost:4173"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open Studio{' '}
+          <span
+            className="ui-icon ui-icon-arrow ui-icon-external"
+            aria-hidden="true"
+          />
+        </a>
+      </header>
       <main>
-        <section className="intro">
-          <div>
-            <p className="eyebrow">{active.signal} experiment</p>
-            <h1>{active.title}</h1>
-            <span>{active.description}</span>
+        <div className="intro">
+          <p className="eyebrow">{active.signal}</p>
+          <h1>{active.title}</h1>
+        </div>
+        <div className="scenario-toolbar">
+          <div className="intensity">
+            <label htmlFor="intensity">Load intensity</label>
+            <span className="select-control">
+              <select
+                id="intensity"
+                value={intensity}
+                onChange={(event) => setIntensity(Number(event.target.value))}
+              >
+                <option value="0.7">0.7× moderate</option>
+                <option value="1">1× slow</option>
+                <option value="1.4">1.4× severe</option>
+              </select>
+            </span>
           </div>
-          <div className="expectation">
-            <small>Expected telemetry</small>
-            <strong>{active.expected}</strong>
-          </div>
-        </section>
+          <p className="expectation">
+            Expected telemetry · <strong>{active.expected}</strong>
+          </p>
+        </div>
         <Scenario id={activeId} intensity={intensity} />
         <p className="hint">
-          Run the scenario once, then open Studio and select the newest
-          interaction to inspect its correlated work.
+          Run the scenario, then open Studio and find the matching action in
+          Interactions.
         </p>
       </main>
     </div>
@@ -154,7 +156,7 @@ function SearchScenario({ intensity }: { intensity: number }) {
         </button>
       }
       status={
-        elapsed
+        elapsed !== undefined
           ? `${results.length} shown · ${Math.round(elapsed)} ms`
           : 'Ready to search'
       }
@@ -170,35 +172,53 @@ function SearchScenario({ intensity }: { intensity: number }) {
         {results.length ? (
           results.map((result) => <span key={result}>{result}</span>)
         ) : (
-          <p>Results appear here after the blocking filter completes.</p>
+          <p>
+            {elapsed === undefined
+              ? 'Results appear here after the blocking filter completes.'
+              : 'No matches. Try a different search query.'}
+          </p>
         )}
       </div>
     </ScenarioCard>
   );
 }
 
+async function runDemoRequest(url: string, options: RequestInit) {
+  const response = await fetch(url, options);
+  if (!response.ok) throw new Error(`Request failed (HTTP ${response.status})`);
+}
+
 function SettingsScenario({ intensity }: { intensity: number }) {
   const [status, setStatus] = useState('All changes synced');
   const [savedAt, setSavedAt] = useState('Not saved in this session');
+  const [running, setRunning] = useState(false);
   async function saveSettings() {
-    setStatus('Serializing…');
-    await trace('serialize-settings', () => {
-      const model = Array.from({ length: 18_000 }, (_, index) => ({
-        index,
-        enabled: index % 2 === 0,
-      }));
-      JSON.stringify(model);
-      blockMainThread(210 * intensity);
-    });
-    setStatus('Saving…');
-    await fetch('/api/settings?workspace=acme-engineering', {
-      method: 'PATCH',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ region: 'ca' }),
-    });
-    blockMainThread(70 * intensity);
-    setSavedAt(new Date().toLocaleTimeString());
-    setStatus('Saved');
+    if (running) return;
+    setRunning(true);
+    try {
+      setStatus('Serializing…');
+      await trace('serialize-settings', () => {
+        const model = Array.from({ length: 18_000 }, (_, index) => ({
+          index,
+          enabled: index % 2 === 0,
+        }));
+        JSON.stringify(model);
+        blockMainThread(210 * intensity);
+      });
+      setStatus('Saving…');
+      await runDemoRequest('/api/settings?workspace=acme-engineering', {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ region: 'ca' }),
+      });
+      blockMainThread(70 * intensity);
+      setSavedAt(new Date().toLocaleTimeString());
+      setStatus('Saved');
+    } catch {
+      setStatus('Settings could not be saved. Try again.');
+    } finally {
+      setRunning(false);
+    }
   }
   return (
     <ScenarioCard
@@ -207,6 +227,7 @@ function SettingsScenario({ intensity }: { intensity: number }) {
       action={
         <button
           data-tracelens-name="Save settings"
+          disabled={running}
           onClick={() => void saveSettings()}
         >
           Save settings
@@ -220,11 +241,13 @@ function SettingsScenario({ intensity }: { intensity: number }) {
       </label>
       <label>
         Telemetry region
-        <select defaultValue="ca">
-          <option value="ca">Canada</option>
-          <option value="us">United States</option>
-          <option value="eu">Europe</option>
-        </select>
+        <span className="select-control">
+          <select defaultValue="ca">
+            <option value="ca">Canada</option>
+            <option value="us">United States</option>
+            <option value="eu">Europe</option>
+          </select>
+        </span>
       </label>
       <label className="check">
         <input type="checkbox" defaultChecked /> Capture slow interactions
@@ -237,18 +260,32 @@ function SettingsScenario({ intensity }: { intensity: number }) {
 function CheckoutScenario({ intensity }: { intensity: number }) {
   const [items, setItems] = useState<number[]>([]);
   const [status, setStatus] = useState('Cart ready');
+  const [running, setRunning] = useState(false);
   async function placeOrder() {
-    setStatus('Authorizing payment…');
-    blockMainThread(55 * intensity);
-    await fetch(`/api/checkout?intensity=${intensity}`, { method: 'POST' });
-    setStatus('Rendering confirmation…');
-    await trace('render-order-confirmation', () =>
-      blockMainThread(125 * intensity),
-    );
-    setItems(
-      Array.from({ length: Math.round(180 * intensity) }, (_, index) => index),
-    );
-    setStatus('Order confirmed');
+    if (running) return;
+    setRunning(true);
+    try {
+      setStatus('Authorizing payment…');
+      blockMainThread(55 * intensity);
+      await runDemoRequest(`/api/checkout?intensity=${intensity}`, {
+        method: 'POST',
+      });
+      setStatus('Rendering confirmation…');
+      await trace('render-order-confirmation', () =>
+        blockMainThread(125 * intensity),
+      );
+      setItems(
+        Array.from(
+          { length: Math.round(180 * intensity) },
+          (_, index) => index,
+        ),
+      );
+      setStatus('Order confirmed');
+    } catch {
+      setStatus('Order could not be placed. Try again.');
+    } finally {
+      setRunning(false);
+    }
   }
   return (
     <ScenarioCard
@@ -257,6 +294,7 @@ function CheckoutScenario({ intensity }: { intensity: number }) {
       action={
         <button
           data-tracelens-name="Place order"
+          disabled={running}
           onClick={() => void placeOrder()}
         >
           Place order
@@ -302,7 +340,7 @@ function LayoutScenario({ intensity }: { intensity: number }) {
         const element = elements[iteration % elements.length];
         if (element) {
           const height = element.offsetHeight;
-          element.style.transform = `translateY(${height % 3}px)`;
+          element.style.height = `${height + (height % 2 === 0 ? 1 : -1)}px`;
         }
         iteration += 1;
       }
@@ -356,12 +394,11 @@ function ThirdPartyScenario({ intensity }: { intensity: number }) {
       status={status}
     >
       <div className="vendor">
-        <div className="vendor-logo">A</div>
         <div>
           <strong>Acme Analytics</strong>
           <span>73.4 kB · synchronous initialization</span>
         </div>
-        <em>third party</em>
+        <span className="vendor-type">Simulated third party</span>
       </div>
       <pre>
         analytics.init({'{'} blocking: true, plugins: 14 {'}'});
@@ -390,14 +427,10 @@ function ScenarioCard({
           <h2>{title}</h2>
           <p>{description}</p>
         </div>
-        <span>LIVE TEST</span>
       </div>
       <div className="card-body">{children}</div>
       <footer>
-        <div>
-          <strong>{status}</strong>
-          <small>Every run is captured by the browser SDK</small>
-        </div>
+        <strong role="status">{status}</strong>
         {action}
       </footer>
     </section>

@@ -2,6 +2,12 @@
 
 All notable TraceLens releases are documented here. Package versions are released together and the telemetry protocol is versioned independently.
 
+## [1.1.0] — 2026-11-14
+
+Redesigned Studio and Playground, added capture search and interactive timeline evidence, and connected release regressions to matching captures. Added 12 visual baselines and browser coverage for the bundled CLI, all five Playground scenarios, and recovery from collector or demo API failures.
+
+[Full release notes](docs/releases/v1.1.0.md)
+
 ## [1.0.0] — 2026-09-29
 
 Stable browser and React APIs, release comparison, source maps, OpenTelemetry export, budgets, GitHub integration, hardened local Studio boundaries, strict event validation, polished interfaces, runnable examples, and complete task-oriented documentation.

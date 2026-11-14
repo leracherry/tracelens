@@ -41,7 +41,7 @@ jobs:
       - name: Verify committed action bundle
         run: git diff --exit-code -- packages/action/dist/index.cjs
       - run: node scripts/release.mjs npm
-      - run: node scripts/smoke-release.mjs
+      - run: node scripts/smoke-release.mjs --browser
   action-smoke:
     runs-on: ubuntu-latest
     steps:

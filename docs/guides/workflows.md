@@ -65,7 +65,7 @@ Interpret the result in this order:
 Store a sanitized telemetry fixture or produce one in an earlier job. Define `tracelens.yml`, then run the repository Action with `checks: write` and `pull-requests: write` permissions.
 
 ```yaml
-- uses: leracherry/tracelens@v1.0.0
+- uses: leracherry/tracelens@v1.1.0
   with:
     trace-file: artifacts/tracelens-events.json
     config-file: tracelens.yml

@@ -42,6 +42,7 @@ pnpm quality:studio
 pnpm docs:check
 node scripts/release.mjs npm
 node scripts/smoke-release.mjs
+# Add --browser to verify the packaged Studio UI with Playwright Chromium.
 ```
 
 Use `pnpm exec prettier --write <changed-files>` to fix formatting. CI also verifies that the committed `packages/action/dist/index.cjs` matches the build: include the regenerated bundle when changing Action code or its bundled dependencies. Other `dist` directories are generated and ignored. The release packing and smoke commands above run locally without publishing.
@@ -54,7 +55,7 @@ The Studio quality command runs end-to-end keyboard, accessibility, offline-stat
 
 Install Playwright Chromium with `pnpm exec playwright install chromium`. Run `pnpm docs:capture` for screenshots, or install FFmpeg and run `pnpm docs:demo` for screenshots plus the GIF tour. FFmpeg must be on `PATH`; it is only needed for the animated capture, not normal builds or tests.
 
-`scripts/capture-readme.mjs` starts a loopback-only collector on an ephemeral port, seeds synthetic telemetry, and uses the built Studio UI. The tour shows the interaction list, Save settings detail, and ReleaseScope, each for three seconds. It writes `docs/assets/studio-*.png` and `docs/assets/studio-demo.gif`; inspect the images before committing. Keep a static alternative for readers who prefer no animation. Update the fixture when the UI changes rather than retouching product screenshots.
+`scripts/capture-readme.mjs` starts a loopback-only collector on an ephemeral port, seeds synthetic telemetry, and uses the built Studio UI. The tour shows a release regression, the matching Save settings capture, and its long-frame evidence. Each step stays visible for three seconds. It writes `docs/assets/studio-*.png` and `docs/assets/studio-demo.gif`; inspect the images before committing. Keep a static alternative for readers who prefer no animation. Update the fixture when the UI changes rather than retouching product screenshots.
 
 ## Documentation and releases
 
