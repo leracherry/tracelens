@@ -131,14 +131,14 @@ add('2.14.0', 'frame-save', 'long-frame', {
   scripts: [
     {
       source: 'https://app.example/assets/settings.js',
-      functionName: 'validateSettings',
+      functionName: 'saveSettings',
       sourceCharPosition: 9183,
       originalLocation: {
-        source: 'src/features/settings/BillingForm.tsx',
-        line: 183,
-        column: 9,
+        source: 'apps/playground/src/main.tsx',
+        line: 200,
+        column: 7,
         githubUrl:
-          'https://github.com/leracherry/tracelens/blob/214f550/src/features/settings/BillingForm.tsx#L183',
+          'https://github.com/leracherry/tracelens/blob/f9d1a4913ab3602cc1425c0b8ccd7a1beabfc8db/apps/playground/src/main.tsx#L200',
       },
       duration: 287,
       thirdParty: false,
@@ -258,11 +258,28 @@ try {
   await page.waitForFunction(
     () => getComputedStyle(document.documentElement).colorScheme === 'dark',
   );
+  const search = page.getByRole('searchbox', { name: 'Search captures' });
+  await search.fill('Save settings');
+  const interaction = page.getByRole('button', {
+    name: /Save settings.*487 ms/,
+  });
+  await interaction.waitFor();
+  if ((await page.locator('.trace-list .trace').count()) !== 2) {
+    throw new Error('The demo search did not show the expected two captures');
+  }
+  if (frames) await page.screenshot({ path: resolve(frames, 'frame-0.png') });
+
+  await interaction.click();
   const browserEvidence = page.getByRole('button', {
     name: 'Browser: Long animation frame, 381 ms',
   });
   await browserEvidence.click();
+  const sourceLink = page
+    .locator('#timeline-evidence')
+    .getByRole('link', { name: /apps\/playground\/src\/main\.tsx:200:7/ });
+  await sourceLink.waitFor();
   await captureStill(page, 'studio-interaction.png');
+  if (frames) await page.screenshot({ path: resolve(frames, 'frame-1.png') });
 
   await page.getByRole('button', { name: 'Releases' }).click();
   const interactionDeltas = page.getByRole('table', {
@@ -273,13 +290,21 @@ try {
   });
   await pivot.waitFor();
   await captureStill(page, 'studio-release-comparison.png');
+  if (frames) await page.screenshot({ path: resolve(frames, 'frame-2.png') });
+
+  await pivot.click();
+  await page.getByRole('heading', { name: 'Release captures' }).waitFor();
+  await page.getByRole('button', { name: 'Back to comparison' }).waitFor();
+  if ((await page.locator('.trace-list .trace').count()) !== 1) {
+    throw new Error(
+      'The demo pivot did not show the expected candidate capture',
+    );
+  }
+  await browserEvidence.click();
+  await sourceLink.waitFor();
+  await captureStill(page, 'studio-release-captures.png');
   if (frames) {
-    await page.screenshot({ path: resolve(frames, 'frame-0.png') });
-    await pivot.click();
-    await page.getByRole('heading', { name: 'Release captures' }).waitFor();
-    await page.screenshot({ path: resolve(frames, 'frame-1.png') });
-    await browserEvidence.click();
-    await page.screenshot({ path: resolve(frames, 'frame-2.png') });
+    await page.screenshot({ path: resolve(frames, 'frame-3.png') });
     execFileSync(
       'ffmpeg',
       [

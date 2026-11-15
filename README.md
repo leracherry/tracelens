@@ -28,8 +28,10 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/studio-demo.gif" alt="TraceLens Studio tour showing a release regression, its matching capture, and the long-frame evidence" width="1120" />
+  <img src="docs/assets/studio-demo.gif" alt="TraceLens Studio tour showing capture search, source-linked timeline evidence, release comparison, and the candidate capture" width="1120" />
 </p>
+
+<p align="center"><sub>Search → inspect source evidence → compare releases → open the candidate capture. Recorded from Studio in dark mode with synthetic telemetry.</sub></p>
 
 TraceLens turns browser telemetry into an explanation. Start with a slow interaction, follow the browser, React, network, layout, and custom work that overlapped it, map expensive scripts back to source, and compare the same signal across releases.
 
@@ -141,7 +143,9 @@ flowchart LR
 
 ReleaseScope compares p75 values across captured builds. Choose a **Baseline** and **Candidate**, then select **View captures** on an interaction or route row to inspect matching candidate evidence. **Back to comparison** restores the release pair and row.
 
-![TraceLens ReleaseScope comparing releases with INP, LCP, long-frame, interaction, route, and component deltas](docs/assets/studio-release-comparison.png)
+![TraceLens Releases showing Baseline 2.13.4, Candidate 2.14.0, and View captures beside the Save settings regression](docs/assets/studio-release-comparison.png)
+
+[See the candidate capture after selecting View captures](docs/assets/studio-release-captures.png).
 
 ```bash
 npx @leracherry/tracelens-cli compare 2.13.4 2.14.0 --file trace.json

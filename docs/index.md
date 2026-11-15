@@ -54,10 +54,10 @@ npx @leracherry/tracelens-cli@1.1.0 studio
 
 [Instrument the browser →](./guides/browser-instrumentation.md)
 
-::: details Watch the nine-second Studio tour
-![Studio demo: release regression, matching Save settings capture, and long-frame evidence](./assets/studio-demo.gif)
+::: details Watch the 12-second Studio tour
+![Studio demo: search for Save settings, inspect source-linked evidence, compare releases, and open the candidate capture](./assets/studio-demo.gif)
 
-Captured from the real Studio UI using synthetic telemetry. Each view is held for three seconds. Collapse this section to hide the animation; the image above is a static alternative. [Reproduce the capture](https://github.com/leracherry/tracelens/blob/main/CONTRIBUTING.md#product-screenshots-and-demo).
+Recorded from Studio in dark mode with synthetic telemetry. Search for **Save settings**, open its long-frame source evidence, compare releases, then use **View captures** to open the candidate interaction. Collapse this section to hide the animation; the image above is a static alternative. [Reproduce the capture](https://github.com/leracherry/tracelens/blob/main/CONTRIBUTING.md#product-screenshots-and-demo).
 :::
 
 [Contribute](https://github.com/leracherry/tracelens/blob/main/CONTRIBUTING.md) · [Code of Conduct](https://github.com/leracherry/tracelens/blob/main/CODE_OF_CONDUCT.md) · [Report a vulnerability privately](https://github.com/leracherry/tracelens/security/advisories/new)

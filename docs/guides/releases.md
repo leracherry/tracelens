@@ -4,6 +4,10 @@ Capture two application builds with different `release` values in the same runni
 
 The view shows sample counts, INP p75, LCP p75, long frames per session, and deltas for routes, interactions, and React components. **View captures** on an interaction or route opens the matching candidate captures. **Back to comparison** returns to the same row and keeps the selected release pair.
 
+![Releases with baseline and candidate builds and View captures in the evidence column](../assets/studio-release-comparison.png)
+
+![Release captures scoped to candidate 2.14.0, with Back to comparison above the results](../assets/studio-release-captures.png)
+
 ```bash
 npx @leracherry/tracelens-cli compare 1.0.0 1.1.0
 npx @leracherry/tracelens-cli compare 1.0.0 1.1.0 --file trace.json
