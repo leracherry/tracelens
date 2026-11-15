@@ -91,9 +91,8 @@ try {
   await desktop.goto(origin, { waitUntil: 'networkidle' });
 
   const brand = desktop.getByRole('img', { name: 'tracelens', exact: true });
-  await expect(brand).toHaveAttribute('src', '/wordmark.svg');
+  await expect(brand).toHaveAttribute('src', '/brand.png');
   await brand.evaluate((image) => image.decode());
-  await expect(brand).toHaveCSS('filter', 'none');
 
   const scenarios = [
     ['Slow search', 'Run search', 'Run slow search', 'filter-search-results'],
@@ -313,7 +312,7 @@ try {
   await mobile.emulateMedia({ colorScheme: 'dark' });
   await expect(
     mobile.getByRole('img', { name: 'tracelens', exact: true }),
-  ).toHaveCSS('filter', 'invert(1)');
+  ).toHaveAttribute('src', '/brand-dark.png');
   for (const width of [390, 320]) {
     await mobile.setViewportSize({ width, height: 844 });
     for (const [scenario, action] of scenarios) {

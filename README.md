@@ -1,14 +1,10 @@
-<p align="center">
-  <a href="https://leracherry.github.io/tracelens/">
-    <img src="docs/public/logo.svg" alt="tracelens logo" width="128" height="128" />
-  </a>
-</p>
-
 <h1 align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/public/wordmark-dark.svg" />
-    <img src="docs/public/wordmark.svg" alt="tracelens" width="240" />
-  </picture>
+  <a href="https://leracherry.github.io/tracelens/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/public/brand-dark.png" />
+      <img src="docs/public/brand.png" alt="tracelens" width="320" />
+    </picture>
+  </a>
 </h1>
 
 <p align="center">

@@ -220,13 +220,19 @@ function App() {
     <div className="shell">
       <aside className="studio-sidebar workspace-sidebar">
         <div className="brand">
-          <img src="/logo.svg" alt="" width="28" height="28" />
           <img
-            className="wordmark"
-            src="/wordmark.svg"
+            className="brand-light"
+            src="/brand.png"
             alt="tracelens"
-            width="88"
-            height="17"
+            width="129"
+            height="28"
+          />
+          <img
+            className="brand-dark"
+            src="/brand-dark.png"
+            alt="tracelens"
+            width="129"
+            height="28"
           />
         </div>
         <nav aria-label="Studio views">

@@ -118,6 +118,7 @@ export function createStudioServer(
         '.js': 'text/javascript',
         '.css': 'text/css',
         '.svg': 'image/svg+xml',
+        '.png': 'image/png',
       };
       response.setHeader(
         'content-type',

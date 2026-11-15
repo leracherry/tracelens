@@ -60,8 +60,8 @@ export default defineConfig({
   ],
   themeConfig: {
     logo: {
-      light: '/wordmark.svg',
-      dark: '/wordmark-dark.svg',
+      light: '/brand.png',
+      dark: '/brand-dark.png',
       alt: 'tracelens',
     },
     siteTitle: false,

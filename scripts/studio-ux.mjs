@@ -90,10 +90,15 @@ try {
     .waitFor();
   const brand = desktop.getByRole('img', { name: 'tracelens', exact: true });
   assert(
-    (await brand.getAttribute('src')) === '/wordmark.svg',
-    'Studio is not using the SVG wordmark',
+    (await brand.getAttribute('src')) === '/brand.png',
+    'Studio is not using the light logo',
   );
   await brand.evaluate((image) => image.decode());
+  const logo = await desktop.request.get(`${origin}/brand.png`);
+  assert(
+    logo.ok() && logo.headers()['content-type'] === 'image/png',
+    'Studio logo is not served as PNG',
+  );
   const favicon = await desktop.request.get(`${origin}/logo.svg`);
   assert(
     favicon.ok() && favicon.headers()['content-type'] === 'image/svg+xml',
@@ -114,9 +119,8 @@ try {
   );
   await desktop.locator('.theme-icon-dark').waitFor();
   assert(
-    (await brand.evaluate((image) => getComputedStyle(image).filter)) ===
-      'invert(1)',
-    'Studio wordmark is not white in dark mode',
+    (await brand.getAttribute('src')) === '/brand-dark.png',
+    'Studio did not display the dark logo',
   );
   await desktop.reload();
   await desktop.waitForFunction(
@@ -130,18 +134,16 @@ try {
   );
   await desktop.locator('.theme-icon-system').waitFor();
   assert(
-    (await brand.evaluate((image) => getComputedStyle(image).filter)) ===
-      'invert(1)',
-    'Studio wordmark is not white in system mode',
+    (await brand.getAttribute('src')) === '/brand-dark.png',
+    'Studio did not display the dark logo in system mode',
   );
   await theme.selectOption('light');
   await desktop.waitForFunction(
     () => getComputedStyle(document.documentElement).colorScheme === 'light',
   );
   assert(
-    (await brand.evaluate((image) => getComputedStyle(image).filter)) ===
-      'none',
-    'Studio wordmark is not black in light mode',
+    (await brand.getAttribute('src')) === '/brand.png',
+    'Studio did not return to the light logo',
   );
 
   const slowInteraction = desktop

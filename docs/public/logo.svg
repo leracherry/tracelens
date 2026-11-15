@@ -1,13 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title">
-  <title id="title">TraceLens icon, transparent cutouts</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="TraceLens logo icon">
+  <title>TraceLens icon, uniform 50px transparent cutouts</title>
   <g fill="#0785FA">
-    <!-- Upper region: true circular arcs, perfectly mirrored -->
-    <path d="M 33.289425 232 A 224 224 0 0 1 478.710575 232 H 365.398355 A 112 112 0 0 0 146.601645 232 Z"/>
-    <!-- Lower left region -->
-    <path d="M 33.289425 280 H 146.601645 A 112 112 0 0 0 232 365.398355 V 478.710575 A 224 224 0 0 1 33.289425 280 Z"/>
-    <!-- Lower right region -->
-    <path d="M 478.710575 280 H 365.398355 A 112 112 0 0 1 280 365.398355 V 478.710575 A 224 224 0 0 0 478.710575 280 Z"/>
-    <!-- Solid centered inner disc -->
+    <path d="M 33.39946092 231 A 224 224 0 0 1 478.60053908 231 H 381.53485572 A 128 128 0 0 0 130.46514428 231 Z"/>
+    <path d="M 33.39946092 281 H 130.46514428 A 128 128 0 0 0 231 381.53485572 V 478.60053908 A 224 224 0 0 1 33.39946092 281 Z"/>
+    <path d="M 478.60053908 281 H 381.53485572 A 128 128 0 0 1 281 381.53485572 V 478.60053908 A 224 224 0 0 0 478.60053908 281 Z"/>
     <circle cx="256" cy="256" r="78"/>
   </g>
 </svg>

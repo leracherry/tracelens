@@ -34,13 +34,13 @@
 }
 
 .VPHomeHero .image-src {
-  width: 220px;
+  width: 300px;
   height: auto;
   object-fit: contain;
 }
 
 .VPNavBarTitle .logo {
-  width: 108px;
+  width: 129px;
   height: auto;
   margin-right: 0;
 }
@@ -109,7 +109,7 @@
 
 @media (max-width: 640px) {
   .VPHomeHero .image-src {
-    width: 170px;
+    width: 220px;
   }
 
   .metric-strip {

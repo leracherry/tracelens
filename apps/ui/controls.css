@@ -53,7 +53,6 @@
 .workspace-sidebar .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
   min-height: var(--toolbar-height);
   padding-inline: var(--panel-padding);
   border-bottom: 1px solid var(--nav-line);
@@ -64,13 +63,22 @@
   object-fit: contain;
 }
 
-:root[data-theme='dark'] .brand .wordmark {
-  filter: invert(1);
+.brand-dark,
+:root[data-theme='dark'] .brand-light {
+  display: none;
+}
+
+:root[data-theme='dark'] .brand-dark {
+  display: block;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .brand .wordmark {
-    filter: invert(1);
+  :root:not([data-theme='light']) .brand-light {
+    display: none;
+  }
+
+  :root:not([data-theme='light']) .brand-dark {
+    display: block;
   }
 }
 
