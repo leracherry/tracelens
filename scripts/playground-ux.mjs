@@ -94,6 +94,15 @@ try {
   await expect(brand).toHaveAttribute('src', '/brand.png');
   await brand.evaluate((image) => image.decode());
 
+  const intensity = desktop.getByRole('combobox', { name: 'Load intensity' });
+  await intensity.click();
+  await desktop.getByRole('option', { name: '0.7× moderate' }).click();
+  await expect(intensity).toHaveText('0.7× moderate');
+  await intensity.press('ArrowDown');
+  await intensity.press('ArrowDown');
+  await intensity.press('Enter');
+  await expect(intensity).toHaveText('1× slow');
+
   const scenarios = [
     ['Slow search', 'Run search', 'Run slow search', 'filter-search-results'],
     [
@@ -142,9 +151,7 @@ try {
     const spacing = await desktop.locator('main').evaluate((workspace) => {
       const { paddingInlineStart, paddingInlineEnd } =
         getComputedStyle(workspace);
-      const controls = [
-        ...workspace.querySelectorAll('.select-control select'),
-      ];
+      const controls = [...workspace.querySelectorAll('.select-trigger')];
       return {
         paddingInlineStart,
         paddingInlineEnd,

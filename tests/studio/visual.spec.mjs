@@ -40,7 +40,10 @@ for (const [size, viewport] of [
         await page.setViewportSize(viewport);
         await page.goto(origin);
         await page.locator('.status.ready').waitFor();
-        await page.getByRole('combobox', { name: 'Theme' }).selectOption(theme);
+        if (theme === 'dark')
+          await page
+            .getByRole('button', { name: 'Switch to dark mode' })
+            .click();
         if (view === 'Releases') {
           await page.getByRole('button', { name: 'Releases' }).click();
           await expect(
@@ -90,12 +93,11 @@ for (const [size, viewport] of [
         });
         expect(spacing.paddingInlineStart).toBe(spacing.paddingInlineEnd);
         for (const select of await page
-          .locator('.select-control select:visible')
+          .locator('.select-trigger:visible')
           .all()) {
           const endInsets = await select.evaluate((element) => ({
             text: getComputedStyle(element).paddingInlineEnd,
-            chevron: getComputedStyle(element.parentElement, '::after')
-              .insetInlineEnd,
+            chevron: getComputedStyle(element, '::after').insetInlineEnd,
           }));
           expect(endInsets).toEqual({ text: '36px', chevron: '14px' });
         }

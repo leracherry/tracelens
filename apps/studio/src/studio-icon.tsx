@@ -13,12 +13,6 @@ const shapes = {
     </>
   ),
   dark: <path d="M20.7 15A8.9 8.9 0 0 1 9 3.3a9 9 0 1 0 11.7 11.7Z" />,
-  system: (
-    <>
-      <rect x="3" y="4.5" width="18" height="12" rx="2" />
-      <path d="M12 16.5v4m-4 0h8" />
-    </>
-  ),
 };
 
 export function StudioIcon({

@@ -1,0 +1,14 @@
+{
+  "name": "@leracherry/tracelens-ui",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./dropdown": "./dropdown.tsx"
+  },
+  "dependencies": {
+    "react": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8"
+  }
+}

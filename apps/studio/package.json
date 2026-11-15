@@ -14,7 +14,8 @@
     "@vitejs/plugin-react": "^4.5.2",
     "vite": "^6.3.5",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "@leracherry/tracelens-ui": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19.1.8",

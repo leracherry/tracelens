@@ -14,10 +14,6 @@
   color-scheme: dark;
 }
 
-:root[data-theme='system'] {
-  color-scheme: light dark;
-}
-
 * {
   box-sizing: border-box;
 }
@@ -26,13 +22,11 @@ body {
   background: var(--bg);
 }
 button,
-input,
-select {
+input {
   font: inherit;
 }
 button:focus-visible,
 input:focus-visible,
-select:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
@@ -49,14 +43,11 @@ a:focus-visible {
   grid-area: toolbar;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
   padding-inline: var(--workspace-gutter);
   border-bottom: 1px solid var(--border);
   background: var(--masthead);
-}
-.workspace-label {
-  font-weight: 600;
 }
 .context {
   display: flex;
@@ -133,32 +124,31 @@ a:focus-visible {
   color: var(--muted);
 }
 .theme-control {
-  position: relative;
   display: grid;
   place-items: center;
   flex: none;
   width: var(--control-height);
   height: var(--control-height);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-control);
-  background: var(--surface);
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--text);
-}
-.theme-control:hover {
-  background: var(--surface-hover);
-}
-.theme-control:has(select:focus-visible) {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
-.theme-control select {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
   cursor: pointer;
 }
+
+.theme-control:hover,
+.theme-control:focus-visible {
+  color: var(--accent);
+}
+
+.theme-control:focus-visible {
+  outline: none;
+}
+
+.theme-control:focus-visible .ui-icon {
+  stroke-width: 3;
+}
+
 .theme-control .ui-icon {
   width: 18px;
   height: 18px;
@@ -257,6 +247,10 @@ p {
   border: 1px solid var(--border);
   border-radius: var(--radius-panel);
   background: var(--surface);
+}
+.interactions-panel,
+.comparison-toolbar {
+  overflow: visible;
 }
 .panel-title {
   min-height: 68px;
@@ -676,13 +670,13 @@ p {
   width: min(100%, 488px);
   min-width: 0;
 }
-.release-pickers label {
+.release-picker {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 6px;
   min-width: 0;
 }
-.release-pickers label > span:first-child {
+.release-picker > label {
   color: var(--text);
   font-size: 12px;
   font-weight: 600;
@@ -973,7 +967,6 @@ p {
     display: inline-flex;
     margin: 12px 0 0 var(--panel-padding);
   }
-  .view-toolbar select,
   .quiet-button {
     min-height: 44px;
   }

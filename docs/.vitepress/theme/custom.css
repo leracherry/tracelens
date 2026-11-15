@@ -5,8 +5,8 @@
   --vp-font-family-base: var(--ui-font);
   --vp-font-family-mono: var(--mono);
   --vp-c-brand-1: var(--accent);
-  --vp-c-brand-2: light-dark(#1d4a9b, #b5d1ff);
-  --vp-c-brand-3: light-dark(#163d84, #d0e4ff);
+  --vp-c-brand-2: light-dark(#005cae, #b8ddff);
+  --vp-c-brand-3: light-dark(#00519a, #d2e9ff);
   --vp-c-brand-soft: var(--accent-soft);
   --vp-c-bg: var(--surface);
   --vp-c-bg-alt: var(--bg);

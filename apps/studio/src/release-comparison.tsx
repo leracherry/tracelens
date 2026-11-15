@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
+import { Dropdown } from '@leracherry/tracelens-ui/dropdown';
 import {
   compareReleases,
   type ComponentPerformanceDelta,
@@ -151,27 +152,27 @@ function ReleasePicker({
   releases: readonly ReleaseOption[];
   onChange: (value: string) => void;
 }) {
+  const id = useId();
   const commit = releases.find((release) => release.release === value)?.commit;
   return (
-    <label>
-      <span>{label}</span>
-      <span className="select-control">
-        <select
-          aria-label={label}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-        >
-          <option value="">Select release</option>
-          {releases.map((release) => (
-            <option value={release.release} key={release.release}>
-              {release.release}
-            </option>
-          ))}
-          {value && !releases.some((release) => release.release === value) && (
-            <option value={value}>{value} (unavailable)</option>
-          )}
-        </select>
-      </span>
+    <div className="release-picker">
+      <label htmlFor={id}>{label}</label>
+      <Dropdown
+        id={id}
+        label={label}
+        value={value}
+        onChange={onChange}
+        options={[
+          { value: '', label: 'Select release' },
+          ...releases.map(({ release }) => ({
+            value: release,
+            label: release,
+          })),
+          ...(value && !releases.some(({ release }) => release === value)
+            ? [{ value, label: `${value} (unavailable)` }]
+            : []),
+        ]}
+      />
       {(commit || summary) && (
         <span className="picker-samples">
           {commit && <code>Commit {commit}</code>}
@@ -183,7 +184,7 @@ function ReleasePicker({
           )}
         </span>
       )}
-    </label>
+    </div>
   );
 }
 

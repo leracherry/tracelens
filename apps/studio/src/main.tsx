@@ -1,3 +1,4 @@
+import { Dropdown } from '@leracherry/tracelens-ui/dropdown';
 import { StrictMode, useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import type { AnyTraceLensEvent } from '@leracherry/tracelens-protocol';
@@ -11,14 +12,18 @@ import {
 } from './release-comparison';
 import { listReleases } from './release-selection';
 
-const themeOptions = ['light', 'dark', 'system'] as const;
-type Theme = (typeof themeOptions)[number];
+type Theme = 'light' | 'dark';
 const themeKey = 'tracelens-studio-theme';
 
 function readTheme(): Theme {
   try {
     const saved = localStorage.getItem(themeKey);
-    if (saved === 'dark' || saved === 'system') return saved;
+    if (saved === 'dark' || saved === 'light') return saved;
+    if (
+      saved === 'system' &&
+      matchMedia('(prefers-color-scheme: dark)').matches
+    )
+      return 'dark';
   } catch {
     // Studio still works when storage is unavailable.
   }
@@ -261,7 +266,6 @@ function App() {
         </nav>
       </aside>
       <header className="studio-toolbar">
-        <span className="workspace-label">Studio</span>
         <div className="context">
           <span className={`status ${connection}`} role="status">
             <span className="live" aria-hidden="true" />
@@ -271,21 +275,21 @@ function App() {
                 ? 'Collector offline'
                 : 'Connecting'}
           </span>
-          <div className="theme-control" title={`Theme: ${theme}`}>
-            <StudioIcon name={theme} className={`theme-icon-${theme}`} />
-            <select
-              aria-label="Theme"
-              value={theme}
-              onChange={(event) => setTheme(event.target.value as Theme)}
-            >
-              {themeOptions.map((option) => (
-                <option value={option} key={option}>
-                  {option.charAt(0).toUpperCase()}
-                  {option.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
+          <button
+            type="button"
+            className="theme-control"
+            aria-label={
+              theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'
+            }
+            title={
+              theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'
+            }
+            onClick={() =>
+              setTheme((current) => (current === 'light' ? 'dark' : 'light'))
+            }
+          >
+            <StudioIcon name={theme === 'light' ? 'dark' : 'light'} />
+          </button>
         </div>
       </header>
       {view === 'interactions' ? (
@@ -344,56 +348,49 @@ function App() {
                       }}
                     />
                   </label>
-                  <label className="release-filter">
-                    <span>Release</span>
-                    <span className="select-control">
-                      <select
-                        aria-label="Filter by release"
-                        value={selectedRelease}
-                        onChange={(event) =>
-                          updateFilters(event.target.value, route)
-                        }
-                      >
-                        <option value="all">All releases</option>
-                        {releases.map((release) => (
-                          <option value={release.release} key={release.release}>
-                            {release.release}
-                            {release.commit ? ` · ${release.commit}` : ''}
-                          </option>
-                        ))}
-                        {selectedRelease !== 'all' &&
-                          !releases.some(
-                            (release) => release.release === selectedRelease,
-                          ) && (
-                            <option value={selectedRelease}>
-                              {selectedRelease}
-                            </option>
-                          )}
-                      </select>
-                    </span>
-                  </label>
-                  <label className="release-filter">
-                    <span>Route</span>
-                    <span className="select-control">
-                      <select
-                        aria-label="Filter by route"
-                        value={route}
-                        onChange={(event) =>
-                          updateFilters(selectedRelease, event.target.value)
-                        }
-                      >
-                        <option value="">All routes</option>
-                        {routes.map((option) => (
-                          <option value={option} key={option}>
-                            {option}
-                          </option>
-                        ))}
-                        {route && !routes.includes(route) && (
-                          <option value={route}>{route}</option>
-                        )}
-                      </select>
-                    </span>
-                  </label>
+                  <div className="release-filter">
+                    <label htmlFor="release-filter">Release</label>
+                    <Dropdown
+                      id="release-filter"
+                      label="Filter by release"
+                      value={selectedRelease}
+                      onChange={(value) => updateFilters(value, route)}
+                      options={[
+                        { value: 'all', label: 'All releases' },
+                        ...releases.map(({ release, commit }) => ({
+                          value: release,
+                          label: commit ? `${release} · ${commit}` : release,
+                        })),
+                        ...(selectedRelease !== 'all' &&
+                        !releases.some(
+                          ({ release }) => release === selectedRelease,
+                        )
+                          ? [{ value: selectedRelease, label: selectedRelease }]
+                          : []),
+                      ]}
+                    />
+                  </div>
+                  <div className="release-filter">
+                    <label htmlFor="route-filter">Route</label>
+                    <Dropdown
+                      id="route-filter"
+                      label="Filter by route"
+                      value={route}
+                      onChange={(value) =>
+                        updateFilters(selectedRelease, value)
+                      }
+                      options={[
+                        { value: '', label: 'All routes' },
+                        ...routes.map((option) => ({
+                          value: option,
+                          label: option,
+                        })),
+                        ...(route && !routes.includes(route)
+                          ? [{ value: route, label: route }]
+                          : []),
+                      ]}
+                    />
+                  </div>
                   {filtersActive && (
                     <button
                       className="quiet-button"

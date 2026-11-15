@@ -18,13 +18,11 @@ body {
   background: var(--bg);
 }
 button,
-input,
-select {
+input {
   font: inherit;
 }
 button:focus-visible,
 input:focus-visible,
-select:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
@@ -162,6 +160,13 @@ input {
   background: var(--surface);
   color: var(--text);
   font-size: 12px;
+}
+.scenario-field {
+  max-width: 570px;
+  margin-bottom: 12px;
+}
+.scenario-field label {
+  margin-bottom: 4px;
 }
 .check {
   display: flex;
@@ -332,7 +337,6 @@ footer button:hover:not(:disabled) {
     padding: 8px var(--workspace-gutter);
   }
   nav button,
-  select,
   input:not([type='checkbox']),
   footer button {
     min-height: 44px;

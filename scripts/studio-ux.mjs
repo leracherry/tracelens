@@ -104,43 +104,17 @@ try {
     favicon.ok() && favicon.headers()['content-type'] === 'image/svg+xml',
     'Studio favicon is not served as SVG',
   );
-  const theme = desktop.getByRole('combobox', { name: 'Theme' });
-  await theme.focus();
-  const themeOutline = await theme.evaluate(
-    (element) => getComputedStyle(element.parentElement).outlineStyle,
-  );
-  assert(
-    themeOutline === 'solid',
-    'The appearance icon has no keyboard focus ring',
-  );
-  await theme.selectOption('dark');
-  await desktop.waitForFunction(
-    () => getComputedStyle(document.documentElement).colorScheme === 'dark',
-  );
-  await desktop.locator('.theme-icon-dark').waitFor();
+  const darkMode = desktop.getByRole('button', { name: 'Switch to dark mode' });
+  await darkMode.press('Enter');
+  await desktop.locator('html[data-theme="dark"]').waitFor();
   assert(
     (await brand.getAttribute('src')) === '/brand-dark.png',
     'Studio did not display the dark logo',
   );
   await desktop.reload();
-  await desktop.waitForFunction(
-    () => getComputedStyle(document.documentElement).colorScheme === 'dark',
-  );
-  await desktop.emulateMedia({ colorScheme: 'dark' });
-  await theme.selectOption('system');
-  assert(
-    await desktop.locator('html[data-theme="system"]').count(),
-    'Studio did not apply the system theme preference',
-  );
-  await desktop.locator('.theme-icon-system').waitFor();
-  assert(
-    (await brand.getAttribute('src')) === '/brand-dark.png',
-    'Studio did not display the dark logo in system mode',
-  );
-  await theme.selectOption('light');
-  await desktop.waitForFunction(
-    () => getComputedStyle(document.documentElement).colorScheme === 'light',
-  );
+  await desktop.locator('html[data-theme="dark"]').waitFor();
+  await desktop.getByRole('button', { name: 'Switch to light mode' }).click();
+  await desktop.locator('html[data-theme="light"]').waitFor();
   assert(
     (await brand.getAttribute('src')) === '/brand.png',
     'Studio did not return to the light logo',
@@ -210,15 +184,34 @@ try {
     fullPage: true,
   });
 
+  async function chooseOption(page, trigger, name) {
+    await trigger.click();
+    await page
+      .getByRole('option', { name, exact: typeof name === 'string' })
+      .click();
+  }
+
   const releaseFilter = desktop.getByRole('combobox', {
     name: 'Filter by release',
   });
-  await releaseFilter.selectOption('2.13.4');
+  await chooseOption(desktop, releaseFilter, /^2\.13\.4/);
   await desktop
     .locator('.capture-summary')
     .getByText(/1 captured/)
     .waitFor();
-  await releaseFilter.selectOption('all');
+  await releaseFilter.press('ArrowDown');
+  await releaseFilter.press('Home');
+  await releaseFilter.press('Escape');
+  assert(
+    (await releaseFilter.textContent()).startsWith('2.13.4'),
+    'Escape committed an unselected option',
+  );
+  await releaseFilter.press('Home');
+  await releaseFilter.press('Enter');
+  assert(
+    (await releaseFilter.textContent()) === 'All releases',
+    'Keyboard selection did not apply',
+  );
 
   const search = desktop.getByRole('searchbox', { name: 'Search captures' });
   await search.fill(' SETTINGS ');
@@ -227,7 +220,7 @@ try {
     'Search did not normalize the input',
   );
   await search.fill('/settings/profile');
-  await releaseFilter.selectOption('2.13.4');
+  await chooseOption(desktop, releaseFilter, /^2\.13\.4/);
   await desktop
     .locator('.capture-summary')
     .getByText(/1 captured/)
@@ -256,11 +249,11 @@ try {
     'Interaction release filter is shown in the comparison view',
   );
   const before = desktop.getByRole('combobox', { name: 'Baseline' });
-  await before.selectOption('2.14.0');
+  await chooseOption(desktop, before, '2.14.0');
   await desktop
     .getByRole('heading', { name: 'Choose two different releases' })
     .waitFor();
-  await before.selectOption('2.13.4');
+  await chooseOption(desktop, before, '2.13.4');
   await desktop.getByText('Interaction deltas', { exact: true }).waitFor();
   const interactionTable = desktop.getByRole('table', {
     name: 'Interaction deltas',
@@ -307,13 +300,13 @@ try {
     'Return did not restore focus to the interaction delta',
   );
   assert(
-    (await before.inputValue()) === '2.13.4',
+    (await before.textContent()) === '2.13.4',
     'Return changed the baseline',
   );
   assert(
     (await desktop
       .getByRole('combobox', { name: 'Candidate' })
-      .inputValue()) === '2.14.0',
+      .textContent()) === '2.14.0',
     'Return changed the candidate',
   );
   await auditPage(desktop, 'desktop');
@@ -470,16 +463,20 @@ try {
   collectorOffline = false;
   await live.getByRole('button', { name: 'Retry collector' }).click();
   await live.locator('.status.ready').waitFor();
-  await live
-    .getByRole('combobox', { name: 'Filter by route' })
-    .selectOption('/checkout');
+  await chooseOption(
+    live,
+    live.getByRole('combobox', { name: 'Filter by route' }),
+    '/checkout',
+  );
   await live.getByRole('heading', { name: 'Apply coupon' }).waitFor();
   await live
     .getByText('No correlated events are available for this capture.')
     .waitFor();
-  await live
-    .getByRole('combobox', { name: 'Filter by release' })
-    .selectOption('2.13.4');
+  await chooseOption(
+    live,
+    live.getByRole('combobox', { name: 'Filter by release' }),
+    /^2\.13\.4/,
+  );
   await live
     .getByRole('heading', { name: 'No matching interactions' })
     .waitFor();
@@ -592,22 +589,22 @@ try {
     },
   ];
   const longCandidate = live.getByRole('combobox', { name: 'Candidate' });
-  await longCandidate
-    .locator('option')
-    .filter({ hasText: longRelease })
-    .waitFor({ state: 'attached' });
-  await longCandidate.selectOption(longRelease);
+  await chooseOption(live, longCandidate, longRelease);
   await liveTable
     .getByRole('rowheader', { name: new RegExp(longName) })
     .waitFor();
   await auditPage(live, '320px comparison with long identifiers');
   await live.getByRole('button', { name: 'Interactions' }).click();
-  await live
-    .getByRole('combobox', { name: 'Filter by release' })
-    .selectOption(longRelease);
-  await live
-    .getByRole('combobox', { name: 'Filter by route' })
-    .selectOption(longRoute);
+  await chooseOption(
+    live,
+    live.getByRole('combobox', { name: 'Filter by release' }),
+    `${longRelease} · ${newInteraction.commit}`,
+  );
+  await chooseOption(
+    live,
+    live.getByRole('combobox', { name: 'Filter by route' }),
+    longRoute,
+  );
   await auditPage(live, '320px interaction filters with long identifiers');
   await live.getByRole('button', { name: new RegExp(longName) }).click();
   await auditPage(live, '320px inspector with long identifiers');

@@ -1,3 +1,4 @@
+import { Dropdown } from '@leracherry/tracelens-ui/dropdown';
 import {
   StrictMode,
   useEffect,
@@ -94,17 +95,17 @@ function App() {
         <div className="scenario-toolbar">
           <div className="intensity">
             <label htmlFor="intensity">Load intensity</label>
-            <span className="select-control">
-              <select
-                id="intensity"
-                value={intensity}
-                onChange={(event) => setIntensity(Number(event.target.value))}
-              >
-                <option value="0.7">0.7× moderate</option>
-                <option value="1">1× slow</option>
-                <option value="1.4">1.4× severe</option>
-              </select>
-            </span>
+            <Dropdown
+              id="intensity"
+              label="Load intensity"
+              value={String(intensity)}
+              onChange={(value) => setIntensity(Number(value))}
+              options={[
+                { value: '0.7', label: '0.7× moderate' },
+                { value: '1', label: '1× slow' },
+                { value: '1.4', label: '1.4× severe' },
+              ]}
+            />
           </div>
           <p className="expectation">
             Expected telemetry · <strong>{active.expected}</strong>
@@ -202,6 +203,7 @@ async function runDemoRequest(url: string, options: RequestInit) {
 }
 
 function SettingsScenario({ intensity }: { intensity: number }) {
+  const [region, setRegion] = useState('ca');
   const [status, setStatus] = useState('All changes synced');
   const [savedAt, setSavedAt] = useState('Not saved in this session');
   const [running, setRunning] = useState(false);
@@ -252,16 +254,20 @@ function SettingsScenario({ intensity }: { intensity: number }) {
         Workspace name
         <input defaultValue="Acme engineering" />
       </label>
-      <label>
-        Telemetry region
-        <span className="select-control">
-          <select defaultValue="ca">
-            <option value="ca">Canada</option>
-            <option value="us">United States</option>
-            <option value="eu">Europe</option>
-          </select>
-        </span>
-      </label>
+      <div className="scenario-field">
+        <label htmlFor="telemetry-region">Telemetry region</label>
+        <Dropdown
+          id="telemetry-region"
+          label="Telemetry region"
+          value={region}
+          onChange={setRegion}
+          options={[
+            { value: 'ca', label: 'Canada' },
+            { value: 'us', label: 'United States' },
+            { value: 'eu', label: 'Europe' },
+          ]}
+        />
+      </div>
       <label className="check">
         <input type="checkbox" defaultChecked /> Capture slow interactions
         automatically

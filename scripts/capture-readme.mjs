@@ -254,7 +254,7 @@ try {
     deviceScaleFactor: 1,
   });
   await page.goto(origin, { waitUntil: 'networkidle' });
-  await page.getByRole('combobox', { name: 'Theme' }).selectOption('dark');
+  await page.getByRole('button', { name: 'Switch to dark mode' }).click();
   await page.waitForFunction(
     () => getComputedStyle(document.documentElement).colorScheme === 'dark',
   );
