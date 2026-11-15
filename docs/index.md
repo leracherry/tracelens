@@ -52,7 +52,7 @@ npm install @leracherry/tracelens-browser
 npx @leracherry/tracelens-cli@1.1.0 studio
 ```
 
-[Instrument the browser →](./guides/browser-instrumentation.md)
+[Instrument the browser →](./guides/browser-instrumentation.md) · [Explore the Studio workflows](./guides/workflows.md)
 
 ::: details Watch the 12-second Studio tour
 ![Studio demo: search for Save settings, inspect source-linked evidence, compare releases, and open the candidate capture](./assets/studio-demo.gif)

@@ -12,6 +12,10 @@ tracelens is easiest to adopt as a sequence of small workflows. Start locally, m
 6. Follow the longest correlated lane to browser, React, network, layout, or custom work.
 7. Import source maps when a long-frame script is the primary contributor.
 
+::: details View Interactions in light mode
+![Light-mode Interactions showing six captures and the 487 ms Save settings timeline](../assets/studio-interaction-light.png)
+:::
+
 Use `data-tracelens-name` on important controls and `trace(name, fn)` around domain work. Stable names make local traces, release comparisons, and CI reports describe the same operation.
 
 ```ts
@@ -46,7 +50,13 @@ tracelens does not provide a hosted ingestion service. Your endpoint must accept
 
 ## Compare two releases
 
-Capture the same named interactions under two release values, then compare them in Studio or the CLI:
+Capture the same named interactions under two release values. In Studio, choose a **Baseline** and **Candidate** in **Releases**. Use **View captures** to open the evidence behind a regression.
+
+::: details View Releases in light mode
+![Light-mode Releases comparing 2.13.4 and 2.14.0 with two interaction regressions](../assets/studio-release-comparison-light.png)
+:::
+
+To compare a saved trace from the command line, run:
 
 ```bash
 npx @leracherry/tracelens-cli compare 2.13.4 2.14.0 --file trace.json

@@ -124,6 +124,13 @@ Follow the complete [five-minute setup](docs/guides/getting-started.md), or open
 
 <p align="center"><sub>One interaction, from input delay to its source-mapped long-frame contributor.</sub></p>
 
+<details>
+<summary>View Interactions in light mode</summary>
+
+![Light-mode Interactions showing six captures and the 487 ms Save settings timeline](docs/assets/studio-interaction-light.png)
+
+</details>
+
 ## Workflows
 
 ### Debug one interaction locally
@@ -147,6 +154,13 @@ ReleaseScope compares p75 values across captured builds. Choose a **Baseline** a
 ![tracelens Releases showing Baseline 2.13.4, Candidate 2.14.0, and View captures beside the Save settings regression](docs/assets/studio-release-comparison.png)
 
 [See the candidate capture after selecting View captures](docs/assets/studio-release-captures.png).
+
+<details>
+<summary>View Releases in light mode</summary>
+
+![Light-mode Releases comparing 2.13.4 and 2.14.0 with two interaction regressions](docs/assets/studio-release-comparison-light.png)
+
+</details>
 
 ```bash
 npx @leracherry/tracelens-cli compare 2.13.4 2.14.0 --file trace.json
