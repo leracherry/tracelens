@@ -29,10 +29,10 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/studio-demo.gif" alt="tracelens Studio tour showing capture search, source-linked timeline evidence, release comparison, and the candidate capture" width="1120" />
+  <img src="docs/assets/studio-tour-light.gif" alt="tracelens Studio tour showing capture search, source-linked timeline evidence, release comparison, and the candidate capture" width="1120" />
 </p>
 
-<p align="center"><sub>Search → inspect source evidence → compare releases → open the candidate capture. Recorded from Studio in dark mode with synthetic telemetry.</sub></p>
+<p align="center"><sub>Search → inspect source evidence → compare releases → open the candidate capture. Recorded from Studio in light mode with synthetic telemetry.</sub></p>
 
 tracelens turns browser telemetry into an explanation. Start with a slow interaction, follow the browser, React, network, layout, and custom work that overlapped it, map expensive scripts back to source, and compare the same signal across releases.
 
@@ -124,13 +124,6 @@ Follow the complete [five-minute setup](docs/guides/getting-started.md), or open
 
 <p align="center"><sub>One interaction, from input delay to its source-mapped long-frame contributor.</sub></p>
 
-<details>
-<summary>View Interactions in light mode</summary>
-
-![Light-mode Interactions showing six captures and the 487 ms Save settings timeline](docs/assets/studio-interaction-light.png)
-
-</details>
-
 ## Workflows
 
 ### Debug one interaction locally
@@ -151,16 +144,9 @@ flowchart LR
 
 ReleaseScope compares p75 values across captured builds. Choose a **Baseline** and **Candidate**, then select **View captures** on an interaction or route row to inspect matching candidate evidence. **Back to comparison** restores the release pair and row.
 
-![tracelens Releases showing Baseline 2.13.4, Candidate 2.14.0, and View captures beside the Save settings regression](docs/assets/studio-release-comparison.png)
+![tracelens Releases showing Baseline 2.13.4, Candidate 2.14.0, and View captures beside the Save settings regression](docs/assets/studio-release-comparison-light.png)
 
 [See the candidate capture after selecting View captures](docs/assets/studio-release-captures.png).
-
-<details>
-<summary>View Releases in light mode</summary>
-
-![Light-mode Releases comparing 2.13.4 and 2.14.0 with two interaction regressions](docs/assets/studio-release-comparison-light.png)
-
-</details>
 
 ```bash
 npx @leracherry/tracelens-cli compare 2.13.4 2.14.0 --file trace.json

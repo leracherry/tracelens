@@ -254,9 +254,8 @@ try {
     deviceScaleFactor: 1,
   });
   await page.goto(origin, { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'Switch to dark mode' }).click();
   await page.waitForFunction(
-    () => getComputedStyle(document.documentElement).colorScheme === 'dark',
+    () => getComputedStyle(document.documentElement).colorScheme === 'light',
   );
   const search = page.getByRole('searchbox', { name: 'Search captures' });
   await search.fill('Save settings');
@@ -317,7 +316,7 @@ try {
         '[0:v]scale=1080:-1:flags=lanczos,split[a][b];[a]palettegen[p];[b][p]paletteuse',
         '-loop',
         '0',
-        resolve(output, 'studio-demo.gif'),
+        resolve(output, 'studio-tour-light.gif'),
       ],
       { stdio: 'pipe' },
     );
