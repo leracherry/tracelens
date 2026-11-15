@@ -7,26 +7,12 @@ export default defineConfig({
   lang: 'en-US',
   base: '/tracelens/',
   cleanUrls: true,
+  appearance: 'dark',
   lastUpdated: true,
   head: [
     ['link', { rel: 'icon', type: 'image/png', href: '/tracelens/logo.png' }],
     ['link', { rel: 'apple-touch-icon', href: '/tracelens/logo.png' }],
-    [
-      'meta',
-      {
-        name: 'theme-color',
-        content: '#f3f6f7',
-        media: '(prefers-color-scheme: light)',
-      },
-    ],
-    [
-      'meta',
-      {
-        name: 'theme-color',
-        content: '#131a1c',
-        media: '(prefers-color-scheme: dark)',
-      },
-    ],
+    ['meta', { name: 'theme-color', content: '#131a1c' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'TraceLens Documentation' }],
     [

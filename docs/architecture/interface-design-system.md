@@ -1,6 +1,6 @@
 # TraceLens interface design system
 
-TraceLens adapts New Relic’s public 2026 UI refresh to the Studio and Playground workflows. The reference shows shared charcoal chrome in dark mode, blue navigation and actions, dense tables, and brighter categorical chart colors. TraceLens keeps a bright light theme as the default and offers Dark and System options in Studio. [New Relic’s 2026 UI refresh](https://newrelic.com/blog/news/a-refreshed-modern-experience-introducing-new-relic-ui-updates)
+TraceLens adapts New Relic’s public 2026 UI refresh to the Studio and Playground workflows. The reference shows shared charcoal chrome in dark mode, blue navigation and actions, dense tables, and brighter categorical chart colors. TraceLens keeps a bright light theme as the default and offers Light, Dark, and System through the appearance icon in Studio. [New Relic’s 2026 UI refresh](https://newrelic.com/blog/news/a-refreshed-modern-experience-introducing-new-relic-ui-updates)
 
 ## What came from the reference
 
@@ -10,7 +10,7 @@ TraceLens adapts New Relic’s public 2026 UI refresh to the Studio and Playgrou
 
 ## Palette
 
-Shared tokens live in `apps/ui/tokens.css`. Studio and Playground import those tokens. VitePress maps the same roles to its documentation theme.
+Shared tokens live in `apps/ui/tokens.css`. Studio and Playground import those tokens. VitePress maps the same roles to its documentation theme. The site defaults to dark and remembers the reader’s choice.
 
 | Token                   | Light     | Dark      |
 | ----------------------- | --------- | --------- |

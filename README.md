@@ -125,6 +125,8 @@ Follow the complete [five-minute setup](docs/guides/getting-started.md), or open
 
 ### Debug one interaction locally
 
+In the current source build, use the appearance icon in the Studio toolbar to choose **Light**, **Dark**, or **System**.
+
 Open **Interactions** and search by action name or route. Combine search with the release and route filters when several captures match. Each timeline event opens its timing and the available source, request, or React evidence.
 
 ```mermaid

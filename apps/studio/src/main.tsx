@@ -258,23 +258,24 @@ function App() {
                 ? 'Collector offline'
                 : 'Connecting'}
           </span>
-          <label className="theme-control">
-            <span>Theme</span>
-            <span className="select-control">
-              <select
-                aria-label="Theme"
-                value={theme}
-                onChange={(event) => setTheme(event.target.value as Theme)}
-              >
-                {themeOptions.map((option) => (
-                  <option value={option} key={option}>
-                    {option.charAt(0).toUpperCase()}
-                    {option.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </span>
-          </label>
+          <div className="theme-control" title={`Theme: ${theme}`}>
+            <span
+              className={`theme-icon theme-icon-${theme}`}
+              aria-hidden="true"
+            />
+            <select
+              aria-label="Theme"
+              value={theme}
+              onChange={(event) => setTheme(event.target.value as Theme)}
+            >
+              {themeOptions.map((option) => (
+                <option value={option} key={option}>
+                  {option.charAt(0).toUpperCase()}
+                  {option.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </header>
       {view === 'interactions' ? (

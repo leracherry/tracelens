@@ -58,8 +58,7 @@ a:focus-visible {
 .workspace-label {
   font-weight: 600;
 }
-.context,
-.theme-control {
+.context {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -133,8 +132,78 @@ a:focus-visible {
 .capture-search input::placeholder {
   color: var(--muted);
 }
-.theme-control .select-control {
-  width: 100px;
+.theme-control {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--control-height);
+  height: var(--control-height);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text);
+}
+.theme-control:hover {
+  background: var(--surface-hover);
+}
+.theme-control:has(select:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.theme-control select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.theme-icon {
+  position: relative;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  pointer-events: none;
+}
+.theme-icon::before,
+.theme-icon::after {
+  content: '';
+  position: absolute;
+}
+.theme-icon-light::before {
+  inset: 4px;
+  border: var(--icon-stroke) solid currentColor;
+  border-radius: 50%;
+}
+.theme-icon-light::after {
+  inset: 0;
+  background:
+    linear-gradient(currentColor, currentColor) center top / 1px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) center bottom / 1px 2px
+      no-repeat,
+    linear-gradient(currentColor, currentColor) left center / 2px 1px no-repeat,
+    linear-gradient(currentColor, currentColor) right center / 2px 1px no-repeat;
+}
+.theme-icon-dark::before {
+  inset: 1px;
+  border-radius: 50%;
+  box-shadow: inset 4px -3px 0 currentColor;
+}
+.theme-icon-system::before {
+  inset: 2px 0 4px;
+  border: var(--icon-stroke) solid currentColor;
+  border-radius: 2px;
+}
+.theme-icon-system::after {
+  inset: auto 4px 1px;
+  border-bottom: var(--icon-stroke) solid currentColor;
+}
+@media (forced-colors: active) {
+  .theme-icon-dark::before {
+    border: var(--icon-stroke) solid currentColor;
+    border-top-color: transparent;
+    transform: rotate(-35deg);
+  }
 }
 .release-filter .select-control {
   width: 172px;
@@ -973,12 +1042,6 @@ p {
   }
   .studio-sidebar nav {
     padding: 8px var(--workspace-gutter);
-  }
-  .theme-control .select-control {
-    width: 80px;
-  }
-  .theme-control > span:first-child {
-    display: none;
   }
   .capture-search {
     width: 100%;

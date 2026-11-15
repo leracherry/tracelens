@@ -254,6 +254,10 @@ try {
     deviceScaleFactor: 1,
   });
   await page.goto(origin, { waitUntil: 'networkidle' });
+  await page.getByRole('combobox', { name: 'Theme' }).selectOption('dark');
+  await page.waitForFunction(
+    () => getComputedStyle(document.documentElement).colorScheme === 'dark',
+  );
   const browserEvidence = page.getByRole('button', {
     name: 'Browser: Long animation frame, 381 ms',
   });

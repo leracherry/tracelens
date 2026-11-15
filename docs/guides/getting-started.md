@@ -23,6 +23,8 @@ const stop = init({
 
 Initialize once per page. The SDK batches events every second by default. Use explicit, non-sensitive `data-tracelens-name` attributes on controls to make interactions recognizable.
 
+Studio remembers your **Light**, **Dark**, or **System** preference. In the current source build, the appearance control is an icon at the right end of the toolbar.
+
 ## Vite
 
 ```bash

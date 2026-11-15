@@ -89,10 +89,19 @@ try {
     .getByRole('heading', { name: 'Interactions', exact: true })
     .waitFor();
   const theme = desktop.getByRole('combobox', { name: 'Theme' });
+  await theme.focus();
+  const themeOutline = await theme.evaluate(
+    (element) => getComputedStyle(element.parentElement).outlineStyle,
+  );
+  assert(
+    themeOutline === 'solid',
+    'The appearance icon has no keyboard focus ring',
+  );
   await theme.selectOption('dark');
   await desktop.waitForFunction(
     () => getComputedStyle(document.documentElement).colorScheme === 'dark',
   );
+  await desktop.locator('.theme-icon-dark').waitFor();
   await desktop.reload();
   await desktop.waitForFunction(
     () => getComputedStyle(document.documentElement).colorScheme === 'dark',
@@ -103,6 +112,7 @@ try {
     await desktop.locator('html[data-theme="system"]').count(),
     'Studio did not apply the system theme preference',
   );
+  await desktop.locator('.theme-icon-system').waitFor();
   await theme.selectOption('light');
   await desktop.waitForFunction(
     () => getComputedStyle(document.documentElement).colorScheme === 'light',
