@@ -10,7 +10,10 @@ export default defineConfig({
   appearance: 'dark',
   lastUpdated: true,
   head: [
-    ['link', { rel: 'icon', type: 'image/png', href: '/tracelens/logo.png' }],
+    [
+      'link',
+      { rel: 'icon', type: 'image/svg+xml', href: '/tracelens/logo.svg' },
+    ],
     ['link', { rel: 'apple-touch-icon', href: '/tracelens/logo.png' }],
     ['meta', { name: 'theme-color', content: '#131a1c' }],
     ['meta', { property: 'og:type', content: 'website' }],
@@ -56,7 +59,7 @@ export default defineConfig({
     ],
   ],
   themeConfig: {
-    logo: '/logo.png',
+    logo: '/logo.svg',
     siteTitle: 'TraceLens',
     nav: [
       { text: 'Guide', link: '/guides/getting-started' },

@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://leracherry.github.io/tracelens/">
-    <img src="docs/public/logo.png" alt="TraceLens logo" width="128" height="128" />
+    <img src="docs/public/logo.svg" alt="TraceLens logo" width="128" height="128" />
   </a>
 </p>
 

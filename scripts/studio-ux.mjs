@@ -88,6 +88,17 @@ try {
   await desktop
     .getByRole('heading', { name: 'Interactions', exact: true })
     .waitFor();
+  const brand = desktop.locator('.brand img');
+  assert(
+    (await brand.getAttribute('src')) === '/logo.svg',
+    'Studio is not using the SVG logo',
+  );
+  await brand.evaluate((image) => image.decode());
+  const favicon = await desktop.request.get(`${origin}/logo.svg`);
+  assert(
+    favicon.ok() && favicon.headers()['content-type'] === 'image/svg+xml',
+    'Studio favicon is not served as SVG',
+  );
   const theme = desktop.getByRole('combobox', { name: 'Theme' });
   await theme.focus();
   const themeOutline = await theme.evaluate(

@@ -6,7 +6,7 @@ hero:
   text: Explain slow real-user interactions
   tagline: Correlate INP, long frames, React renders, network work, source maps, and release regressions in one local-first debugging workflow.
   image:
-    src: /logo.png
+    src: /logo.svg
     alt: TraceLens logo
   actions:
     - theme: brand

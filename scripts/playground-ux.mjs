@@ -14,6 +14,7 @@ const types = {
   '.js': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.png': 'image/png',
+  '.svg': 'image/svg+xml',
 };
 
 const server = createServer(async (request, response) => {
@@ -88,6 +89,10 @@ try {
     if (message.type() === 'error') errors.push(message.text());
   });
   await desktop.goto(origin, { waitUntil: 'networkidle' });
+
+  const brand = desktop.locator('.brand img');
+  await expect(brand).toHaveAttribute('src', '/logo.svg');
+  await brand.evaluate((image) => image.decode());
 
   const scenarios = [
     ['Slow search', 'Run search', 'Run slow search', 'filter-search-results'],

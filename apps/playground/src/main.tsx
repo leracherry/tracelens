@@ -45,7 +45,7 @@ function App() {
     <div className="app-shell">
       <aside className="workspace-sidebar">
         <div className="brand">
-          <img src="/logo.png" alt="" width="28" height="28" /> TraceLens
+          <img src="/logo.svg" alt="" width="28" height="28" /> TraceLens
         </div>
         <nav aria-label="Performance scenarios">
           {scenarios.map((scenario) => (
