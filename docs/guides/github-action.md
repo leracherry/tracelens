@@ -1,12 +1,12 @@
 # GitHub Action
 
-The TraceLens Action checks a JSON event export against `tracelens.yml`, publishes the same stable JSON report as a workflow artifact, adds a Markdown job summary, creates a GitHub Check, and creates or updates one pull-request comment.
+The tracelens Action checks a JSON event export against `tracelens.yml`, publishes the same stable JSON report as a workflow artifact, adds a Markdown job summary, creates a GitHub Check, and creates or updates one pull-request comment.
 
 The Action ships with the v1.0.0 repository release. Version tags are convenient for examples; pin a full commit SHA when your security policy requires an immutable action reference.
 
 ## Workflow
 
-Your preceding steps must produce a JSON array of TraceLens events. Copy the [complete workflow](../../examples/github-action/performance-budget.yml), or add this step to an existing workflow:
+Your preceding steps must produce a JSON array of tracelens events. Copy the [complete workflow](../../examples/github-action/performance-budget.yml), or add this step to an existing workflow:
 
 ```yaml
 permissions:
@@ -17,7 +17,7 @@ permissions:
 steps:
   - uses: actions/checkout@v7
 
-  - name: Check TraceLens performance budgets
+  - name: Check tracelens performance budgets
     uses: leracherry/tracelens@v1.1.0
     with:
       trace-file: artifacts/tracelens-events.json
@@ -29,13 +29,13 @@ steps:
 
 The action fails when any threshold is exceeded or a check has fewer than `minimumSamples`. Set `fail-on-budget: false` to run in reporting-only mode while establishing a baseline; failed budget checks then use a neutral GitHub Check conclusion.
 
-The default `comment: auto` posts only for pull-request events. TraceLens searches for its hidden marker and updates the existing bot comment on later runs instead of adding another comment. Use `comment: never` to disable this behavior, or `comment: always` to request a comment and receive a warning on non-PR events.
+The default `comment: auto` posts only for pull-request events. tracelens searches for its hidden marker and updates the existing bot comment on later runs instead of adding another comment. Use `comment: never` to disable this behavior, or `comment: always` to request a comment and receive a warning on non-PR events.
 
 ## Inputs
 
 | Input             | Required | Default                        | Description                                                  |
 | ----------------- | :------: | ------------------------------ | ------------------------------------------------------------ |
-| `trace-file`      |   Yes    | —                              | TraceLens JSON event array.                                  |
+| `trace-file`      |   Yes    | —                              | tracelens JSON event array.                                  |
 | `config-file`     |    No    | `tracelens.yml`                | Performance-budget YAML.                                     |
 | `release`         |    No    | Newest in trace                | Release selector.                                            |
 | `app`             |    No    | Inferred                       | Application selector. Required for mixed-app traces.         |
@@ -60,7 +60,7 @@ The JSON report is written before GitHub API calls and remains available to late
 
 `contents: read` is sufficient for the local budget evaluation, job summary, and workflow artifact. `checks: write` enables the dedicated check run, and `pull-requests: write` enables the PR comment. If no token is supplied, the action skips both GitHub API features but still evaluates budgets.
 
-GitHub normally gives workflows from forked pull requests a read-only token. TraceLens treats check/comment permission errors as warnings so the budget result and artifact are still produced. Do not use `pull_request_target` to run untrusted contribution code with a write token.
+GitHub normally gives workflows from forked pull requests a read-only token. tracelens treats check/comment permission errors as warnings so the budget result and artifact are still produced. Do not use `pull_request_target` to run untrusted contribution code with a write token.
 
 ## Reports
 

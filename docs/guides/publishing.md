@@ -1,4 +1,4 @@
-# Publishing TraceLens
+# Publishing tracelens
 
 The **Release** GitHub Actions workflow validates the repository, builds nine packages (including `@leracherry/tracelens-otel`), installs their tarballs in a temporary project, tests the bundled Studio, publishes to both registries, and creates a GitHub Release with npm-format tarballs attached.
 
@@ -39,6 +39,6 @@ npm install @leracherry/tracelens-browser@1.1.0
 npx @leracherry/tracelens-cli@1.1.0 studio
 ```
 
-Use `import { init } from '@leracherry/tracelens-browser'` on either registry. Keep all TraceLens packages on the same version. GitHub package visibility and account permissions govern installation from the mirror.
+Use `import { init } from '@leracherry/tracelens-browser'` on either registry. Keep all tracelens packages on the same version. GitHub package visibility and account permissions govern installation from the mirror.
 
 Build outputs and staging files live under ignored `dist/` directories. No credentials are copied into tarballs.

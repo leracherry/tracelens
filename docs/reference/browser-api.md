@@ -26,11 +26,11 @@ Records named synchronous or asynchronous application work and preserves the ori
 const report = await trace('generate-report', () => generateReport());
 ```
 
-The returned value is always a promise because TraceLens records both synchronous and asynchronous functions through one API.
+The returned value is always a promise because tracelens records both synchronous and asynchronous functions through one API.
 
 ## `mark(name)`
 
-Creates `performance.mark('tracelens:' + name)` and emits a TraceLens mark when the runtime is active.
+Creates `performance.mark('tracelens:' + name)` and emits a tracelens mark when the runtime is active.
 
 ```ts
 mark('hydration-complete');

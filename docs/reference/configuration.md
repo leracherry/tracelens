@@ -46,7 +46,7 @@ tracePropagation: {
 }
 ```
 
-Trace propagation is off by default. Headers are added only to allowed HTTP(S) origins and never to the TraceLens collector request.
+Trace propagation is off by default. Headers are added only to allowed HTTP(S) origins and never to the tracelens collector request.
 
 ## Vite metadata
 

@@ -6,7 +6,7 @@ Source maps connect long-frame script contributions with original files and line
 
 Build your application with external source maps, for example Vite's `build: { sourcemap: true }`. Keep the exact generated JavaScript alongside its `.js.map` or `.mjs.map` file.
 
-Build TraceLens from source, then import your application's output:
+Build tracelens from source, then import your application's output:
 
 ```bash
 pnpm install
@@ -31,7 +31,7 @@ Select an interaction and inspect **Long animation frames**. Each script lists i
 
 The browser records the LoAF `sourceCharPosition` (a zero-based UTF-16 offset). Core converts it using the exact generated JavaScript and resolves the v3 source map. Older traces without this offset remain unresolved; there is no inferred line number.
 
-GitHub links require an explicitly supplied HTTPS GitHub repository and a 7–40 character hexadecimal commit. They are generated only for repository-relative original source paths such as `src/Checkout.tsx`. Absolute paths, parent traversals, and virtual paths such as `webpack://` are displayed but not linked. Configure your map's source paths accordingly; TraceLens does not guess repository roots. When both telemetry and bundle have commits, they must match exactly.
+GitHub links require an explicitly supplied HTTPS GitHub repository and a 7–40 character hexadecimal commit. They are generated only for repository-relative original source paths such as `src/Checkout.tsx`. Absolute paths, parent traversals, and virtual paths such as `webpack://` are displayed but not linked. Configure your map's source paths accordingly; tracelens does not guess repository roots. When both telemetry and bundle have commits, they must match exactly.
 
 ## Privacy and limits
 

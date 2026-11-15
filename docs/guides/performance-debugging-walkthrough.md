@@ -1,6 +1,6 @@
 # Debug a slow interaction
 
-This walkthrough uses the TraceLens Playground to move from a slow click to a concrete explanation, then turns that finding into a release budget.
+This walkthrough uses the tracelens Playground to move from a slow click to a concrete explanation, then turns that finding into a release budget.
 
 ## Start Studio and the playground
 
@@ -18,7 +18,7 @@ Open Playground at `http://localhost:4174` and use **Open Studio** to open the l
 
 Choose **Settings save**, set **Load intensity** to `1×`, and click **Save settings**. In Studio, open **Interactions** and search for **Save settings**. Use **Release** or **Route** to narrow the results, then select a capture. The list is sorted by duration.
 
-![TraceLens Studio filtered to Save settings, with the 487 ms interaction selected and its long-frame source evidence open](../assets/studio-interaction.png)
+![tracelens Studio filtered to Save settings, with the 487 ms interaction selected and its long-frame source evidence open](../assets/studio-interaction.png)
 
 In the synthetic example above, the interaction takes 487 ms. Use the timing split to decide which evidence to inspect first.
 
@@ -64,7 +64,7 @@ Capture representative baseline and candidate samples with stable `app`, `enviro
 
 Open **Releases**, choose **Baseline** and **Candidate**, and scan the interaction, route, and component deltas. Select **View captures** on an interaction or route row to inspect the matching candidate captures. Use **Back to comparison** to return to the same row and release pair. The comparison reports the observed samples and the Studio threshold.
 
-![TraceLens Releases comparing builds 2.13.4 and 2.14.0 and showing the Save settings regression](../assets/studio-release-comparison.png)
+![tracelens Releases comparing builds 2.13.4 and 2.14.0 and showing the Save settings regression](../assets/studio-release-comparison.png)
 
 The matching **Release captures** view shows the candidate version and route above the capture list. Select the **Browser** event to reopen the source-linked evidence.
 
@@ -109,7 +109,7 @@ Then move the same check into the [GitHub Action](github-action.md). Insufficien
 
 ## What a useful finding looks like
 
-A good TraceLens investigation ends with a falsifiable statement, not merely a red score:
+A good tracelens investigation ends with a falsifiable statement, not merely a red score:
 
 > Save settings took 487 ms in 2.14.0, up from 183 ms. The selected long frame attributes 287 ms to first-party work in `saveSettings`. Isolate the serialization step and repeat the capture to test whether it drives the regression.
 

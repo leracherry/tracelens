@@ -128,7 +128,7 @@ try {
   });
   const origin = 'http://127.0.0.1:19473';
   const html = await (await fetch(origin)).text();
-  assert.match(html, /TraceLens Studio/);
+  assert.match(html, /tracelens Studio/);
   const asset = html.match(/src="([^"]+\.js)"/)[1];
   assert.equal((await fetch(origin + asset)).status, 200);
   assert.equal(

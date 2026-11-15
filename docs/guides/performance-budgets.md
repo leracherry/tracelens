@@ -40,7 +40,7 @@ tracelens budget check \
   --environment production
 ```
 
-Omit `--file` to query the local Studio collector at `http://127.0.0.1:4173/__tracelens`, or provide `--endpoint`. If `--release` is omitted, TraceLens selects the release with the newest event after applying app and environment filters. If a selected release contains multiple apps or environments, the command requires the corresponding selector instead of mixing populations.
+Omit `--file` to query the local Studio collector at `http://127.0.0.1:4173/__tracelens`, or provide `--endpoint`. If `--release` is omitted, tracelens selects the release with the newest event after applying app and environment filters. If a selected release contains multiple apps or environments, the command requires the corresponding selector instead of mixing populations.
 
 The command exits 0 only when every configured check passes. Budget failures and insufficient data exit 1. Configuration, input, and connection errors also exit 1 with a `TraceLens:` diagnostic.
 
@@ -70,6 +70,6 @@ JSON is written to stdout without terminal colors. Errors go to stderr. The repo
 
 ## Interpretation
 
-The current `inp.p75` budget is the p75 of captured TraceLens interaction durations, not the page-level INP algorithm used by CrUX. LCP and CLS budgets use captured final Web Vital samples. Route budgets currently support interaction p75. These results describe the supplied sample and do not establish statistical significance; choose a meaningful `minimumSamples` and compare equivalent traffic populations.
+The current `inp.p75` budget is the p75 of captured tracelens interaction durations, not the page-level INP algorithm used by CrUX. LCP and CLS budgets use captured final Web Vital samples. Route budgets currently support interaction p75. These results describe the supplied sample and do not establish statistical significance; choose a meaningful `minimumSamples` and compare equivalent traffic populations.
 
 Use the [GitHub Action](github-action.md) to publish the report as a check, a workflow artifact, a job summary, and a deduplicated pull-request comment.

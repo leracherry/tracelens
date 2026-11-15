@@ -90,9 +90,10 @@ try {
   });
   await desktop.goto(origin, { waitUntil: 'networkidle' });
 
-  const brand = desktop.locator('.brand img');
-  await expect(brand).toHaveAttribute('src', '/logo.svg');
+  const brand = desktop.getByRole('img', { name: 'tracelens', exact: true });
+  await expect(brand).toHaveAttribute('src', '/wordmark.svg');
   await brand.evaluate((image) => image.decode());
+  await expect(brand).toHaveCSS('filter', 'none');
 
   const scenarios = [
     ['Slow search', 'Run search', 'Run slow search', 'filter-search-results'],
@@ -310,6 +311,9 @@ try {
     'Mobile scenario target is too small',
   );
   await mobile.emulateMedia({ colorScheme: 'dark' });
+  await expect(
+    mobile.getByRole('img', { name: 'tracelens', exact: true }),
+  ).toHaveCSS('filter', 'invert(1)');
   for (const width of [390, 320]) {
     await mobile.setViewportSize({ width, height: 844 });
     for (const [scenario, action] of scenarios) {

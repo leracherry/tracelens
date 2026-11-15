@@ -1,6 +1,6 @@
 # Common workflows
 
-TraceLens is easiest to adopt as a sequence of small workflows. Start locally, make the evidence useful, then add release metadata and CI only after the trace answers a real debugging question.
+tracelens is easiest to adopt as a sequence of small workflows. Start locally, make the evidence useful, then add release metadata and CI only after the trace answers a real debugging question.
 
 ## Debug a slow interaction locally
 
@@ -42,7 +42,7 @@ init({
 });
 ```
 
-TraceLens does not provide a hosted ingestion service. Your endpoint must accept a JSON array of protocol events or use the [OpenTelemetry transport](opentelemetry.md).
+tracelens does not provide a hosted ingestion service. Your endpoint must accept a JSON array of protocol events or use the [OpenTelemetry transport](opentelemetry.md).
 
 ## Compare two releases
 

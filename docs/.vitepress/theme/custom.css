@@ -40,12 +40,11 @@
 }
 
 .VPNavBarTitle .logo {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
+  width: 108px;
+  height: auto;
+  margin-right: 0;
 }
 
-.VPHomeHero .name,
 .VPHomeHero .text {
   letter-spacing: -0.035em;
 }

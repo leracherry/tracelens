@@ -52,7 +52,7 @@ export default defineConfig({
 
 ## Choose a transport
 
-By default, TraceLens sends JSON batches to `endpoint` with `fetch`. The default endpoint is `/__tracelens`, the default batch size is 20 events, and the default flush interval is one second.
+By default, tracelens sends JSON batches to `endpoint` with `fetch`. The default endpoint is `/__tracelens`, the default batch size is 20 events, and the default flush interval is one second.
 
 Implement `Transport` when events must go through an existing ingestion client:
 
@@ -86,7 +86,7 @@ expect(transport.events.some((event) => event.type === 'interaction')).toBe(
 
 ## Name interactions safely
 
-TraceLens never reads DOM text. Add an explicit, non-sensitive label when the tag, role, and input type would be ambiguous:
+tracelens never reads DOM text. Add an explicit, non-sensitive label when the tag, role, and input type would be ambiguous:
 
 ```html
 <button data-tracelens-name="Save settings">Save</button>
@@ -124,13 +124,13 @@ init({
 });
 ```
 
-TraceLens does not overwrite an existing `traceparent` or `tracestate`, does not add headers to `no-cors` requests, and never injects context into origins outside the allowlist.
+tracelens does not overwrite an existing `traceparent` or `tracestate`, does not add headers to `no-cors` requests, and never injects context into origins outside the allowlist.
 
 ## Browser support and overhead
 
 Instrumentation is capability-based. Unsupported `PerformanceObserver` entry types are skipped, so older browsers can still report the signals they expose. Event Timing and Long Animation Frames have narrower browser support than fetch/XHR and basic marks.
 
-Sampling is decided once per page session. Start with a conservative production `sampleRate`, watch event volume and collector latency, and keep custom transports asynchronous. TraceLens patches `fetch` and `XMLHttpRequest` until shutdown; initialize only once.
+Sampling is decided once per page session. Start with a conservative production `sampleRate`, watch event volume and collector latency, and keep custom transports asynchronous. tracelens patches `fetch` and `XMLHttpRequest` until shutdown; initialize only once.
 
 Always await the returned shutdown function when the application lifecycle allows it. Shutdown drains every queued batch and rejects if delivery cannot complete; the retained queue can be retried while the page is alive. See [reliability and lifecycle](reliability.md) for failure and cleanup semantics.
 

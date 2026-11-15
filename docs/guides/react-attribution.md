@@ -76,4 +76,4 @@ Profiler timings are development-oriented in the playground. Production React pr
 
 Strict Mode can intentionally invoke extra development renders. Those samples are real profiler callbacks but do not represent production render frequency. Compare like-for-like environments.
 
-TraceLens boundaries report region-level commit cost, not automatic fiber-level or component-self-time attribution. Use a React-specific profiler when you need a flamegraph inside a boundary.
+tracelens boundaries report region-level commit cost, not automatic fiber-level or component-self-time attribution. Use a React-specific profiler when you need a flamegraph inside a boundary.

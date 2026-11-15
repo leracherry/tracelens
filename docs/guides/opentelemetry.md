@@ -1,6 +1,6 @@
 # OpenTelemetry
 
-`@leracherry/tracelens-otel` maps TraceLens events to OTLP spans and sends OTLP/HTTP JSON to a collector. The integration was introduced in v0.2.0 (Phase 17), with the unified package namespace in v0.2.1. Install it alongside the matching version of `@leracherry/tracelens-browser`; see [registry setup and availability](publishing.md).
+`@leracherry/tracelens-otel` maps tracelens events to OTLP spans and sends OTLP/HTTP JSON to a collector. The integration was introduced in v0.2.0 (Phase 17), with the unified package namespace in v0.2.1. Install it alongside the matching version of `@leracherry/tracelens-browser`; see [registry setup and availability](publishing.md).
 
 ```ts
 import { init } from '@leracherry/tracelens-browser';
@@ -26,7 +26,7 @@ init({
 });
 ```
 
-This exporter implements the TraceLens `Transport.send()` interface; it is not an OpenTelemetry JavaScript SDK `SpanExporter`. It sends traces only. Web Vitals and marks are zero-duration spans with attributes, not OTLP metrics. Selecting this transport replaces the default Studio transport.
+This exporter implements the tracelens `Transport.send()` interface; it is not an OpenTelemetry JavaScript SDK `SpanExporter`. It sends traces only. Web Vitals and marks are zero-duration spans with attributes, not OTLP metrics. Selecting this transport replaces the default Studio transport.
 
 ## Collector
 
@@ -44,7 +44,7 @@ Trigger an interaction and a fetch to an instrumented backend. Check the collect
 
 The browser generates random trace/span IDs. Captured interaction IDs tie request, React, and frame spans to the interaction's root context, even when Event Timing arrives later. The context cache is bounded to 1,000 interaction IDs. Backend instrumentation must extract W3C `traceparent` to join the trace.
 
-Fetch propagation is disabled unless `tracePropagation.allowedOrigins` is supplied. Entries are exact origins including scheme and port. Requests in `no-cors` mode and requests with existing `traceparent` or `tracestate` are unchanged. Existing external tracer contexts are not adopted: TraceLens records its own independent network span in that case. XHR is exported but does not propagate headers in this phase. No baggage is sent. Cross-origin APIs must allow `traceparent` through CORS.
+Fetch propagation is disabled unless `tracePropagation.allowedOrigins` is supplied. Entries are exact origins including scheme and port. Requests in `no-cors` mode and requests with existing `traceparent` or `tracestate` are unchanged. Existing external tracer contexts are not adopted: tracelens records its own independent network span in that case. XHR is exported but does not propagate headers in this phase. No baggage is sent. Cross-origin APIs must allow `traceparent` through CORS.
 
 Events carry `performance.timeOrigin`, allowing relative start times to be converted to epoch nanoseconds. Older trace files lack this clock anchor and fall back to `timestamp - duration`; their timing is approximate and their spans have independent generated contexts. Custom spans inherit the interaction active at invocation; this is not a general asynchronous context manager.
 

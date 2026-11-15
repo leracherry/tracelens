@@ -2,12 +2,12 @@
 layout: home
 
 hero:
-  name: TraceLens
   text: Explain slow real-user interactions
   tagline: Correlate INP, long frames, React renders, network work, source maps, and release regressions in one local-first debugging workflow.
   image:
-    src: /logo.svg
-    alt: TraceLens logo
+    light: /wordmark.svg
+    dark: /wordmark-dark.svg
+    alt: tracelens
   actions:
     - theme: brand
       text: Get started
@@ -43,9 +43,9 @@ features:
 
 ## One interaction, fully explained
 
-TraceLens is built for the question a score cannot answer: **what actually made this interaction slow?** Start at a user-visible delay, follow its correlated work, then compare the same signal across releases.
+tracelens is built for the question a score cannot answer: **what actually made this interaction slow?** Start at a user-visible delay, follow its correlated work, then compare the same signal across releases.
 
-![TraceLens Studio interaction view showing a Save settings interaction correlated with browser, React, custom, network, layout, and source-mapped script work](./assets/studio-interaction.png)
+![tracelens Studio interaction view showing a Save settings interaction correlated with browser, React, custom, network, layout, and source-mapped script work](./assets/studio-interaction.png)
 
 ```bash
 npm install @leracherry/tracelens-browser

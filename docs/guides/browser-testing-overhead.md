@@ -1,6 +1,6 @@
 # Browser support and overhead
 
-TraceLens validates the built browser SDK in Chromium and enforces explicit size and runtime overhead budgets on every pull request and push to `main`.
+tracelens validates the built browser SDK in Chromium and enforces explicit size and runtime overhead budgets on every pull request and push to `main`.
 
 ## What the browser test covers
 

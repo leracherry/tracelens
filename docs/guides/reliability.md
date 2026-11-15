@@ -1,6 +1,6 @@
 # Reliability and lifecycle
 
-TraceLens instrumentation is designed to fail without changing application requests. The browser SDK keeps telemetry delivery separate from fetch and XMLHttpRequest results, serializes outgoing batches, and restores patched APIs during shutdown.
+tracelens instrumentation is designed to fail without changing application requests. The browser SDK keeps telemetry delivery separate from fetch and XMLHttpRequest results, serializes outgoing batches, and restores patched APIs during shutdown.
 
 ## Delivery behavior
 
@@ -22,7 +22,7 @@ try {
 }
 ```
 
-The in-memory retry is page-local and intentionally bounded by page lifetime. TraceLens does not persist failed browser batches to IndexedDB or local storage. Applications that need durable delivery should provide a custom `Transport` with an appropriate queue and retention policy.
+The in-memory retry is page-local and intentionally bounded by page lifetime. tracelens does not persist failed browser batches to IndexedDB or local storage. Applications that need durable delivery should provide a custom `Transport` with an appropriate queue and retention policy.
 
 ## Configuration validation
 

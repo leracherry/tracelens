@@ -55,7 +55,7 @@ Remove sensitive values at the source when possible. Otherwise rename applicatio
 
 ## OTLP export retries forever
 
-TraceLens retries delivery after network failures and retryable `429`, `502`, `503`, and `504` responses. Permanent collector rejections are reported through `onRejected` and are not retried. Inspect collector logs, CORS policy, OTLP endpoint path, and authentication headers.
+tracelens retries delivery after network failures and retryable `429`, `502`, `503`, and `504` responses. Permanent collector rejections are reported through `onRejected` and are not retried. Inspect collector logs, CORS policy, OTLP endpoint path, and authentication headers.
 
 ## Diagnose the local project
 

@@ -1,6 +1,6 @@
 # Interaction correlation
 
-TraceLens associates browser work with the input that initiated it without retaining DOM text or application payloads.
+tracelens associates browser work with the input that initiated it without retaining DOM text or application payloads.
 
 ## Lifecycle
 

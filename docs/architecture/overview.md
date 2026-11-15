@@ -1,6 +1,6 @@
 # Architecture overview
 
-TraceLens is a local-first telemetry pipeline organized around one invariant: events that describe the same user interaction must remain correlatable across browser timing, application work, React commits, network spans, and release analysis.
+tracelens is a local-first telemetry pipeline organized around one invariant: events that describe the same user interaction must remain correlatable across browser timing, application work, React commits, network spans, and release analysis.
 
 ## System map
 
@@ -36,7 +36,7 @@ TraceLens is a local-first telemetry pipeline organized around one invariant: ev
 | `tracelens-vite`      | Build-time release, commit, environment, and timestamp injection.                           |
 | `tracelens-core`      | Trace queries, release comparisons, and source-map resolution.                              |
 | `tracelens-storage-*` | In-memory and JSON-file event persistence adapters.                                         |
-| `tracelens-otel`      | TraceLens event mapping and OTLP/HTTP JSON export.                                          |
+| `tracelens-otel`      | tracelens event mapping and OTLP/HTTP JSON export.                                          |
 | `tracelens-cli`       | Collector, Studio server, inspection, comparison, privacy, source-map, and budget commands. |
 | Repository Action     | Budget orchestration, GitHub Checks, summaries, artifacts, and PR comments.                 |
 
@@ -46,7 +46,7 @@ Packages depend inward toward the protocol and core query layer. The browser SDK
 
 Every event uses protocol version 1 and carries identity, wall-clock timestamp, session, application, optional release metadata, event type, and a typed payload. Browser events also carry `timeOrigin` for timeline placement and W3C-compatible trace context for export.
 
-The envelope is intentionally flat and append-friendly. Consumers reject unsupported versions rather than guessing at semantics. Package release versions and protocol versions are independent: TraceLens v1.0.0 still emits protocol version 1.
+The envelope is intentionally flat and append-friendly. Consumers reject unsupported versions rather than guessing at semantics. Package release versions and protocol versions are independent: tracelens v1.0.0 still emits protocol version 1.
 
 ## Correlation model
 
@@ -66,7 +66,7 @@ The local CLI collector accepts bounded JSON batches and serves the bundled Stud
 
 Source maps are uploaded into a release-scoped local store. Resolution uses application, release, generated script URL, and source position so one deployment cannot accidentally resolve against another build's map.
 
-Performance budgets reuse the same event model. The GitHub Action bundles that engine and its dependencies into a self-contained Node action, so consumer workflows do not install TraceLens packages before evaluating an artifact.
+Performance budgets reuse the same event model. The GitHub Action bundles that engine and its dependencies into a self-contained Node action, so consumer workflows do not install tracelens packages before evaluating an artifact.
 
 ## Extension points
 

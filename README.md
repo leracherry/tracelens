@@ -1,10 +1,15 @@
 <p align="center">
   <a href="https://leracherry.github.io/tracelens/">
-    <img src="docs/public/logo.svg" alt="TraceLens logo" width="128" height="128" />
+    <img src="docs/public/logo.svg" alt="tracelens logo" width="128" height="128" />
   </a>
 </p>
 
-<h1 align="center">TraceLens</h1>
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/public/wordmark-dark.svg" />
+    <img src="docs/public/wordmark.svg" alt="tracelens" width="240" />
+  </picture>
+</h1>
 
 <p align="center">
   <strong>Real-user performance debugging for frontend engineers.</strong><br />
@@ -28,19 +33,19 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/studio-demo.gif" alt="TraceLens Studio tour showing capture search, source-linked timeline evidence, release comparison, and the candidate capture" width="1120" />
+  <img src="docs/assets/studio-demo.gif" alt="tracelens Studio tour showing capture search, source-linked timeline evidence, release comparison, and the candidate capture" width="1120" />
 </p>
 
 <p align="center"><sub>Search → inspect source evidence → compare releases → open the candidate capture. Recorded from Studio in dark mode with synthetic telemetry.</sub></p>
 
-TraceLens turns browser telemetry into an explanation. Start with a slow interaction, follow the browser, React, network, layout, and custom work that overlapped it, map expensive scripts back to source, and compare the same signal across releases.
+tracelens turns browser telemetry into an explanation. Start with a slow interaction, follow the browser, React, network, layout, and custom work that overlapped it, map expensive scripts back to source, and compare the same signal across releases.
 
 > [!IMPORTANT]
-> TraceLens is a local-first debugging toolkit—not a hosted RUM backend. Studio binds to loopback, keeps telemetry in bounded memory, and requires no account.
+> tracelens is a local-first debugging toolkit—not a hosted RUM backend. Studio binds to loopback, keeps telemetry in bounded memory, and requires no account.
 
-## Why TraceLens
+## Why tracelens
 
-| A metric tells you…                  | TraceLens helps you answer…                                |
+| A metric tells you…                  | tracelens helps you answer…                                |
 | ------------------------------------ | ---------------------------------------------------------- |
 | INP p75 is 487 ms                    | Which interaction produced it?                             |
 | Main-thread work was high            | Which long frame and script consumed the time?             |
@@ -109,7 +114,7 @@ Follow the complete [five-minute setup](docs/guides/getting-started.md), or open
 
 ## What gets correlated
 
-| Signal                 | What TraceLens records                                                        | Where it appears                        |
+| Signal                 | What tracelens records                                                        | Where it appears                        |
 | ---------------------- | ----------------------------------------------------------------------------- | --------------------------------------- |
 | Event Timing           | Input delay, processing, presentation, route, accessible interaction name     | Interaction summary and phase breakdown |
 | Long Animation Frames  | Duration, blocking time, script attribution, first/third-party classification | Browser lane and frame explorer         |
@@ -119,7 +124,7 @@ Follow the complete [five-minute setup](docs/guides/getting-started.md), or open
 | Custom spans and marks | Named application work                                                        | Custom lane and exported traces         |
 | Build metadata         | Release, commit, environment, build timestamp                                 | Release selector and ReleaseScope       |
 
-![TraceLens Studio interaction view showing a 487 ms Save settings interaction correlated with browser, React, network, layout, and source-mapped script work](docs/assets/studio-interaction.png)
+![tracelens Studio interaction view showing a 487 ms Save settings interaction correlated with browser, React, network, layout, and source-mapped script work](docs/assets/studio-interaction.png)
 
 <p align="center"><sub>One interaction, from input delay to its source-mapped long-frame contributor.</sub></p>
 
@@ -143,7 +148,7 @@ flowchart LR
 
 ReleaseScope compares p75 values across captured builds. Choose a **Baseline** and **Candidate**, then select **View captures** on an interaction or route row to inspect matching candidate evidence. **Back to comparison** restores the release pair and row.
 
-![TraceLens Releases showing Baseline 2.13.4, Candidate 2.14.0, and View captures beside the Save settings regression](docs/assets/studio-release-comparison.png)
+![tracelens Releases showing Baseline 2.13.4, Candidate 2.14.0, and View captures beside the Save settings regression](docs/assets/studio-release-comparison.png)
 
 [See the candidate capture after selecting View captures](docs/assets/studio-release-captures.png).
 
@@ -189,7 +194,7 @@ init({
 });
 ```
 
-TraceLens emits OTLP/HTTP JSON spans with resource, release, interaction, HTTP, React, and timing attributes. Use the [collector example](examples/otel/collector.yaml) and [OTel guide](docs/guides/opentelemetry.md).
+tracelens emits OTLP/HTTP JSON spans with resource, release, interaction, HTTP, React, and timing attributes. Use the [collector example](examples/otel/collector.yaml) and [OTel guide](docs/guides/opentelemetry.md).
 
 ## CLI
 
@@ -234,13 +239,13 @@ The event protocol is versioned and storage-independent. Read the [architecture 
 | [`@leracherry/tracelens-core`](packages/core)                     | Queries, release aggregation, diffs, and source resolution     |
 | [`@leracherry/tracelens-storage-memory`](packages/storage-memory) | In-memory storage adapter                                      |
 | [`@leracherry/tracelens-storage-file`](packages/storage-file)     | Local JSON storage adapter                                     |
-| [`@leracherry/tracelens-otel`](packages/otel)                     | TraceLens-to-OTLP mapping and HTTP export                      |
+| [`@leracherry/tracelens-otel`](packages/otel)                     | tracelens-to-OTLP mapping and HTTP export                      |
 
 All packages are published to [npm](https://www.npmjs.com/search?q=%40leracherry%2Ftracelens) and mirrored to [GitHub Packages](https://github.com/leracherry/tracelens/packages). Keep package versions aligned.
 
 ## Privacy and operational boundaries
 
-TraceLens excludes input values, DOM text, request bodies, and headers. It removes URL credentials, query strings, fragments, and email-shaped path segments by default. Element IDs and `aria-label` values require opt-in.
+tracelens excludes input values, DOM text, request bodies, and headers. It removes URL credentials, query strings, fragments, and email-shaped path segments by default. Element IDs and `aria-label` values require opt-in.
 
 > [!WARNING]
 > Default redaction is not anonymization. Application-provided span names, release metadata, and URL path segments can still contain sensitive values. Audit synthetic telemetry before production rollout.
@@ -255,7 +260,7 @@ Read the [privacy model](docs/guides/privacy.md), [delivery lifecycle](docs/guid
 - Event Timing and Long Animation Frames are most complete in Chromium-based browsers.
 - React production attribution requires a profiling-enabled React build.
 - Release comparisons describe captured samples; they do not claim statistical significance.
-- The OTLP transport is a TraceLens transport, not an OpenTelemetry SDK `SpanExporter`.
+- The OTLP transport is a tracelens transport, not an OpenTelemetry SDK `SpanExporter`.
 - Studio storage is intentionally local and ephemeral.
 
 ## Try the playground
@@ -301,7 +306,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and reproducible pr
 
 ## Project status
 
-TraceLens 1.0 stabilizes the browser API, React attribution, release comparison, local Studio, OpenTelemetry export, source-map workflow, performance budgets, and GitHub integration described above. Future work stays focused on frontend interaction debugging rather than expanding into session replay or general-purpose APM.
+tracelens 1.0 stabilizes the browser API, React attribution, release comparison, local Studio, OpenTelemetry export, source-map workflow, performance budgets, and GitHub integration described above. Future work stays focused on frontend interaction debugging rather than expanding into session replay or general-purpose APM.
 
 - [Releases](https://github.com/leracherry/tracelens/releases)
 - [Changelog](CHANGELOG.md)
@@ -311,4 +316,4 @@ TraceLens 1.0 stabilizes the browser API, React attribution, release comparison,
 
 ## License
 
-TraceLens is released under the [MIT License](LICENSE).
+tracelens is released under the [MIT License](LICENSE).

@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress';
 
 export default defineConfig({
-  title: 'TraceLens',
+  title: 'tracelens',
   description:
     'Real-user performance debugging for browser interactions, React renders, and release regressions.',
   lang: 'en-US',
@@ -17,7 +17,7 @@ export default defineConfig({
     ['link', { rel: 'apple-touch-icon', href: '/tracelens/logo.png' }],
     ['meta', { name: 'theme-color', content: '#131a1c' }],
     ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:title', content: 'TraceLens Documentation' }],
+    ['meta', { property: 'og:title', content: 'tracelens Documentation' }],
     [
       'meta',
       {
@@ -41,7 +41,7 @@ export default defineConfig({
       },
     ],
     ['meta', { name: 'twitter:card', content: 'summary' }],
-    ['meta', { name: 'twitter:title', content: 'TraceLens Documentation' }],
+    ['meta', { name: 'twitter:title', content: 'tracelens Documentation' }],
     [
       'meta',
       {
@@ -59,8 +59,12 @@ export default defineConfig({
     ],
   ],
   themeConfig: {
-    logo: '/logo.svg',
-    siteTitle: 'TraceLens',
+    logo: {
+      light: '/wordmark.svg',
+      dark: '/wordmark-dark.svg',
+      alt: 'tracelens',
+    },
+    siteTitle: false,
     nav: [
       { text: 'Guide', link: '/guides/getting-started' },
       { text: 'Examples', link: '/examples/react-vite' },
@@ -191,7 +195,7 @@ export default defineConfig({
     ],
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'TraceLens — understand the interaction, not just the score.',
+      copyright: 'tracelens — understand the interaction, not just the score.',
     },
   },
 });

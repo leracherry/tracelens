@@ -220,8 +220,14 @@ function App() {
     <div className="shell">
       <aside className="studio-sidebar workspace-sidebar">
         <div className="brand">
-          <img className="mark" src="/logo.svg" alt="" width="28" height="28" />
-          TraceLens
+          <img src="/logo.svg" alt="" width="28" height="28" />
+          <img
+            className="wordmark"
+            src="/wordmark.svg"
+            alt="tracelens"
+            width="88"
+            height="17"
+          />
         </div>
         <nav aria-label="Studio views">
           <button

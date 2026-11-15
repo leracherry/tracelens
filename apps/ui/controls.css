@@ -58,13 +58,20 @@
   padding-inline: var(--panel-padding);
   border-bottom: 1px solid var(--nav-line);
   background: var(--masthead);
-  color: var(--text);
-  font-size: 15px;
-  font-weight: 650;
 }
 
 .workspace-sidebar .brand img {
   object-fit: contain;
+}
+
+:root[data-theme='dark'] .brand .wordmark {
+  filter: invert(1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .brand .wordmark {
+    filter: invert(1);
+  }
 }
 
 .workspace-sidebar nav {
