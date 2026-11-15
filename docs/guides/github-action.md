@@ -18,7 +18,7 @@ steps:
   - uses: actions/checkout@v7
 
   - name: Check tracelens performance budgets
-    uses: leracherry/tracelens@v1.1.0
+    uses: leracherry/tracelens@v1.1.1
     with:
       trace-file: artifacts/tracelens-events.json
       config-file: tracelens.yml

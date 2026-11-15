@@ -57,7 +57,7 @@ Requires Node.js 22 or newer.
 <summary><strong>1. Start Studio</strong></summary>
 
 ```bash
-npx @leracherry/tracelens-cli@1.1.0 studio
+npx @leracherry/tracelens-cli@1.1.1 studio
 ```
 
 Studio opens at <http://127.0.0.1:4173> and exposes a loopback-only collector at `/__tracelens`.
@@ -168,7 +168,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: leracherry/tracelens@v1.1.0
+      - uses: leracherry/tracelens@v1.1.1
         with:
           trace-file: artifacts/tracelens-events.json
           github-token: ${{ secrets.GITHUB_TOKEN }}

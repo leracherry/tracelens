@@ -70,7 +70,7 @@ export default defineConfig({
       { text: 'Examples', link: '/examples/react-vite' },
       { text: 'Reference', link: '/reference/browser-api' },
       { text: 'Architecture', link: '/architecture/overview' },
-      { text: 'v1.1.0', link: '/releases/v1.1.0' },
+      { text: 'v1.1.1', link: '/releases/v1.1.1' },
     ],
     sidebar: {
       '/guides/': [
@@ -169,6 +169,7 @@ export default defineConfig({
         {
           text: 'Releases',
           items: [
+            { text: 'v1.1.1', link: '/releases/v1.1.1' },
             { text: 'v1.1.0', link: '/releases/v1.1.0' },
             { text: 'v1.0.0', link: '/releases/v1.0.0' },
             { text: 'v0.4.0', link: '/releases/v0.4.0' },

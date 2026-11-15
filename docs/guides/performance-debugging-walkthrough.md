@@ -73,7 +73,7 @@ The matching **Release captures** view shows the candidate version and route abo
 To compare exported captures from the command line, run this command.
 
 ```bash
-npx @leracherry/tracelens-cli@1.1.0 compare 2.13.4 2.14.0 \
+npx @leracherry/tracelens-cli@1.1.1 compare 2.13.4 2.14.0 \
   --file trace.json
 ```
 
@@ -97,7 +97,7 @@ routes:
 Check it locally:
 
 ```bash
-npx @leracherry/tracelens-cli@1.1.0 budget check \
+npx @leracherry/tracelens-cli@1.1.1 budget check \
   --config tracelens.yml \
   --file trace.json \
   --release 2.14.0 \
