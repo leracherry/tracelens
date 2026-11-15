@@ -294,24 +294,27 @@ function App() {
       </header>
       {view === 'interactions' ? (
         <main ref={workspace}>
-          <div className="interactions-heading">
-            <h1 tabIndex={-1}>
-              {captureScope ? 'Release captures' : 'Interactions'}
-            </h1>
-            {connection === 'error' && events.length > 0 && (
-              <p className="stale-notice">
-                Showing the last successful capture.
-              </p>
-            )}
-            {connection === 'error' && (
+          <h1
+            className={captureScope ? undefined : 'visually-hidden'}
+            tabIndex={-1}
+          >
+            {captureScope ? 'Release captures' : 'Interactions'}
+          </h1>
+          {connection === 'error' && (
+            <div className="collector-notice">
+              {events.length > 0 && (
+                <p className="stale-notice">
+                  Showing the last successful capture.
+                </p>
+              )}
               <button
                 className="quiet-button"
                 onClick={() => setRetry(retry + 1)}
               >
                 Retry collector
               </button>
-            )}
-          </div>
+            </div>
+          )}
           {captureScope && (
             <div className="capture-pivot">
               <button className="quiet-button" onClick={openReleases}>

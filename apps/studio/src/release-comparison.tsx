@@ -90,14 +90,9 @@ export function ReleaseComparisonView({
 
   return (
     <main className="comparison-view">
-      <div>
-        <h1 id="release-heading" tabIndex={-1}>
-          Releases
-        </h1>
-        <p className="muted comparison-description">
-          Compare performance across captured builds.
-        </p>
-      </div>
+      <h1 id="release-heading" className="visually-hidden" tabIndex={-1}>
+        Releases
+      </h1>
       <div className="panel comparison-toolbar">
         <div className="release-pickers">
           <ReleasePicker
