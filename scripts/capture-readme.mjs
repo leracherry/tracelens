@@ -232,7 +232,11 @@ async function captureStill(page, filename) {
     ...viewport,
     height: Math.max(viewport.height, height),
   });
-  await page.screenshot({ path: resolve(output, filename), fullPage: true });
+  await page.screenshot({
+    path: resolve(output, filename),
+    fullPage: true,
+    scale: 'css',
+  });
   await page.setViewportSize(viewport);
 }
 
@@ -251,7 +255,7 @@ try {
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({
     viewport: { width: 1440, height: 1000 },
-    deviceScaleFactor: 1,
+    deviceScaleFactor: animate ? 2 : 1,
   });
   await page.goto(origin, { waitUntil: 'networkidle' });
   await page.waitForFunction(
@@ -312,11 +316,13 @@ try {
         '1/3',
         '-i',
         resolve(frames, 'frame-%d.png'),
-        '-filter_complex',
-        '[0:v]scale=1080:-1:flags=lanczos,split[a][b];[a]palettegen[p];[b][p]paletteuse',
-        '-loop',
+        '-plays',
         '0',
-        resolve(output, 'studio-tour-light.gif'),
+        '-final_delay',
+        '3',
+        '-f',
+        'apng',
+        resolve(output, 'studio-tour-light.png'),
       ],
       { stdio: 'pipe' },
     );

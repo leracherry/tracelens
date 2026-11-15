@@ -29,7 +29,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/studio-tour-light.gif" alt="tracelens Studio tour showing capture search, source-linked timeline evidence, release comparison, and the candidate capture" width="1120" />
+  <img src="docs/assets/studio-tour-light.png" alt="tracelens Studio tour showing capture search, source-linked timeline evidence, release comparison, and the candidate capture" width="1120" />
 </p>
 
 <p align="center"><sub>Search → inspect source evidence → compare releases → open the candidate capture. Recorded from Studio in light mode with synthetic telemetry.</sub></p>
