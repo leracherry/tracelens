@@ -159,51 +159,9 @@ a:focus-visible {
   opacity: 0;
   cursor: pointer;
 }
-.theme-icon {
-  position: relative;
-  width: var(--icon-size);
-  height: var(--icon-size);
-  pointer-events: none;
-}
-.theme-icon::before,
-.theme-icon::after {
-  content: '';
-  position: absolute;
-}
-.theme-icon-light::before {
-  inset: 4px;
-  border: var(--icon-stroke) solid currentColor;
-  border-radius: 50%;
-}
-.theme-icon-light::after {
-  inset: 0;
-  background:
-    linear-gradient(currentColor, currentColor) center top / 1px 2px no-repeat,
-    linear-gradient(currentColor, currentColor) center bottom / 1px 2px
-      no-repeat,
-    linear-gradient(currentColor, currentColor) left center / 2px 1px no-repeat,
-    linear-gradient(currentColor, currentColor) right center / 2px 1px no-repeat;
-}
-.theme-icon-dark::before {
-  inset: 1px;
-  border-radius: 50%;
-  box-shadow: inset 4px -3px 0 currentColor;
-}
-.theme-icon-system::before {
-  inset: 2px 0 4px;
-  border: var(--icon-stroke) solid currentColor;
-  border-radius: 2px;
-}
-.theme-icon-system::after {
-  inset: auto 4px 1px;
-  border-bottom: var(--icon-stroke) solid currentColor;
-}
-@media (forced-colors: active) {
-  .theme-icon-dark::before {
-    border: var(--icon-stroke) solid currentColor;
-    border-top-color: transparent;
-    transform: rotate(-35deg);
-  }
+.theme-control .ui-icon {
+  width: 18px;
+  height: 18px;
 }
 .release-filter .select-control {
   width: 172px;

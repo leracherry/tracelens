@@ -2,6 +2,7 @@ import { StrictMode, useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import type { AnyTraceLensEvent } from '@leracherry/tracelens-protocol';
 import { TraceDetail } from './trace-detail';
+import { StudioIcon } from './studio-icon';
 import './styles.css';
 import {
   ReleaseComparisonView,
@@ -234,7 +235,7 @@ function App() {
               setView('interactions');
             }}
           >
-            <span className="ui-icon ui-icon-trace" aria-hidden="true" />
+            <StudioIcon name="activity" />
             Interactions
           </button>
           <button
@@ -242,7 +243,7 @@ function App() {
             aria-pressed={view === 'releases'}
             onClick={openReleases}
           >
-            <span className="ui-icon ui-icon-release" aria-hidden="true" />
+            <StudioIcon name="tag" />
             Releases
           </button>
         </nav>
@@ -259,10 +260,7 @@ function App() {
                 : 'Connecting'}
           </span>
           <div className="theme-control" title={`Theme: ${theme}`}>
-            <span
-              className={`theme-icon theme-icon-${theme}`}
-              aria-hidden="true"
-            />
+            <StudioIcon name={theme} className={`theme-icon-${theme}`} />
             <select
               aria-label="Theme"
               value={theme}

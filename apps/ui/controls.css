@@ -117,42 +117,10 @@
   pointer-events: none;
 }
 
-.ui-icon-trace::before,
-.ui-icon-trace::after,
-.ui-icon-release::before,
-.ui-icon-release::after,
 .ui-icon-arrow::before,
 .ui-icon-arrow::after {
   position: absolute;
   content: '';
-}
-
-/* The staggered lines echo the interaction waterfall. */
-.ui-icon-trace::before {
-  inset: 3px auto auto 1px;
-  width: 9px;
-  border-top: var(--icon-stroke) solid currentColor;
-}
-
-.ui-icon-trace::after {
-  inset: 7px auto auto 5px;
-  width: 10px;
-  height: 6px;
-  border-block: var(--icon-stroke) solid currentColor;
-  clip-path: polygon(0 0, 100% 0, 100% 50%, 65% 50%, 65% 100%, 0 100%);
-}
-
-.ui-icon-release::before {
-  inset: auto 2px 2px;
-  height: 1px;
-  border-bottom: var(--icon-stroke) solid currentColor;
-}
-
-.ui-icon-release::after {
-  inset: auto 4px 4px;
-  height: 8px;
-  border-inline: var(--icon-stroke) solid currentColor;
-  clip-path: polygon(0 40%, 50% 40%, 50% 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .ui-icon-arrow {
